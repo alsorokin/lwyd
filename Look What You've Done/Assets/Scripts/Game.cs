@@ -21,8 +21,8 @@ public class Game : MonoBehaviour {
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                float x = (w - offsetX) / 4;
-                float y = (h - offsetY) / 4;
+                float x = (w - offsetX);
+                float y = (h - offsetY);
                 levelTiles[h, w] = Instantiate(grassPrefab, new Vector3(x, y, 2), zeroRotation);
             }
         }
