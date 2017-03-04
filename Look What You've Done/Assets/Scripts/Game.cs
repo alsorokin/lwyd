@@ -13,8 +13,6 @@ public class Game : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Quaternion zeroRotation = new Quaternion();
-        float tileWidth = grassPrefab.GetComponent<SpriteRenderer>().bounds.size.x;
-        float tileHeight = grassPrefab.GetComponent<SpriteRenderer>().bounds.size.y;
         float offsetX = levelWidth / 2;
         float offsetY = levelHeight / 2;
         for (int w = 0; w < levelWidth; w++)
