@@ -3,16 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TestPlayermoveScript : MonoBehaviour {
-    public float speed = 6.0F;
-    private Vector2 moveDirection = Vector2.zero;
 
     void FixedUpdate()
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        moveDirection *= speed;
+        MovementController mc = GetComponent<MovementController>();
 
-        rb.AddForce(moveDirection);
-        //.Move(moveDirection * Time.deltaTime);
+        if (Input.GetAxis("Horizontal") > 0.1) {
+            mc.GoRight();
+        }
+        if (Input.GetAxis("Horizontal") < -0.1) {
+            mc.GoLeft();
+        }
+        if (Input.GetAxis("Vertical") > 0.1) {
+            mc.GoUp();
+        }
+        if (Input.GetAxis("Vertical") < -0.1) {
+            mc.GoDown();
+        }
+    } 
+
+    void OnGUI()
+    {
+        if (Application.isEditor) {
+            GUI.Label(new Rect(new Vector2(10, 10), new Vector2(50, 20)), Input.GetAxis("Horizontal").ToString());
+            GUI.Label(new Rect(new Vector2(10, 30), new Vector2(50, 20)), Input.GetAxis("Vertical").ToString());
+        }
     }
 }
