@@ -11,22 +11,18 @@ public class MovementController : MonoBehaviour {
     public float movementSpeed = 100;
     public Direction direction = Direction.Up;
 
-    private bool nowMoving = true;
+    private bool isMoving = false;
+    private Vector3 startPosition;
+
+    // Use this for initialization
+    void Start () {}
     
-
-	// Use this for initialization
-	void Start () {
-
-    }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Update is called once per frame
+    void Update () {}
 
     void FixedUpdate()
     {
-        if (nowMoving)
+        if (isMoving)
         {
             switch (direction)
             {
@@ -43,6 +39,38 @@ public class MovementController : MonoBehaviour {
                     transform.position += new Vector3(GetMovementScalar(movementSpeed), 0, 0);
                     break;
             }
+        }
+    }
+
+    public void GoUp() {
+        if (!isMoving) {
+            isMoving = true;
+            direction = Direction.Up;
+            startPosition = transform.position;
+        }
+    }
+
+    public void GoDown() {
+        if (!isMoving) {
+            isMoving = true;
+            direction = Direction.Down;
+            startPosition = transform.position;
+        }
+    }
+
+    public void GoLeft() {
+        if (!isMoving) {
+            isMoving = true;
+            direction = Direction.Left;
+            startPosition = transform.position;
+        }
+    }
+
+    public void GoRight() {
+        if (!isMoving) {
+            isMoving = true;
+            direction = Direction.Left;
+            startPosition = transform.position;
         }
     }
 
