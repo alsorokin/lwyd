@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum Direction : sbyte
 {
@@ -64,11 +62,34 @@ public class MovementController : MonoBehaviour
     {
         // align to grid
         transform.position = stopPosition;
-        // only actually stop if no further commands were issued
-        isMoving = whereToNext != Direction.None;
+        // stop
+        isMoving = false;
         // then start moving again, if user has already issued a new command
-        direction = whereToNext;
+        if (direction != whereToNext)
+        {
+            direction = whereToNext;
+            Go(direction);
+        }
         whereToNext = Direction.None;
+    }
+
+    public void Go(Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.Up:
+                GoUp();
+                break;
+            case Direction.Down:
+                GoDown();
+                break;
+            case Direction.Left:
+                GoLeft();
+                break;
+            case Direction.Right:
+                GoRight();
+                break;
+        }
     }
 
     public void GoUp()
@@ -132,8 +153,5 @@ public class MovementController : MonoBehaviour
         return speed * Time.deltaTime / 100;
     }
 
-    void OnGUI()
-    {
-        
-    }
+    void OnGUI() {}
 }

@@ -1,83 +1,52 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TestPlayermoveScript : MonoBehaviour
 {
+    // TODO: create a NullCommand
+    public Command onMoveRight = null;
+    public Command onMoveLeft = null;
+    public Command onMoveUp = null;
+    public Command onMoveDown = null;
 
-    private bool sentUp = false;
-    private bool sentDown = false;
-    private bool sentLeft = false;
-    private bool sentRight = false;
-
+    // Use this for initialization
+    void Start() {
+        MovementController mc = GetComponent<MovementController>();
+        if (onMoveRight == null)
+        {
+            onMoveRight = new MoveCommand(mc, Direction.Right);
+        }
+        if (onMoveLeft == null)
+        {
+            onMoveLeft = new MoveCommand(mc, Direction.Left);
+        }
+        if (onMoveUp == null)
+        {
+            onMoveUp = new MoveCommand(mc, Direction.Up);
+        }
+        if (onMoveDown == null)
+        {
+            onMoveDown = new MoveCommand(mc, Direction.Down);
+        }
+    }
     void FixedUpdate()
     {
-        MovementController mc = GetComponent<MovementController>();
-        if (!mc.isMoving)
-        {
-            sentUp = false;
-            sentDown = false;
-            sentLeft = false;
-            sentRight = false;
-        }
-
         if (Input.GetAxis("Horizontal") > 0.001)
         {
-            if (!sentRight)
-            {
-                mc.GoRight();
-                sentRight = true;
-            }
-        }
-        else
-        {
-            sentRight = false;
+            onMoveRight.Execute();
         }
         if (Input.GetAxis("Horizontal") < -0.001)
         {
-            if (!sentLeft)
-            {
-                mc.GoLeft();
-                sentLeft = true;
-            }
-
-        }
-        else
-        {
-            sentLeft = false;
+            onMoveLeft.Execute();
         }
         if (Input.GetAxis("Vertical") > 0.001)
         {
-            if (!sentUp)
-            {
-                mc.GoUp();
-                sentUp = true;
-            }
-        }
-        else
-        {
-            sentUp = false;
+            onMoveUp.Execute();
         }
         if (Input.GetAxis("Vertical") < -0.001)
         {
-            if (!sentDown)
-            {
-                mc.GoDown();
-                sentDown = true;
-            }
-        }
-        else
-        {
-            sentDown = false;
+            onMoveDown.Execute();
         }
     }
 
-    void OnGUI()
-    {
-        if (Application.isEditor)
-        {
-            GUI.Label(new Rect(new Vector2(10, 10), new Vector2(50, 20)), Input.GetAxis("Horizontal").ToString());
-            GUI.Label(new Rect(new Vector2(10, 30), new Vector2(50, 20)), Input.GetAxis("Vertical").ToString());
-        }
-    }
+    void OnGUI() {}
 }
