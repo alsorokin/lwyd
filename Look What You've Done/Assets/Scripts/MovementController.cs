@@ -66,7 +66,7 @@ public class MovementController : MonoBehaviour
         transform.position = stopPosition;
         // only actually stop if no further commands were issued
         isMoving = whereToNext != Direction.None;
-        // then start moving again, if user already issued a new command
+        // then start moving again, if user has already issued a new command
         direction = whereToNext;
         whereToNext = Direction.None;
     }
@@ -134,10 +134,6 @@ public class MovementController : MonoBehaviour
 
     void OnGUI()
     {
-        if (Application.isEditor)
-        {
-            GUI.Label(new Rect(new Vector2(10, 50), new Vector2(550, 20)), "isMoving: " + isMoving.ToString());
-            GUI.Label(new Rect(new Vector2(10, 70), new Vector2(550, 20)), "stopPosition" + stopPosition.ToString());
-        }
+        
     }
 }
