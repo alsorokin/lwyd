@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class MoveCommand : Command {
+﻿public class MoveCommand : Command {
     private MovementController movementController;
     private Direction direction;
 

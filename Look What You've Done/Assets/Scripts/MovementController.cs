@@ -9,8 +9,8 @@ public class MovementController : MonoBehaviour
 {
     public float movementSpeed = 100;
     public Direction direction = Direction.Up;
-    public bool isMoving = false;
 
+    private bool isMoving = false;
     private Vector3 stopPosition;
     private Direction whereToNext = Direction.None;
 

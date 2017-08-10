@@ -1,50 +1,66 @@
 ﻿using UnityEngine;
+using System;
 
 public class TestPlayermoveScript : MonoBehaviour
 {
     // TODO: create a NullCommand
-    public Command onMoveRight = null;
-    public Command onMoveLeft = null;
-    public Command onMoveUp = null;
-    public Command onMoveDown = null;
+    public Command onMoveRight = new NullCommand();
+    public Command onMoveLeft = new NullCommand();
+    public Command onMoveUp = new NullCommand();
+    public Command onMoveDown = new NullCommand();
+
+    private const float inputThreshold = 0.001f;
+
+    private float horizontalAxis;
+    private float verticalAxis;
 
     // Use this for initialization
     void Start() {
         MovementController mc = GetComponent<MovementController>();
-        if (onMoveRight == null)
+        if (onMoveRight.GetType() == typeof(NullCommand))
         {
             onMoveRight = new MoveCommand(mc, Direction.Right);
         }
-        if (onMoveLeft == null)
+        if (onMoveLeft.GetType() == typeof(NullCommand))
         {
             onMoveLeft = new MoveCommand(mc, Direction.Left);
         }
-        if (onMoveUp == null)
+        if (onMoveUp.GetType() == typeof(NullCommand))
         {
             onMoveUp = new MoveCommand(mc, Direction.Up);
         }
-        if (onMoveDown == null)
+        if (onMoveDown.GetType() == typeof(NullCommand))
         {
             onMoveDown = new MoveCommand(mc, Direction.Down);
         }
     }
     void FixedUpdate()
     {
-        if (Input.GetAxis("Horizontal") > 0.001)
+        horizontalAxis = Input.GetAxis("Horizontal");
+        verticalAxis = Input.GetAxis("Vertical");
+
+        if (Math.Abs(horizontalAxis) < inputThreshold && Math.Abs(verticalAxis) < inputThreshold)
         {
-            onMoveRight.Execute();
+            return;
         }
-        if (Input.GetAxis("Horizontal") < -0.001)
+        if (Math.Abs(horizontalAxis) > Math.Abs(verticalAxis))
         {
-            onMoveLeft.Execute();
-        }
-        if (Input.GetAxis("Vertical") > 0.001)
+            if (horizontalAxis < 0)
+            {
+                onMoveLeft.Execute();
+            } else
+            {
+                onMoveRight.Execute();
+            }
+        } else
         {
-            onMoveUp.Execute();
-        }
-        if (Input.GetAxis("Vertical") < -0.001)
-        {
-            onMoveDown.Execute();
+            if (verticalAxis < 0)
+            {
+                onMoveDown.Execute();
+            } else
+            {
+                onMoveUp.Execute();
+            }
         }
     }
 
