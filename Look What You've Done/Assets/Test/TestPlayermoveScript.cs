@@ -3,7 +3,6 @@ using System;
 
 public class TestPlayermoveScript : MonoBehaviour
 {
-    // TODO: create a NullCommand
     public Command onMoveRight = new NullCommand();
     public Command onMoveLeft = new NullCommand();
     public Command onMoveUp = new NullCommand();
