@@ -14,20 +14,12 @@ public class MovementController : MonoBehaviour
     private bool isMoving = false;
     private Vector3 stopPosition;
     private Direction whereToNext = Direction.None;
-    private Level currentLevel;
     private Game game;
 
     // Use this for initialization
     void Start()
     {
         game = (Game)GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
-        currentLevel = game.CurrentLevel;
-        game.LevelChanged += LevelChanged;
-    }
-
-    private void LevelChanged(object sender, LevelChangedEventArgs args)
-    {
-        currentLevel = args.newLevel;
     }
 
     // Update is called once per frame
@@ -107,7 +99,7 @@ public class MovementController : MonoBehaviour
 
     public void GoUp()
     {
-        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Up))
+        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Up))
         {
             return;
         }
@@ -125,7 +117,7 @@ public class MovementController : MonoBehaviour
 
     public void GoDown()
     {
-        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Down))
+        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Down))
         {
             return;
         }
@@ -143,7 +135,7 @@ public class MovementController : MonoBehaviour
 
     public void GoLeft()
     {
-        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Left))
+        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Left))
         {
             return;
         }
@@ -161,7 +153,7 @@ public class MovementController : MonoBehaviour
 
     public void GoRight()
     {
-        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Right))
+        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Right))
         {
             return;
         }

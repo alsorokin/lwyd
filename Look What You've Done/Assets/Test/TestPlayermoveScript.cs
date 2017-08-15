@@ -14,7 +14,8 @@ public class TestPlayermoveScript : MonoBehaviour
     private float verticalAxis;
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
         MovementController mc = GetComponent<MovementController>();
         if (onMoveRight.GetType() == typeof(NullCommand))
         {
