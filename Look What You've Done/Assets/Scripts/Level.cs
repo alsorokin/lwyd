@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-class Level
+public class Level
 {
     private int levelWidth;
     private int levelHeight;
@@ -36,6 +36,30 @@ class Level
                 }
             }
         }
+    }
+
+    public bool canIGo(Vector2 myPosition, Direction dir)
+    {
+        int x = (int)((levelWidth / 2) + myPosition.x - 0.5f);
+        int y = (int)((levelHeight / 2) + myPosition.y - 0.5f);
+        if (dir == Direction.Left)
+        {
+            x--;
+        } else if (dir == Direction.Top)
+        {
+            y++;
+        } else if (dir == Direction.Right)
+        {
+            x++;
+        } else if (dir == Direction.Down)
+        {
+            y--;
+        } else
+        {
+            // can't go nowhere
+            return false;
+        }
+        return levelTiles[x, y].passable;
     }
 
     public void AddActor(Actor actor)

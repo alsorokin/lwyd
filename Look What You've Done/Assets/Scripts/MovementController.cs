@@ -94,6 +94,11 @@ public class MovementController : MonoBehaviour
 
     public void GoUp()
     {
+        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
+        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Up))
+        {
+            return;
+        }
         if (!isMoving)
         {
             isMoving = true;
@@ -108,6 +113,11 @@ public class MovementController : MonoBehaviour
 
     public void GoDown()
     {
+        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
+        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Down))
+        {
+            return;
+        }
         if (!isMoving)
         {
             isMoving = true;
@@ -122,6 +132,11 @@ public class MovementController : MonoBehaviour
 
     public void GoLeft()
     {
+        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
+        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Left))
+        {
+            return;
+        }
         if (!isMoving)
         {
             isMoving = true;
@@ -136,6 +151,11 @@ public class MovementController : MonoBehaviour
 
     public void GoRight()
     {
+        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
+        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Right))
+        {
+            return;
+        }
         if (!isMoving)
         {
             isMoving = true;
