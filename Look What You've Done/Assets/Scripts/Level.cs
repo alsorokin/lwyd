@@ -38,7 +38,7 @@ public class Level
         }
     }
 
-    public bool canIGo(Vector2 myPosition, Direction dir)
+    public bool CanIGo(Vector2 myPosition, Direction dir)
     {
         int x = (int)((levelWidth / 2) + myPosition.x - 0.5f);
         int y = (int)((levelHeight / 2) + myPosition.y - 0.5f);

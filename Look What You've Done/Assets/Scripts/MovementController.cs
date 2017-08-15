@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public enum Direction : sbyte
 {
@@ -13,9 +14,21 @@ public class MovementController : MonoBehaviour
     private bool isMoving = false;
     private Vector3 stopPosition;
     private Direction whereToNext = Direction.None;
+    private Level currentLevel;
+    private Game game;
 
     // Use this for initialization
-    void Start() { }
+    void Start()
+    {
+        game = (Game)GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        currentLevel = game.CurrentLevel;
+        game.LevelChanged += LevelChanged;
+    }
+
+    private void LevelChanged(object sender, LevelChangedEventArgs args)
+    {
+        currentLevel = args.newLevel;
+    }
 
     // Update is called once per frame
     void Update() { }
@@ -94,8 +107,7 @@ public class MovementController : MonoBehaviour
 
     public void GoUp()
     {
-        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
-        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Up))
+        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Up))
         {
             return;
         }
@@ -113,8 +125,7 @@ public class MovementController : MonoBehaviour
 
     public void GoDown()
     {
-        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
-        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Down))
+        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Down))
         {
             return;
         }
@@ -132,8 +143,7 @@ public class MovementController : MonoBehaviour
 
     public void GoLeft()
     {
-        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
-        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Left))
+        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Left))
         {
             return;
         }
@@ -151,8 +161,7 @@ public class MovementController : MonoBehaviour
 
     public void GoRight()
     {
-        Level level = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>().currentLevel;
-        if (!level.canIGo(new Vector2(transform.position.x, transform.position.y), Direction.Right))
+        if (!currentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Right))
         {
             return;
         }
