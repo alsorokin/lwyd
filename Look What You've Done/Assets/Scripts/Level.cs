@@ -29,7 +29,23 @@ public class Level
                 if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
                 {
                     levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
-                } 
+                }
+                else if (h == levelHeight / 3 && w == levelWidth / 3)
+                {
+                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                }
+                else if (h == 2*levelHeight / 3 && w == 2*levelWidth / 3)
+                {
+                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                }
+                else if (h == 2*levelHeight / 3 && w == levelWidth / 3)
+                {
+                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                }
+                else if (h == levelHeight / 3 && w == 2*levelWidth / 3)
+                {
+                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                }
                 else
                 {
                     levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", x, y, true);
