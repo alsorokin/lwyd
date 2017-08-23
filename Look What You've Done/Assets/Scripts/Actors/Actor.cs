@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class Actor
+public class Actor : MonoBehaviour
 {
     public Vector2 position { get; set; }
     public bool isAlive
@@ -17,4 +17,5 @@ public class Actor
     }
     protected float health = 75;
     protected float maxHealth = 100;
+    protected GameObject instance;
 }
