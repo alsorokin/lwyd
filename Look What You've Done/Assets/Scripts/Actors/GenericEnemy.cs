@@ -18,7 +18,7 @@ class GenericEnemy : Actor
         timeElapsed += Time.deltaTime;
 
         // go in random direction every second
-        if (timeElapsed >= 2)
+        if (timeElapsed >= 1)
         {
             timeElapsed = 0;
             List<Direction> dirs = new List<Direction>();

@@ -8,7 +8,7 @@ public enum Direction : sbyte
 
 public class MovementController : MonoBehaviour
 {
-    public float movementSpeed = 100;
+    public float movementSpeed = 333;
 
     private Direction direction = Direction.Up;
     private bool isMoving = false;
