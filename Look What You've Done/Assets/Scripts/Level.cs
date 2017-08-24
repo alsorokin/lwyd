@@ -55,8 +55,9 @@ public class Level
 
         GameObject genericEnemy = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
         genericEnemy.transform.position = new Vector3(-1.5f, -1.5f, 1f);
-        Actor geActor = genericEnemy.AddComponent<GenericEnemy>();
+        Actor geActor = genericEnemy.GetComponent<GenericEnemy>();
         geActor.SetLevel(this);
+        geActor.fertile = true;
         AddActor(geActor);
     }
 

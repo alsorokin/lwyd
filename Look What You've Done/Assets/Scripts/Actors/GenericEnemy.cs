@@ -43,11 +43,31 @@ class GenericEnemy : Actor
                 // relax, there is nowhere to go
                 return;
             }
-            var rnd = UnityEngine.Random.Range((int)0, (int)dirs.Count);
+            var rnd = UnityEngine.Random.Range(0, dirs.Count);
             Direction direction = dirs[rnd];
             mc.Go(direction);
             Suffer(5);
+            if (UnityEngine.Random.Range(0, 3) == 0)
+            {
+                Clone();
+            }
         }
-        
+    }
+
+    public override GameObject Clone()
+    {
+        if (!fertile)
+        {
+            return null;
+        }
+        GameObject result = UnityEngine.GameObject.Instantiate(this.gameObject);
+        Actor geActor = result.GetComponent<GenericEnemy>();
+        geActor.SetLevel(myLevel);
+        myLevel.AddActor(geActor);
+        geActor.setMaxHealth(maxHealth);
+        geActor.SetHealth(health);
+        geActor.fertile = false;
+
+        return result;
     }
 }

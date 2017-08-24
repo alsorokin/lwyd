@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class Actor : MonoBehaviour
+public abstract class Actor : MonoBehaviour
 {
     public Vector2 position { get; set; }
     public bool isAlive
@@ -34,7 +34,7 @@ public class Actor : MonoBehaviour
         }
     }
 
-    public void Die ()
+    public void Die()
     {
         health = 0;
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
@@ -44,5 +44,17 @@ public class Actor : MonoBehaviour
     {
         myLevel = level;
     }
-    
+
+    public void SetHealth(float health)
+    {
+        this.health = health;
+    }
+
+    public void setMaxHealth(float maxHealth)
+    {
+        this.maxHealth = maxHealth;
+    }
+
+    public abstract GameObject Clone();
+    public bool fertile { get; set; }
 }

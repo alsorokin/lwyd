@@ -19,7 +19,7 @@ public class MovementController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        game = (Game)GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        game = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
     }
 
     // Update is called once per frame

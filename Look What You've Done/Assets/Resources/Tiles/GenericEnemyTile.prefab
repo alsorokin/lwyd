@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4406255516612024}
   - component: {fileID: 212405397654339704}
   - component: {fileID: 114556643019573262}
+  - component: {fileID: 114628769142023782}
   m_Layer: 0
   m_Name: GenericEnemyTile
   m_TagString: Untagged
@@ -53,6 +54,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 150
+--- !u!114 &114628769142023782
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1105034257526734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb5df0b4092b1444b86cd7c822c7f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212405397654339704
 SpriteRenderer:
   m_ObjectHideFlags: 1
