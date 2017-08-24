@@ -11,11 +11,38 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            // TODO: implement death
-            return true;
+            return health > 0f;
         }
     }
+
+    protected MovementController mc;
     protected float health = 75;
     protected float maxHealth = 100;
-    protected GameObject instance;
+    protected Level myLevel;
+
+    void Start()
+    {
+        mc = GetComponent<MovementController>();
+    }
+
+    public void Suffer (float damage)
+    {
+        health -= damage;
+        if (health <= 0f)
+        {
+            Die();
+        }
+    }
+
+    public void Die ()
+    {
+        health = 0;
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+    public void SetLevel(Level level)
+    {
+        myLevel = level;
+    }
+    
 }

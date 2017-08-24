@@ -56,6 +56,9 @@ public class Level
         GameObject genericEnemy = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
         genericEnemy.transform.position = new Vector3(-1.5f, -1.5f, 1f);
         genericEnemy.AddComponent<GenericEnemy>();
+        Actor geActor = genericEnemy.GetComponent<GenericEnemy>();
+        geActor.SetLevel(this);
+        AddActor(geActor);
     }
 
     public bool CanIGo(Vector2 myPosition, Direction dir)
