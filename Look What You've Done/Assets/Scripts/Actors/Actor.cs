@@ -6,7 +6,6 @@ using UnityEngine;
 
 public abstract class Actor : MonoBehaviour
 {
-    public Vector2 position { get; set; }
     public bool isAlive
     {
         get

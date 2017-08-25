@@ -59,12 +59,29 @@ public class Level
         geActor.SetLevel(this);
         geActor.fertile = true;
         AddActor(geActor);
+
+        GameObject player = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
+        player.transform.position = new Vector3(0.5f, 0.5f, 0f);
+        Actor playerActor = player.GetComponent<TestPlayermoveScript>();
+        playerActor.SetLevel(this);
+        playerActor.fertile = false;
+        AddActor(playerActor);
+    }
+
+    private int TranslateXToGrid(float x)
+    {
+        return (int)Math.Round((levelWidth / 2) + x - 0.5f);
+    }
+
+    private int TranslateYToGrid(float y)
+    {
+        return (int)Math.Round((levelHeight / 2) + y - 0.5f);
     }
 
     public bool CanIGo(Vector2 myPosition, Direction dir)
     {
-        int x = (int)((levelWidth / 2) + myPosition.x - 0.5f);
-        int y = (int)((levelHeight / 2) + myPosition.y - 0.5f);
+        int x = TranslateXToGrid(myPosition.x);
+        int y = TranslateYToGrid(myPosition.y);
         if (dir == Direction.Left)
         {
             x--;
@@ -82,7 +99,24 @@ public class Level
             // Direction.None or unknown direction
             return false;
         }
-        return levelTiles[x, y].passable;
+
+        var canGo = levelTiles[x, y].passable;
+        // if it's passable, doesn't mean we can go there
+        // maybe someone else is occupying it?
+        if (canGo)
+        {
+            foreach (Actor actor in actors)
+            {
+                if (TranslateXToGrid(actor.gameObject.transform.position.x) == x &&
+                    TranslateYToGrid(actor.gameObject.transform.position.y) == y)
+                {
+                    canGo = false;
+                }
+
+            }
+        }
+
+        return canGo;
     }
 
     public void AddActor(Actor actor)

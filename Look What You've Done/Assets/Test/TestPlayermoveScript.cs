@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-public class TestPlayermoveScript : MonoBehaviour
+public class TestPlayermoveScript : Actor
 {
     public Command onMoveRight = new NullCommand();
     public Command onMoveLeft = new NullCommand();
@@ -65,4 +65,10 @@ public class TestPlayermoveScript : MonoBehaviour
     }
 
     void OnGUI() {}
+
+    public override GameObject Clone()
+    {
+        // can't clone player... yet
+        return null;
+    }
 }
