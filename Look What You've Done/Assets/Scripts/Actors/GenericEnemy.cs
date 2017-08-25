@@ -22,19 +22,19 @@ class GenericEnemy : Actor
         {
             timeElapsed = 0;
             List<Direction> dirs = new List<Direction>();
-            if (myLevel.CanIGo(transform.position, Direction.Up))
+            if (myLevel.CanIGo(this, Direction.Up))
             {
                 dirs.Add(Direction.Up);
             }
-            if (myLevel.CanIGo(transform.position, Direction.Down))
+            if (myLevel.CanIGo(this, Direction.Down))
             {
                 dirs.Add(Direction.Down);
             }
-            if (myLevel.CanIGo(transform.position, Direction.Left))
+            if (myLevel.CanIGo(this, Direction.Left))
             {
                 dirs.Add(Direction.Left);
             }
-            if (myLevel.CanIGo(transform.position, Direction.Right))
+            if (myLevel.CanIGo(this, Direction.Right))
             {
                 dirs.Add(Direction.Right);
             }

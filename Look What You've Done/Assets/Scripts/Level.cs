@@ -78,10 +78,10 @@ public class Level
         return (int)Math.Round((levelHeight / 2) + y - 0.5f);
     }
 
-    public bool CanIGo(Vector2 myPosition, Direction dir)
+    public bool CanIGo(Actor myself, Vector2 fromPosition, Direction dir)
     {
-        int x = TranslateXToGrid(myPosition.x);
-        int y = TranslateYToGrid(myPosition.y);
+        int x = TranslateXToGrid(fromPosition.x);
+        int y = TranslateYToGrid(fromPosition.y);
         if (dir == Direction.Left)
         {
             x--;
@@ -107,7 +107,8 @@ public class Level
         {
             foreach (Actor actor in actors)
             {
-                if (TranslateXToGrid(actor.gameObject.transform.position.x) == x &&
+                if (actor != myself && actor.isAlive &&
+                    TranslateXToGrid(actor.gameObject.transform.position.x) == x &&
                     TranslateYToGrid(actor.gameObject.transform.position.y) == y)
                 {
                     canGo = false;
@@ -117,6 +118,14 @@ public class Level
         }
 
         return canGo;
+    }
+
+    public bool CanIGo(Actor myself, Direction dir)
+    {
+        // we assume that the actor is not moving
+        // this is a bad thing to assume, maybe we should check it instead
+        return CanIGo(myself, myself.gameObject.transform.position, dir);
+
     }
 
     public void AddActor(Actor actor)

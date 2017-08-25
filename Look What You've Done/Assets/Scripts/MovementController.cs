@@ -9,12 +9,15 @@ public enum Direction : sbyte
 public class MovementController : MonoBehaviour
 {
     public float movementSpeed = 333;
+    public static float collisionCheckFrequency = 0.1f;
 
     private Direction direction = Direction.Up;
     private bool isMoving = false;
+    private Vector3 startPosition;
     private Vector3 stopPosition;
     private Direction whereToNext = Direction.None;
     private Game game;
+    private float collisionTimer = 0f;
 
     // Use this for initialization
     void Start()
@@ -25,10 +28,41 @@ public class MovementController : MonoBehaviour
     // Update is called once per frame
     void Update() { }
 
+    private void SwapDirection()
+    {
+        Vector3 temp = startPosition;
+        startPosition = stopPosition;
+        stopPosition = temp;
+        switch (direction)
+        {
+            case Direction.Up:
+                direction = Direction.Down;
+                break;
+            case Direction.Down:
+                direction = Direction.Up;
+                break;
+            case Direction.Left:
+                direction = Direction.Right;
+                break;
+            case Direction.Right:
+                direction = Direction.Left;
+                break;
+        }
+    }
+
     void FixedUpdate()
     {
         if (isMoving)
         {
+            collisionTimer += Time.deltaTime;
+            if (collisionTimer >= collisionCheckFrequency)
+            {
+                collisionTimer = 0f;
+                if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), startPosition, direction))
+                {
+                    SwapDirection();
+                }
+            }
             switch (direction)
             {
                 case Direction.Down:
@@ -99,14 +133,11 @@ public class MovementController : MonoBehaviour
 
     public void GoUp()
     {
-        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Up))
-        {
-            return;
-        }
-        if (!isMoving)
+        if (!isMoving && game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
         {
             isMoving = true;
             direction = Direction.Up;
+            startPosition = transform.position;
             stopPosition = transform.position + new Vector3(0, 1, 0);
         }
         else
@@ -117,7 +148,7 @@ public class MovementController : MonoBehaviour
 
     public void GoDown()
     {
-        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Down))
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Down))
         {
             return;
         }
@@ -125,6 +156,7 @@ public class MovementController : MonoBehaviour
         {
             isMoving = true;
             direction = Direction.Down;
+            startPosition = transform.position;
             stopPosition = transform.position + new Vector3(0, -1, 0);
         }
         else
@@ -135,7 +167,7 @@ public class MovementController : MonoBehaviour
 
     public void GoLeft()
     {
-        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Left))
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Left))
         {
             return;
         }
@@ -143,6 +175,7 @@ public class MovementController : MonoBehaviour
         {
             isMoving = true;
             direction = Direction.Left;
+            startPosition = transform.position;
             stopPosition = transform.position + new Vector3(-1, 0, 0);
         }
         else
@@ -153,7 +186,7 @@ public class MovementController : MonoBehaviour
 
     public void GoRight()
     {
-        if (!game.CurrentLevel.CanIGo(new Vector2(transform.position.x, transform.position.y), Direction.Right))
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Right))
         {
             return;
         }
@@ -161,6 +194,7 @@ public class MovementController : MonoBehaviour
         {
             isMoving = true;
             direction = Direction.Right;
+            startPosition = transform.position;
             stopPosition = transform.position + new Vector3(1, 0, 0);
         }
         else
