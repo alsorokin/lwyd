@@ -53,12 +53,8 @@ public class Level
             }
         }
 
-        GameObject genericEnemy = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
-        genericEnemy.transform.position = new Vector3(-1.5f, -1.5f, 1f);
-        Actor geActor = genericEnemy.GetComponent<GenericEnemy>();
-        geActor.SetLevel(this);
-        geActor.fertile = true;
-        AddActor(geActor);
+        SpawnGenericEnemyAt(new Vector2(-1.5f, -1.5f));
+        SpawnGenericEnemyAt(new Vector2(2.5f, 2.5f));
 
         GameObject player = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(0.5f, 0.5f, 0f);
@@ -66,6 +62,16 @@ public class Level
         playerActor.SetLevel(this);
         playerActor.fertile = false;
         AddActor(playerActor);
+    }
+
+    public void SpawnGenericEnemyAt(Vector2 position)
+    {
+        GameObject genericEnemy = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
+        genericEnemy.transform.position = new Vector3(position.x, position.y, 1f);
+        Actor geActor = genericEnemy.GetComponent<GenericEnemy>();
+        geActor.SetLevel(this);
+        geActor.fertile = true;
+        AddActor(geActor);
     }
 
     private int TranslateXToGrid(float x)
@@ -125,7 +131,17 @@ public class Level
         // we assume that the actor is not moving
         // this is a bad thing to assume, maybe we should check it instead
         return CanIGo(myself, myself.gameObject.transform.position, dir);
+    }
 
+    public bool DoIHaveSomewhereToGo(Actor myself)
+    {
+        // we assume that the actor is not moving
+        // this is a bad thing to assume, maybe we should check it instead
+        return 
+            CanIGo(myself, myself.gameObject.transform.position, Direction.Up) ||
+            CanIGo(myself, myself.gameObject.transform.position, Direction.Down) ||
+            CanIGo(myself, myself.gameObject.transform.position, Direction.Left) ||
+            CanIGo(myself, myself.gameObject.transform.position, Direction.Right);
     }
 
     public void AddActor(Actor actor)

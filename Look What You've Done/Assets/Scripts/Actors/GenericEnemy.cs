@@ -46,8 +46,8 @@ class GenericEnemy : Actor
             var rnd = UnityEngine.Random.Range(0, dirs.Count);
             Direction direction = dirs[rnd];
             mc.Go(direction);
-            Suffer(5);
-            if (UnityEngine.Random.Range(0, 3) == 0)
+            //Suffer(5);
+            if (UnityEngine.Random.Range(0, 5) == 0 && myLevel.DoIHaveSomewhereToGo(this))
             {
                 Clone();
             }
