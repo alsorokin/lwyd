@@ -22,7 +22,22 @@ public class Level
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
+                if (h == 0 && w == levelWidth / 2)
+                {
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", w, h, false);
+                    GameObject spawnerObj = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/SpawnerTile"));
+                    spawnerObj.transform.position = new Vector3(TranslateGridToX(w), TranslateGridToY(h), 0.9f);
+
+                    Spawner spawner = spawnerObj.GetComponent<Spawner>();
+                    AddActor(spawner);
+                    spawner.SetLevel(this);
+
+                    GameObject geProto = SpawnGenericEnemyAt(new Vector2(w, h));
+                    geProto.GetComponent<Actor>().enabled = false;
+                    geProto.GetComponent<SpriteRenderer>().enabled = false;
+                    spawner.prototype = geProto;
+                }
+                else if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
                 {
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
                 }
@@ -49,26 +64,25 @@ public class Level
             }
         }
 
-        SpawnGenericEnemyAt(new Vector2(1f, 1f));
-        SpawnGenericEnemyAt(new Vector2(TranslateGridToX(levelWidth - 2), TranslateGridToY(levelHeight - 2)));
-
         GameObject player = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), 0f);
         Actor playerActor = player.GetComponent<TestPlayermoveScript>();
         playerActor.SetLevel(this);
-        playerActor.fertile = false;
+        playerActor.clonable = false;
         AddActor(playerActor);
     }
 
-    public void SpawnGenericEnemyAt(Vector2 position)
+    public GameObject SpawnGenericEnemyAt(Vector2 position)
     {
         GameObject genericEnemy = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
         genericEnemy.transform.position = new Vector3(position.x, position.y, 1f);
         GenericEnemy ge = genericEnemy.GetComponent<GenericEnemy>();
         ge.SetLevel(this);
-        ge.fertile = true;
+        ge.clonable = true;
         ge.health = ge.maxHealth;
         AddActor(ge);
+
+        return genericEnemy;
     }
 
     public int TranslateXToGrid(float x)
@@ -110,6 +124,15 @@ public class Level
         } else
         {
             // Direction.None or unknown direction
+            return false;
+        }
+
+        // edge cases
+        if ((x < 0 && dir == Direction.Left) ||
+            (x >= levelWidth && dir == Direction.Right) ||
+            (y < 0 && dir == Direction.Down) ||
+            (y >= levelHeight && dir == Direction.Up))
+        {
             return false;
         }
 

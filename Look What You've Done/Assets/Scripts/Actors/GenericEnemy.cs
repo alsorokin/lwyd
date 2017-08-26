@@ -10,9 +10,16 @@ class GenericEnemy : Actor
 
     public float moveTimeThreshold = 1f;
 
+    protected override void Start()
+    {
+        base.Start();
+        // start thinking right away!
+        timeElapsed = moveTimeThreshold;
+    }
+
     void FixedUpdate()
     {
-        if (!alive)
+        if (!alive || mc == null)
         {
             return;
         }
@@ -22,7 +29,7 @@ class GenericEnemy : Actor
         // go in random direction every second
         if (timeElapsed >= moveTimeThreshold)
         {
-            if (!fertile)
+            if (!clonable)
             {
                 // All you zombies...
                 Suffer(1);
@@ -54,27 +61,39 @@ class GenericEnemy : Actor
             var rnd = UnityEngine.Random.Range(0, dirs.Count);
             Direction direction = dirs[rnd];
             mc.Go(direction);
-            if (UnityEngine.Random.Range(0, 5) == 0 && myLevel.DoIHaveSomewhereToGo(this))
-            {
-                Clone();
-            }
         }
     }
 
     public override GameObject Clone()
     {
-        if (!fertile)
+        if (!clonable)
         {
             return null;
         }
+
+        // configuring GameObject
         GameObject result = UnityEngine.GameObject.Instantiate(this.gameObject);
+        result.GetComponent<SpriteRenderer>().enabled = true;
+
+        // configuring Actor
         GenericEnemy ge = result.GetComponent<GenericEnemy>();
         ge.SetLevel(myLevel);
         myLevel.AddActor(ge);
         ge.setMaxHealth(maxHealth);
-        ge.health = health;
-        ge.fertile = false;
+        if (alive)
+        {
+            ge.health = health;
+        } else
+        {
+            ge.health = maxHealth;
+        }
+        ge.clonable = false;
         ge.moveTimeThreshold = UnityEngine.Random.Range(0.5f, 1.5f);
+        ge.enabled = true;
+
+        //configuring MovementController
+        MovementController geMc = result.GetComponent<MovementController>();
+        geMc.movementSpeed = UnityEngine.Random.Range(100, 300);
 
         return result;
     }

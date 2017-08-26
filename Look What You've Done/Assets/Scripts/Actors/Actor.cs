@@ -18,7 +18,6 @@ public abstract class Actor : MonoBehaviour
             return health > 0f;
         }
     }
-
     public float health
     {
         get
@@ -31,7 +30,6 @@ public abstract class Actor : MonoBehaviour
             ApplyHealthColor();
         }
     }
-
     public float maxHealth
     {
         get
@@ -43,8 +41,11 @@ public abstract class Actor : MonoBehaviour
             _maxHealth = value;
         }
     }
+    public bool clonable { get; set; }
 
-    void Start()
+    public abstract GameObject Clone();
+
+    protected virtual void Start()
     {
         mc = GetComponent<MovementController>();
         ApplyHealthColor();
@@ -71,6 +72,12 @@ public abstract class Actor : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
     }
 
+    public void Resurrect()
+    {
+        health = maxHealth;
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+    }
+
     public void SetLevel(Level level)
     {
         myLevel = level;
@@ -80,7 +87,4 @@ public abstract class Actor : MonoBehaviour
     {
         this.maxHealth = maxHealth;
     }
-
-    public abstract GameObject Clone();
-    public bool fertile { get; set; }
 }

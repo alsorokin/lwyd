@@ -13,9 +13,9 @@ public class TestPlayermoveScript : Actor
     private float horizontalAxis;
     private float verticalAxis;
 
-    // Use this for initialization
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         MovementController mc = GetComponent<MovementController>();
         if (onMoveRight.GetType() == typeof(NullCommand))
         {
