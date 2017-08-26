@@ -8,9 +8,11 @@ class GenericEnemy : Actor
 {
     private float timeElapsed;
 
+    public float moveTimeThreshold = 1f;
+
     void FixedUpdate()
     {
-        if (!isAlive)
+        if (!alive)
         {
             return;
         }
@@ -18,8 +20,13 @@ class GenericEnemy : Actor
         timeElapsed += Time.deltaTime;
 
         // go in random direction every second
-        if (timeElapsed >= 1)
+        if (timeElapsed >= moveTimeThreshold)
         {
+            if (!fertile)
+            {
+                // All you zombies...
+                Suffer(1);
+            }
             timeElapsed = 0;
             List<Direction> dirs = new List<Direction>();
             if (myLevel.CanIGo(this, Direction.Up))
@@ -40,13 +47,13 @@ class GenericEnemy : Actor
             }
             if (dirs.Count == 0)
             {
-                // relax, there is nowhere to go
+                // I'm suffocating!
+                Suffer(5);
                 return;
             }
             var rnd = UnityEngine.Random.Range(0, dirs.Count);
             Direction direction = dirs[rnd];
             mc.Go(direction);
-            //Suffer(5);
             if (UnityEngine.Random.Range(0, 5) == 0 && myLevel.DoIHaveSomewhereToGo(this))
             {
                 Clone();
@@ -61,12 +68,13 @@ class GenericEnemy : Actor
             return null;
         }
         GameObject result = UnityEngine.GameObject.Instantiate(this.gameObject);
-        Actor geActor = result.GetComponent<GenericEnemy>();
-        geActor.SetLevel(myLevel);
-        myLevel.AddActor(geActor);
-        geActor.setMaxHealth(maxHealth);
-        geActor.SetHealth(health);
-        geActor.fertile = false;
+        GenericEnemy ge = result.GetComponent<GenericEnemy>();
+        ge.SetLevel(myLevel);
+        myLevel.AddActor(ge);
+        ge.setMaxHealth(maxHealth);
+        ge.health = health;
+        ge.fertile = false;
+        ge.moveTimeThreshold = UnityEngine.Random.Range(0.5f, 1.5f);
 
         return result;
     }

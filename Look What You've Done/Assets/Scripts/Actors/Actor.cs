@@ -6,7 +6,12 @@ using UnityEngine;
 
 public abstract class Actor : MonoBehaviour
 {
-    public bool isAlive
+    protected MovementController mc;
+    private float _health = 75;
+    protected float _maxHealth = 100;
+    protected Level myLevel;
+
+    public bool alive
     {
         get
         {
@@ -14,14 +19,35 @@ public abstract class Actor : MonoBehaviour
         }
     }
 
-    protected MovementController mc;
-    protected float health = 75;
-    protected float maxHealth = 100;
-    protected Level myLevel;
+    public float health
+    {
+        get
+        {
+            return _health;
+        }
+        set
+        {
+            _health = value;
+            ApplyHealthColor();
+        }
+    }
+
+    public float maxHealth
+    {
+        get
+        {
+            return _maxHealth;
+        }
+        set
+        {
+            _maxHealth = value;
+        }
+    }
 
     void Start()
     {
         mc = GetComponent<MovementController>();
+        ApplyHealthColor();
     }
 
     public void Suffer (float damage)
@@ -33,6 +59,12 @@ public abstract class Actor : MonoBehaviour
         }
     }
 
+    protected void ApplyHealthColor()
+    {
+        var sr = GetComponent<SpriteRenderer>();
+        sr.color = new Color(1, health / maxHealth, health / maxHealth);
+    }
+
     public void Die()
     {
         health = 0;
@@ -42,11 +74,6 @@ public abstract class Actor : MonoBehaviour
     public void SetLevel(Level level)
     {
         myLevel = level;
-    }
-
-    public void SetHealth(float health)
-    {
-        this.health = health;
     }
 
     public void setMaxHealth(float maxHealth)

@@ -6,20 +6,20 @@ using UnityEngine;
 public class Game : MonoBehaviour {
     public GameObject grassPrefab;
     public Texture2D levelTiles;
-    public Level CurrentLevel
+    public Level currentLevel
     {
         get
         {
-            return currentLevel;
+            return _currentLevel;
         }
     }
 
-    private Level currentLevel;
+    private Level _currentLevel;
 
     // Use this for initialization
     void Start()
     {
-        currentLevel = new Level(7, 7, levelTiles);
+        _currentLevel = new Level(23, 11, levelTiles);
 	}
 
     // Update is called once per frame

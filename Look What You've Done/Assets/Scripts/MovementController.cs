@@ -58,7 +58,7 @@ public class MovementController : MonoBehaviour
             if (collisionTimer >= collisionCheckFrequency)
             {
                 collisionTimer = 0f;
-                if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), startPosition, direction))
+                if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), startPosition, direction))
                 {
                     SwapDirection();
                 }
@@ -100,7 +100,7 @@ public class MovementController : MonoBehaviour
     private void StopMoving()
     {
         // align to grid
-        transform.position = stopPosition;
+        Align();
         // stop
         isMoving = false;
         // then start moving again, if user has already issued a new command
@@ -133,7 +133,7 @@ public class MovementController : MonoBehaviour
 
     public void GoUp()
     {
-        if (!isMoving && game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
+        if (!isMoving && game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
         {
             isMoving = true;
             direction = Direction.Up;
@@ -148,7 +148,7 @@ public class MovementController : MonoBehaviour
 
     public void GoDown()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Down))
+        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Down))
         {
             return;
         }
@@ -167,7 +167,7 @@ public class MovementController : MonoBehaviour
 
     public void GoLeft()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Left))
+        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Left))
         {
             return;
         }
@@ -186,7 +186,7 @@ public class MovementController : MonoBehaviour
 
     public void GoRight()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Right))
+        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Right))
         {
             return;
         }
@@ -206,6 +206,18 @@ public class MovementController : MonoBehaviour
     private float GetMovementScalar(float speed)
     {
         return speed * Time.deltaTime / 100;
+    }
+
+    // align to grid
+    private void Align()
+    {
+        float oldX = gameObject.transform.position.x;
+        float newX = game.currentLevel.TranslateGridToX(game.currentLevel.TranslateXToGrid(oldX));
+
+        float oldY = gameObject.transform.position.y;
+        float newY = game.currentLevel.TranslateGridToY(game.currentLevel.TranslateYToGrid(oldY));
+
+        transform.position = new Vector3(newX, newY, transform.position.z);
     }
 
     void OnGUI() {}

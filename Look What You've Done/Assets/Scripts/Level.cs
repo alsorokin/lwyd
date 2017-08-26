@@ -18,46 +18,42 @@ public class Level
         levelHeight = height;
         levelTiles = new Tile[levelWidth, levelHeight];
 
-        float offsetX = width / 2 - 0.5f;
-        float offsetY = height / 2 - 0.5f;
         for (int w = 0; w < levelWidth; w++)
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                float x = w - offsetX;
-                float y = h - offsetY;
                 if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
                 {
-                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
                 }
                 else if (h == levelHeight / 3 && w == levelWidth / 3)
                 {
-                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
                 }
                 else if (h == 2*levelHeight / 3 && w == 2*levelWidth / 3)
                 {
-                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
                 }
                 else if (h == 2*levelHeight / 3 && w == levelWidth / 3)
                 {
-                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
                 }
                 else if (h == levelHeight / 3 && w == 2*levelWidth / 3)
                 {
-                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", x, y, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
                 }
                 else
                 {
-                    levelTiles[h, w] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", x, y, true);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", w, h, true);
                 }
             }
         }
 
-        SpawnGenericEnemyAt(new Vector2(-1.5f, -1.5f));
-        SpawnGenericEnemyAt(new Vector2(2.5f, 2.5f));
+        SpawnGenericEnemyAt(new Vector2(1f, 1f));
+        SpawnGenericEnemyAt(new Vector2(TranslateGridToX(levelWidth - 2), TranslateGridToY(levelHeight - 2)));
 
         GameObject player = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
-        player.transform.position = new Vector3(0.5f, 0.5f, 0f);
+        player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), 0f);
         Actor playerActor = player.GetComponent<TestPlayermoveScript>();
         playerActor.SetLevel(this);
         playerActor.fertile = false;
@@ -68,20 +64,31 @@ public class Level
     {
         GameObject genericEnemy = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
         genericEnemy.transform.position = new Vector3(position.x, position.y, 1f);
-        Actor geActor = genericEnemy.GetComponent<GenericEnemy>();
-        geActor.SetLevel(this);
-        geActor.fertile = true;
-        AddActor(geActor);
+        GenericEnemy ge = genericEnemy.GetComponent<GenericEnemy>();
+        ge.SetLevel(this);
+        ge.fertile = true;
+        ge.health = ge.maxHealth;
+        AddActor(ge);
     }
 
-    private int TranslateXToGrid(float x)
+    public int TranslateXToGrid(float x)
     {
-        return (int)Math.Round((levelWidth / 2) + x - 0.5f);
+        return (int)Math.Round(x);
     }
 
-    private int TranslateYToGrid(float y)
+    public int TranslateYToGrid(float y)
     {
-        return (int)Math.Round((levelHeight / 2) + y - 0.5f);
+        return (int)Math.Round(y);
+    }
+
+    public float TranslateGridToX(int gridX)
+    {
+        return (float)gridX;
+    }
+
+    public float TranslateGridToY(int gridY)
+    {
+        return (float)gridY;
     }
 
     public bool CanIGo(Actor myself, Vector2 fromPosition, Direction dir)
@@ -113,7 +120,7 @@ public class Level
         {
             foreach (Actor actor in actors)
             {
-                if (actor != myself && actor.isAlive &&
+                if (actor != myself && actor.alive &&
                     TranslateXToGrid(actor.gameObject.transform.position.x) == x &&
                     TranslateYToGrid(actor.gameObject.transform.position.y) == y)
                 {
@@ -148,5 +155,4 @@ public class Level
     {
         actors.Add(actor);
     }
-    
 }
