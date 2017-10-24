@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,7 +45,6 @@ public class Spawner : Actor
 
     public override GameObject Clone()
     {
-        // don't clone the clone masters
-        return null;
+        throw new Exception("Don't you dare to clone the clone masters!");
     }
 }

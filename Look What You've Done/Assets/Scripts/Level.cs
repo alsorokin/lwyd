@@ -66,9 +66,9 @@ public class Level
 
         GameObject player = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), 0f);
-        Actor playerActor = player.GetComponent<TestPlayermoveScript>();
+        Actor playerActor = player.GetComponent<Hero>();
         playerActor.SetLevel(this);
-        playerActor.clonable = false;
+        playerActor.cloneable = false;
         AddActor(playerActor);
     }
 
@@ -78,7 +78,7 @@ public class Level
         genericEnemy.transform.position = new Vector3(position.x, position.y, 1f);
         GenericEnemy ge = genericEnemy.GetComponent<GenericEnemy>();
         ge.SetLevel(this);
-        ge.clonable = true;
+        ge.cloneable = true;
         ge.health = ge.maxHealth;
         AddActor(ge);
 
@@ -141,15 +141,11 @@ public class Level
         // maybe someone else is occupying it?
         if (canGo)
         {
-            foreach (Actor actor in actors)
+            if (actors.Any(a => a != myself && a.alive && 
+                TranslateXToGrid(a.gameObject.transform.position.x) == x &&
+                TranslateYToGrid(a.gameObject.transform.position.y) == y))
             {
-                if (actor != myself && actor.alive &&
-                    TranslateXToGrid(actor.gameObject.transform.position.x) == x &&
-                    TranslateYToGrid(actor.gameObject.transform.position.y) == y)
-                {
-                    canGo = false;
-                }
-
+                canGo = false;
             }
         }
 

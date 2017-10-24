@@ -133,7 +133,11 @@ public class MovementController : MonoBehaviour
 
     public void GoUp()
     {
-        if (!isMoving && game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
+        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
+        {
+            return;
+        }
+        if (!isMoving)
         {
             isMoving = true;
             direction = Direction.Up;
@@ -142,7 +146,7 @@ public class MovementController : MonoBehaviour
         }
         else
         {
-            whereToNext = Direction.Up;
+            whereToNext = direction == Direction.Up ? Direction.None : Direction.Up;
         }
     }
 
@@ -161,7 +165,7 @@ public class MovementController : MonoBehaviour
         }
         else
         {
-            whereToNext = Direction.Down;
+            whereToNext = direction == Direction.Down ? Direction.None : Direction.Down;
         }
     }
 
@@ -180,7 +184,7 @@ public class MovementController : MonoBehaviour
         }
         else
         {
-            whereToNext = Direction.Left;
+            whereToNext = direction == Direction.Left ? Direction.None : Direction.Left;
         }
     }
 
@@ -199,7 +203,7 @@ public class MovementController : MonoBehaviour
         }
         else
         {
-            whereToNext = Direction.Right;
+            whereToNext = direction == Direction.Right ? Direction.None : Direction.Right;
         }
     }
 

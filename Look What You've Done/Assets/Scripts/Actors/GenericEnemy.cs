@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-class GenericEnemy : Actor
+class GenericEnemy : Fighter
 {
     private float timeElapsed;
 
@@ -29,9 +29,9 @@ class GenericEnemy : Actor
         // go in random direction every second
         if (timeElapsed >= moveTimeThreshold)
         {
-            if (!clonable)
+            if (!cloneable)
             {
-                // All you zombies...
+                // --all you zombies--
                 Suffer(1);
             }
             timeElapsed = 0;
@@ -66,7 +66,7 @@ class GenericEnemy : Actor
 
     public override GameObject Clone()
     {
-        if (!clonable)
+        if (!cloneable)
         {
             return null;
         }
@@ -87,7 +87,7 @@ class GenericEnemy : Actor
         {
             ge.health = maxHealth;
         }
-        ge.clonable = false;
+        ge.cloneable = false;
         ge.moveTimeThreshold = UnityEngine.Random.Range(0.5f, 1.5f);
         ge.enabled = true;
 

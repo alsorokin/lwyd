@@ -52,7 +52,9 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Actors\Actor.cs" />
+     <Compile Include="Assets\Scripts\Actors\Fighter.cs" />
      <Compile Include="Assets\Scripts\Actors\GenericEnemy.cs" />
+     <Compile Include="Assets\Scripts\Actors\Hero.cs" />
      <Compile Include="Assets\Scripts\Actors\Spawner.cs" />
      <Compile Include="Assets\Scripts\Commands\Command.cs" />
      <Compile Include="Assets\Scripts\Commands\MoveCommand.cs" />
@@ -62,7 +64,6 @@
      <Compile Include="Assets\Scripts\MovementController.cs" />
      <Compile Include="Assets\Scripts\Tiles\Tile.cs" />
      <Compile Include="Assets\Scripts\Tiles\TileFactory.cs" />
-     <Compile Include="Assets\Test\TestPlayermoveScript.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

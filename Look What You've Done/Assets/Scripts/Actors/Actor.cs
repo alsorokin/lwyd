@@ -41,7 +41,7 @@ public abstract class Actor : MonoBehaviour
             _maxHealth = value;
         }
     }
-    public bool clonable { get; set; }
+    public bool cloneable { get; set; }
 
     public abstract GameObject Clone();
 

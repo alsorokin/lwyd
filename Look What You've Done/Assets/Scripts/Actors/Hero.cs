@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-public class TestPlayermoveScript : Actor
+public class Hero : Fighter
 {
     public Command onMoveRight = new NullCommand();
     public Command onMoveLeft = new NullCommand();
@@ -68,7 +68,6 @@ public class TestPlayermoveScript : Actor
 
     public override GameObject Clone()
     {
-        // can't clone player... yet
-        return null;
+        throw new Exception("Can't clone player... yet.");
     }
 }
