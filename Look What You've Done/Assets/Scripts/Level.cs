@@ -139,11 +139,14 @@ public class Level
         var canGo = levelTiles[x, y].passable;
         // if it's passable, doesn't mean we can go there
         // maybe someone else is occupying it?
+        // so if there's someone, and we are not a fighter, then we can't go
+        // if we're a fighter, we can attack (and this is the same action as moving, so can go)
         if (canGo)
         {
             if (actors.Any(a => a != myself && a.alive && 
                 TranslateXToGrid(a.gameObject.transform.position.x) == x &&
-                TranslateYToGrid(a.gameObject.transform.position.y) == y))
+                TranslateYToGrid(a.gameObject.transform.position.y) == y &&
+                !(myself is Fighter)))
             {
                 canGo = false;
             }

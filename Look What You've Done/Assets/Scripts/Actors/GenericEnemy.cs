@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-class GenericEnemy : Fighter
+class GenericEnemy : Actor
 {
     private float timeElapsed;
 
@@ -26,7 +26,7 @@ class GenericEnemy : Fighter
 
         timeElapsed += Time.deltaTime;
 
-        // go in random direction every second
+        // go random direction every second
         if (timeElapsed >= moveTimeThreshold)
         {
             if (!cloneable)
