@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 
 public enum Direction : sbyte
 {
@@ -58,7 +57,7 @@ public class MovementController : MonoBehaviour
             if (collisionTimer >= collisionCheckFrequency)
             {
                 collisionTimer = 0f;
-                if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), startPosition, direction))
+                if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), startPosition, direction))
                 {
                     SwapDirection();
                 }
@@ -71,6 +70,7 @@ public class MovementController : MonoBehaviour
                     {
                         StopMoving();
                     }
+
                     break;
                 case Direction.Up:
                     transform.position += new Vector3(0, GetMovementScalar(movementSpeed), 0);
@@ -78,6 +78,7 @@ public class MovementController : MonoBehaviour
                     {
                         StopMoving();
                     }
+
                     break;
                 case Direction.Left:
                     transform.position += new Vector3(-GetMovementScalar(movementSpeed), 0, 0);
@@ -85,6 +86,7 @@ public class MovementController : MonoBehaviour
                     {
                         StopMoving();
                     }
+
                     break;
                 case Direction.Right:
                     transform.position += new Vector3(GetMovementScalar(movementSpeed), 0, 0);
@@ -92,6 +94,7 @@ public class MovementController : MonoBehaviour
                     {
                         StopMoving();
                     }
+
                     break;
             }
         }
@@ -133,7 +136,7 @@ public class MovementController : MonoBehaviour
 
     public void GoUp()
     {
-        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
         {
             return;
         }
@@ -152,7 +155,7 @@ public class MovementController : MonoBehaviour
 
     public void GoDown()
     {
-        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Down))
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Down))
         {
             return;
         }
@@ -171,7 +174,7 @@ public class MovementController : MonoBehaviour
 
     public void GoLeft()
     {
-        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Left))
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Left))
         {
             return;
         }
@@ -190,7 +193,7 @@ public class MovementController : MonoBehaviour
 
     public void GoRight()
     {
-        if (!game.currentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Right))
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Right))
         {
             return;
         }
@@ -216,10 +219,10 @@ public class MovementController : MonoBehaviour
     private void Align()
     {
         float oldX = gameObject.transform.position.x;
-        float newX = game.currentLevel.TranslateGridToX(game.currentLevel.TranslateXToGrid(oldX));
+        float newX = game.CurrentLevel.TranslateGridToX(game.CurrentLevel.TranslateXToGrid(oldX));
 
         float oldY = gameObject.transform.position.y;
-        float newY = game.currentLevel.TranslateGridToY(game.currentLevel.TranslateYToGrid(oldY));
+        float newY = game.CurrentLevel.TranslateGridToY(game.CurrentLevel.TranslateYToGrid(oldY));
 
         transform.position = new Vector3(newX, newY, transform.position.z);
     }

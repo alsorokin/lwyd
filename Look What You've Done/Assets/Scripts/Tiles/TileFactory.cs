@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 class TileFactory
@@ -10,6 +7,7 @@ class TileFactory
     private Dictionary<string, GameObject> prefabs = new Dictionary<string, GameObject>();
 
     private TileFactory() { }
+
     public static TileFactory Instance
     {
         get
@@ -18,6 +16,7 @@ class TileFactory
             {
                 instance = new TileFactory();
             }
+
             return instance;
         }
     }
@@ -28,11 +27,13 @@ class TileFactory
         if (prefabs.ContainsKey(resourcePath))
         {
             prefab = prefabs[resourcePath];
-        } else
+        }
+        else
         {
             prefab = Resources.Load<GameObject>(resourcePath);
             prefabs.Add(resourcePath, prefab);
         }
+
         return new Tile(prefab, new Vector3(x, y, 2), passable);
     }
 }

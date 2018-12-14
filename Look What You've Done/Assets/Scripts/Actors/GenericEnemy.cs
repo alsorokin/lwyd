@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 class GenericEnemy : Actor
@@ -19,7 +16,7 @@ class GenericEnemy : Actor
 
     void FixedUpdate()
     {
-        if (!alive || mc == null)
+        if (!Alive || mc == null)
         {
             return;
         }
@@ -29,36 +26,42 @@ class GenericEnemy : Actor
         // go random direction every second
         if (timeElapsed >= moveTimeThreshold)
         {
-            if (!cloneable)
+            if (!Cloneable)
             {
                 // --all you zombies--
                 Suffer(1);
             }
+
             timeElapsed = 0;
             List<Direction> dirs = new List<Direction>();
             if (myLevel.CanIGo(this, Direction.Up))
             {
                 dirs.Add(Direction.Up);
             }
+
             if (myLevel.CanIGo(this, Direction.Down))
             {
                 dirs.Add(Direction.Down);
             }
+
             if (myLevel.CanIGo(this, Direction.Left))
             {
                 dirs.Add(Direction.Left);
             }
+
             if (myLevel.CanIGo(this, Direction.Right))
             {
                 dirs.Add(Direction.Right);
             }
+
             if (dirs.Count == 0)
             {
                 // I'm suffocating!
                 Suffer(5);
                 return;
             }
-            var rnd = UnityEngine.Random.Range(0, dirs.Count);
+
+            var rnd = Random.Range(0, dirs.Count);
             Direction direction = dirs[rnd];
             mc.Go(direction);
         }
@@ -66,7 +69,7 @@ class GenericEnemy : Actor
 
     public override GameObject Clone()
     {
-        if (!cloneable)
+        if (!Cloneable)
         {
             return null;
         }
@@ -79,15 +82,17 @@ class GenericEnemy : Actor
         GenericEnemy ge = result.GetComponent<GenericEnemy>();
         ge.SetLevel(myLevel);
         myLevel.AddActor(ge);
-        ge.setMaxHealth(maxHealth);
-        if (alive)
+        ge.SetMaxHealth(MaxHealth);
+        if (Alive)
         {
-            ge.health = health;
-        } else
-        {
-            ge.health = maxHealth;
+            ge.Health = Health;
         }
-        ge.cloneable = false;
+        else
+        {
+            ge.Health = MaxHealth;
+        }
+
+        ge.Cloneable = false;
         ge.moveTimeThreshold = UnityEngine.Random.Range(0.5f, 1.5f);
         ge.enabled = true;
 

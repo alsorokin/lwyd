@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 public class Level
@@ -18,6 +17,7 @@ public class Level
         levelHeight = height;
         levelTiles = new Tile[levelWidth, levelHeight];
 
+        // A stub of level generation
         for (int w = 0; w < levelWidth; w++)
         {
             for (int h = 0; h < levelHeight; h++)
@@ -35,7 +35,7 @@ public class Level
                     GameObject geProto = SpawnGenericEnemyAt(new Vector2(w, h));
                     geProto.GetComponent<Actor>().enabled = false;
                     geProto.GetComponent<SpriteRenderer>().enabled = false;
-                    spawner.prototype = geProto;
+                    spawner.Prototype = geProto;
                 }
                 else if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
                 {
@@ -64,11 +64,11 @@ public class Level
             }
         }
 
-        GameObject player = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
+        GameObject player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), 0f);
         Actor playerActor = player.GetComponent<Hero>();
         playerActor.SetLevel(this);
-        playerActor.cloneable = false;
+        playerActor.Cloneable = false;
         AddActor(playerActor);
     }
 
@@ -78,8 +78,8 @@ public class Level
         genericEnemy.transform.position = new Vector3(position.x, position.y, 1f);
         GenericEnemy ge = genericEnemy.GetComponent<GenericEnemy>();
         ge.SetLevel(this);
-        ge.cloneable = true;
-        ge.health = ge.maxHealth;
+        ge.Cloneable = true;
+        ge.Health = ge.MaxHealth;
         AddActor(ge);
 
         return genericEnemy;
@@ -97,12 +97,12 @@ public class Level
 
     public float TranslateGridToX(int gridX)
     {
-        return (float)gridX;
+        return gridX;
     }
 
     public float TranslateGridToY(int gridY)
     {
-        return (float)gridY;
+        return gridY;
     }
 
     public bool CanIGo(Actor myself, Vector2 fromPosition, Direction dir)
@@ -112,16 +112,20 @@ public class Level
         if (dir == Direction.Left)
         {
             x--;
-        } else if (dir == Direction.Top)
+        }
+        else if (dir == Direction.Top)
         {
             y++;
-        } else if (dir == Direction.Right)
+        }
+        else if (dir == Direction.Right)
         {
             x++;
-        } else if (dir == Direction.Down)
+        }
+        else if (dir == Direction.Down)
         {
             y--;
-        } else
+        }
+        else
         {
             // Direction.None or unknown direction
             return false;
@@ -143,7 +147,7 @@ public class Level
         // if we're a fighter, we can attack (and this is the same action as moving, so can go)
         if (canGo)
         {
-            if (actors.Any(a => a != myself && a.alive && 
+            if (actors.Any(a => a != myself && a.Alive && 
                 TranslateXToGrid(a.gameObject.transform.position.x) == x &&
                 TranslateYToGrid(a.gameObject.transform.position.y) == y &&
                 !(myself is Fighter)))
@@ -175,6 +179,9 @@ public class Level
 
     public void AddActor(Actor actor)
     {
-        actors.Add(actor);
+        if (!actors.Contains(actor))
+        {
+            actors.Add(actor);
+        }
     }
 }

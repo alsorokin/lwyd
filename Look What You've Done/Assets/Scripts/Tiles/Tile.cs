@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 class Tile
 {
@@ -14,6 +10,6 @@ class Tile
     public Tile(GameObject prefab, Vector3 position, bool passable)
     {
         this.passable = passable;
-        gameObject = UnityEngine.Object.Instantiate(prefab, position, zeroRotation);
+        gameObject = Object.Instantiate(prefab, position, zeroRotation);
     }
 }

@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : Actor
 {
 
     private float timeElapsed;
-    private GameObject _prototype;
+    private GameObject prototype;
     private Actor actor;
 
-    public GameObject prototype
+    public GameObject Prototype
     {
         get
         {
-            return _prototype;
+            return prototype;
         }
         set
         {
-            _prototype = value;
-            actor = _prototype.GetComponent<Actor>();
+            prototype = value;
+            actor = prototype.GetComponent<Actor>();
         }
     }
     public float cloneInterval = 5.0f;

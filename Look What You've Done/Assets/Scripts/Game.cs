@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Game : MonoBehaviour {
     public GameObject grassPrefab;
     public Texture2D levelTiles;
-    public Level currentLevel
-    {
-        get
-        {
-            return _currentLevel;
-        }
-    }
 
-    private Level _currentLevel;
+    public Level CurrentLevel { get; private set; }
 
     // Use this for initialization
     void Start()
     {
-        _currentLevel = new Level(23, 11, levelTiles);
+        CurrentLevel = new Level(19, 19, levelTiles);
 	}
 
     // Update is called once per frame

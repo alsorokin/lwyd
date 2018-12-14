@@ -21,14 +21,17 @@ public class Hero : Fighter
         {
             onMoveRight = new MoveCommand(mc, Direction.Right);
         }
+
         if (onMoveLeft.GetType() == typeof(NullCommand))
         {
             onMoveLeft = new MoveCommand(mc, Direction.Left);
         }
+
         if (onMoveUp.GetType() == typeof(NullCommand))
         {
             onMoveUp = new MoveCommand(mc, Direction.Up);
         }
+
         if (onMoveDown.GetType() == typeof(NullCommand))
         {
             onMoveDown = new MoveCommand(mc, Direction.Down);
@@ -43,21 +46,25 @@ public class Hero : Fighter
         {
             return;
         }
+
         if (Math.Abs(horizontalAxis) > Math.Abs(verticalAxis))
         {
             if (horizontalAxis < 0)
             {
                 onMoveLeft.Execute();
-            } else
+            }
+            else
             {
                 onMoveRight.Execute();
             }
-        } else
+        }
+        else
         {
             if (verticalAxis < 0)
             {
                 onMoveDown.Execute();
-            } else
+            }
+            else
             {
                 onMoveUp.Execute();
             }

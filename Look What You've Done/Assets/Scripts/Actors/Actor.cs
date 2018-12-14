@@ -1,47 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class Actor : MonoBehaviour
 {
     protected MovementController mc;
-    private float _health = 75;
-    protected float _maxHealth = 100;
+    private float health = 75;
     protected Level myLevel;
 
-    public bool alive
+    public bool Alive
     {
         get
         {
-            return health > 0f;
+            return Health > 0f;
         }
     }
-    public float health
+
+    public float Health
     {
         get
         {
-            return _health;
+            return health;
         }
         set
         {
-            _health = value;
+            health = value;
             ApplyHealthColor();
         }
     }
-    public float maxHealth
-    {
-        get
-        {
-            return _maxHealth;
-        }
-        set
-        {
-            _maxHealth = value;
-        }
-    }
-    public bool cloneable { get; set; }
+
+    public float MaxHealth { get; set; } = 100;
+
+    public bool Cloneable { get; set; }
 
     public abstract GameObject Clone();
 
@@ -53,8 +41,8 @@ public abstract class Actor : MonoBehaviour
 
     public void Suffer (float damage)
     {
-        health -= damage;
-        if (health <= 0f)
+        Health -= damage;
+        if (Health <= 0f)
         {
             Die();
         }
@@ -63,18 +51,18 @@ public abstract class Actor : MonoBehaviour
     protected void ApplyHealthColor()
     {
         var sr = GetComponent<SpriteRenderer>();
-        sr.color = new Color(1, health / maxHealth, health / maxHealth);
+        sr.color = new Color(1, Health / MaxHealth, Health / MaxHealth);
     }
 
     public void Die()
     {
-        health = 0;
+        Health = 0;
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     public void Resurrect()
     {
-        health = maxHealth;
+        Health = MaxHealth;
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
     }
 
@@ -83,8 +71,8 @@ public abstract class Actor : MonoBehaviour
         myLevel = level;
     }
 
-    public void setMaxHealth(float maxHealth)
+    public void SetMaxHealth(float maxHealth)
     {
-        this.maxHealth = maxHealth;
+        MaxHealth = maxHealth;
     }
 }
