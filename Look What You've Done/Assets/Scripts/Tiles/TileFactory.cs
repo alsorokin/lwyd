@@ -21,7 +21,7 @@ class TileFactory
         }
     }
 
-    public Tile CreateTileFromResourse(string resourcePath, float x, float y, bool passable)
+    public Tile CreateTileFromResourse(string resourcePath, float x, float y, float scale, bool passable)
     {
         GameObject prefab;
         if (prefabs.ContainsKey(resourcePath))
@@ -34,6 +34,9 @@ class TileFactory
             prefabs.Add(resourcePath, prefab);
         }
 
-        return new Tile(prefab, new Vector3(x, y, 2), passable);
+        var result = new Tile(prefab, new Vector3(x, y, 2), passable);
+        var localScale = result.gameObject.transform.localScale;
+        result.gameObject.transform.localScale = new Vector3(localScale.x * scale, localScale.y * scale, localScale.z);
+        return result;
     }
 }

@@ -75,7 +75,7 @@ class GenericEnemy : Actor
         }
 
         // configuring GameObject
-        GameObject result = UnityEngine.GameObject.Instantiate(this.gameObject);
+        GameObject result = GameObject.Instantiate(this.gameObject);
         result.GetComponent<SpriteRenderer>().enabled = true;
 
         // configuring Actor

@@ -145,7 +145,7 @@ public class MovementController : MonoBehaviour
             isMoving = true;
             direction = Direction.Up;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(0, 1, 0);
+            stopPosition = transform.position + new Vector3(0, game.CurrentLevel.TileScale, 0);
         }
         else
         {
@@ -164,7 +164,7 @@ public class MovementController : MonoBehaviour
             isMoving = true;
             direction = Direction.Down;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(0, -1, 0);
+            stopPosition = transform.position + new Vector3(0, -game.CurrentLevel.TileScale, 0);
         }
         else
         {
@@ -183,7 +183,7 @@ public class MovementController : MonoBehaviour
             isMoving = true;
             direction = Direction.Left;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(-1, 0, 0);
+            stopPosition = transform.position + new Vector3(-game.CurrentLevel.TileScale, 0, 0);
         }
         else
         {
@@ -202,7 +202,7 @@ public class MovementController : MonoBehaviour
             isMoving = true;
             direction = Direction.Right;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(1, 0, 0);
+            stopPosition = transform.position + new Vector3(game.CurrentLevel.TileScale, 0, 0);
         }
         else
         {
@@ -212,7 +212,7 @@ public class MovementController : MonoBehaviour
 
     private float GetMovementScalar(float speed)
     {
-        return speed * Time.deltaTime / 100;
+        return speed * game.CurrentLevel.TileScale * Time.deltaTime / 100;
     }
 
     // align to grid

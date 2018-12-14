@@ -9,6 +9,8 @@ public class Level
     private int levelHeight;
     private List<Actor> actors = new List<Actor>();
     private Tile[,] levelTiles;
+    // FIXME: const at the time because it's not working properly
+    public readonly float TileScale = 1f;
 
     public Level(int width, int height, Texture2D tilesTexture)
     {
@@ -24,58 +26,64 @@ public class Level
             {
                 if (h == 0 && w == levelWidth / 2)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", w, h, false);
-                    GameObject spawnerObj = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/SpawnerTile"));
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
+                    GameObject spawnerObj = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/SpawnerTile"));
+                    var spawnerScale = spawnerObj.transform.localScale;
+                    spawnerObj.transform.localScale = new Vector3(spawnerScale.x * TileScale, spawnerScale.y * TileScale, spawnerScale.z);
                     spawnerObj.transform.position = new Vector3(TranslateGridToX(w), TranslateGridToY(h), 0.9f);
 
                     Spawner spawner = spawnerObj.GetComponent<Spawner>();
                     AddActor(spawner);
                     spawner.SetLevel(this);
 
-                    GameObject geProto = SpawnGenericEnemyAt(new Vector2(w, h));
+                    GameObject geProto = SpawnGenericEnemyAt(w, h);
                     geProto.GetComponent<Actor>().enabled = false;
                     geProto.GetComponent<SpriteRenderer>().enabled = false;
                     spawner.Prototype = geProto;
                 }
                 else if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
                 else if (h == levelHeight / 3 && w == levelWidth / 3)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
                 else if (h == 2*levelHeight / 3 && w == 2*levelWidth / 3)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
                 else if (h == 2*levelHeight / 3 && w == levelWidth / 3)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
                 else if (h == levelHeight / 3 && w == 2*levelWidth / 3)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", w, h, false);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
                 else
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", w, h, true);
+                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, true);
                 }
             }
         }
 
         GameObject player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), 0f);
+        var playerLocalScale = player.transform.localScale;
+        player.transform.localScale = new Vector3(playerLocalScale.x * TileScale, playerLocalScale.y * TileScale, playerLocalScale.z);
         Actor playerActor = player.GetComponent<Hero>();
         playerActor.SetLevel(this);
         playerActor.Cloneable = false;
         AddActor(playerActor);
     }
 
-    public GameObject SpawnGenericEnemyAt(Vector2 position)
+    public GameObject SpawnGenericEnemyAt(int gridX, int gridY)
     {
-        GameObject genericEnemy = UnityEngine.GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
-        genericEnemy.transform.position = new Vector3(position.x, position.y, 1f);
+        GameObject genericEnemy = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
+        genericEnemy.transform.position = new Vector3(TranslateGridToX(gridX), TranslateGridToY(gridY), 1f);
+        var localScale = genericEnemy.transform.localScale;
+        genericEnemy.transform.localScale = new Vector3(localScale.x * TileScale, localScale.y * TileScale, localScale.z);
         GenericEnemy ge = genericEnemy.GetComponent<GenericEnemy>();
         ge.SetLevel(this);
         ge.Cloneable = true;
@@ -87,22 +95,22 @@ public class Level
 
     public int TranslateXToGrid(float x)
     {
-        return (int)Math.Round(x);
+        return (int)Math.Round(x / TileScale);
     }
 
     public int TranslateYToGrid(float y)
     {
-        return (int)Math.Round(y);
+        return (int)Math.Round(y / TileScale);
     }
 
     public float TranslateGridToX(int gridX)
     {
-        return gridX;
+        return gridX * TileScale;
     }
 
     public float TranslateGridToY(int gridY)
     {
-        return gridY;
+        return gridY * TileScale;
     }
 
     public bool CanIGo(Actor myself, Vector2 fromPosition, Direction dir)
