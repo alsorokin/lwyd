@@ -9,8 +9,7 @@ public class Level
     private int levelHeight;
     private List<Actor> actors = new List<Actor>();
     private Tile[,] levelTiles;
-    // FIXME: const at the time because it's not working properly
-    public readonly float TileScale = 1f;
+    public readonly float TileScale = 0.7f;
 
     public Level(int width, int height, Texture2D tilesTexture)
     {
@@ -68,6 +67,7 @@ public class Level
             }
         }
 
+        // Adding player
         GameObject player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), 0f);
         var playerLocalScale = player.transform.localScale;
@@ -76,6 +76,14 @@ public class Level
         playerActor.SetLevel(this);
         playerActor.Cloneable = false;
         AddActor(playerActor);
+
+        // Adding camera and its controller
+        var cameraObj = new GameObject();
+        var playerCamera = cameraObj.AddComponent<Camera>();
+        cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
+        playerCamera.orthographic = true;
+        cameraObj.AddComponent<CameraMovementController>();
+        cameraObj.GetComponent<CameraMovementController>().player = player;
     }
 
     public GameObject SpawnGenericEnemyAt(int gridX, int gridY)
