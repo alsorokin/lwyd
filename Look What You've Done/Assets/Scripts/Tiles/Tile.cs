@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class Tile
+public class Tile
 {
     public bool passable;
     public GameObject gameObject;

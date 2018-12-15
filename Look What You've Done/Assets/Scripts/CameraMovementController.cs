@@ -3,9 +3,26 @@
 class CameraMovementController : MonoBehaviour
 {
     public GameObject player;
-    public float xThreshold = 4;
-    public float yThreshold = 2;
+    public Level level;
+
+    public float XThreshold
+    {
+        get
+        {
+            return Screen.width / 500 / level.TileScale;
+        }
+    }
+
+    public float YThreshold
+    {
+        get
+        {
+            return Screen.height / 500 / level.TileScale;
+        }
+    }
+
     private Camera Camera => gameObject.GetComponent<Camera>();
+
     private float PlayerX {
         get
         {
@@ -53,26 +70,66 @@ class CameraMovementController : MonoBehaviour
         }
     }
 
+    private bool CanMoveCameraLeft()
+    {
+        if (this.Camera.WorldToScreenPoint(level.GetLeftmostTile().gameObject.transform.position).x < 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CanMoveCameraRight()
+    {
+        if (this.Camera.WorldToScreenPoint(level.GetRightmostTile().gameObject.transform.position).x > this.Camera.pixelWidth)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CanMoveCameraUp()
+    {
+        if (this.Camera.WorldToScreenPoint(level.GetTopmostTile().gameObject.transform.position).y > this.Camera.pixelHeight)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CanMoveCameraDown()
+    {
+        if (this.Camera.WorldToScreenPoint(level.GetBottommostTile().gameObject.transform.position).y < 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private void FixedUpdate()
     {
-        if (PlayerX > CameraX + xThreshold)
+        if ((PlayerX > CameraX + XThreshold) && CanMoveCameraRight())
         {
-            CameraX = PlayerX - xThreshold;
+            CameraX = PlayerX - XThreshold;
         }
 
-        if (PlayerX < CameraX - xThreshold)
+        if ((PlayerX < CameraX - XThreshold) && CanMoveCameraLeft())
         {
-            CameraX = PlayerX + xThreshold;
+            CameraX = PlayerX + XThreshold;
         }
 
-        if (PlayerY > CameraY + yThreshold)
+        if ((PlayerY > CameraY + YThreshold) && CanMoveCameraUp())
         {
-            CameraY = PlayerY - yThreshold;
+            CameraY = PlayerY - YThreshold;
         }
 
-        if (PlayerY < CameraY - yThreshold)
+        if ((PlayerY < CameraY - YThreshold) && CanMoveCameraDown())
         {
-            CameraY = PlayerY + yThreshold;
+            CameraY = PlayerY + YThreshold;
         }
     }
 }

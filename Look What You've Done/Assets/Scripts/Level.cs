@@ -9,7 +9,27 @@ public class Level
     private int levelHeight;
     private List<Actor> actors = new List<Actor>();
     private Tile[,] levelTiles;
-    public readonly float TileScale = 0.7f;
+    public readonly float TileScale = 2.7f;
+
+    public Tile GetLeftmostTile()
+    {
+        return levelTiles[0, 0];
+    }
+
+    public Tile GetRightmostTile()
+    {
+        return levelTiles[levelWidth - 1, levelHeight - 1];
+    }
+
+    public Tile GetTopmostTile()
+    {
+        return GetRightmostTile();
+    }
+
+    public Tile GetBottommostTile()
+    {
+        return GetLeftmostTile();
+    }
 
     public Level(int width, int height, Texture2D tilesTexture)
     {
@@ -83,7 +103,9 @@ public class Level
         cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
         playerCamera.orthographic = true;
         cameraObj.AddComponent<CameraMovementController>();
-        cameraObj.GetComponent<CameraMovementController>().player = player;
+        var cameraController = cameraObj.GetComponent<CameraMovementController>();
+        cameraController.player = player;
+        cameraController.level = this;
     }
 
     public GameObject SpawnGenericEnemyAt(int gridX, int gridY)
