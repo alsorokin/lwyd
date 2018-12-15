@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{2771EA8F-00B9-2375-5D4A-A88F0B1DC034}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -60,7 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Plugins\Editor\VSCode.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Projects/look-what-youve-done/Look What You've Done/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
