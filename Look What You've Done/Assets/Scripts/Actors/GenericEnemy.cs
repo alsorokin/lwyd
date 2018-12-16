@@ -4,15 +4,39 @@ using Direction = MovementController.Direction;
 
 class GenericEnemy : Actor
 {
-    private float timeElapsed;
+    public Command onMoveRight = new NullCommand();
+    public Command onMoveLeft = new NullCommand();
+    public Command onMoveUp = new NullCommand();
+    public Command onMoveDown = new NullCommand();
 
     public float moveTimeThreshold = 1f;
+
+    private float timeElapsed;
+    private Direction currentDirection = Direction.None;
 
     protected override void Start()
     {
         base.Start();
-        // start thinking right away!
-        timeElapsed = moveTimeThreshold;
+
+        if (onMoveRight.GetType() == typeof(NullCommand))
+        {
+            onMoveRight = new MoveCommand(mc, Direction.Right);
+        }
+
+        if (onMoveLeft.GetType() == typeof(NullCommand))
+        {
+            onMoveLeft = new MoveCommand(mc, Direction.Left);
+        }
+
+        if (onMoveUp.GetType() == typeof(NullCommand))
+        {
+            onMoveUp = new MoveCommand(mc, Direction.Up);
+        }
+
+        if (onMoveDown.GetType() == typeof(NullCommand))
+        {
+            onMoveDown = new MoveCommand(mc, Direction.Down);
+        }
     }
 
     void FixedUpdate()
@@ -63,8 +87,24 @@ class GenericEnemy : Actor
             }
 
             var rnd = Random.Range(0, dirs.Count);
-            Direction direction = dirs[rnd];
-            mc.Go(direction);
+            currentDirection = dirs[rnd];
+        }
+
+        // We have to call Move() every frame
+        switch (currentDirection)
+        {
+            case Direction.Up:
+                onMoveUp.Execute();
+                break;
+            case Direction.Down:
+                onMoveDown.Execute();
+                break;
+            case Direction.Left:
+                onMoveLeft.Execute();
+                break;
+            case Direction.Right:
+                onMoveRight.Execute();
+                break;
         }
     }
 
@@ -94,12 +134,12 @@ class GenericEnemy : Actor
         }
 
         ge.Cloneable = false;
-        ge.moveTimeThreshold = UnityEngine.Random.Range(0.5f, 1.5f);
+        ge.moveTimeThreshold = Random.Range(0.5f, 1.5f);
         ge.enabled = true;
 
         //configuring MovementController
-        GridMovementController geMc = result.GetComponent<GridMovementController>();
-        geMc.movementSpeed = UnityEngine.Random.Range(100, 300);
+        var geMc = result.GetComponent<MovementController>();
+        geMc.movementSpeed = Random.Range(100, 300);
 
         return result;
     }

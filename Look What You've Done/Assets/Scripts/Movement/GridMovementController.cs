@@ -13,6 +13,38 @@ public class GridMovementController : MovementController
 
     private float collisionTimer = 0f;
 
+    public override bool IsMovingUp
+    {
+        get
+        {
+            return this.isMoving && this.direction == Direction.Up;
+        }
+    }
+
+    public override bool IsMovingDown
+    {
+        get
+        {
+            return this.isMoving && this.direction == Direction.Down;
+        }
+    }
+
+    public override bool IsMovingLeft
+    {
+        get
+        {
+            return this.isMoving && this.direction == Direction.Left;
+        }
+    }
+
+    public override bool IsMovingRight
+    {
+        get
+        {
+            return this.isMoving && this.direction == Direction.Right;
+        }
+    }
+
     // Use this for initialization
     protected override void Start()
     {

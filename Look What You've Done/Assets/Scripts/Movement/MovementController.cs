@@ -10,6 +10,28 @@ public abstract class MovementController : MonoBehaviour
     protected Game game;
     public float movementSpeed = 333;
 
+    public abstract bool IsMovingRight { get; }
+    public abstract bool IsMovingLeft { get; }
+    public abstract bool IsMovingUp { get; }
+    public abstract bool IsMovingDown { get; }
+
+    public bool IsMoving(Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.Up:
+                return IsMovingUp;
+            case Direction.Down:
+                return IsMovingDown;
+            case Direction.Left:
+                return IsMovingLeft;
+            case Direction.Right:
+                return IsMovingRight;
+            default:
+                return false;
+        }
+    }
+
     protected virtual void Start()
     {
         game = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
@@ -24,6 +46,7 @@ public abstract class MovementController : MonoBehaviour
     public abstract void GoRight();
 
     public abstract void StopMoving();
+
 
     public void Go(Direction dir)
     {

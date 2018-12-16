@@ -6,10 +6,43 @@ class FreeMovementController : MovementController
 
     private Vector2 movement = Vector2.zero;
 
+    public override bool IsMovingRight
+    {
+        get
+        {
+            return movement.x > 0;
+        }
+    }
+
+    public override bool IsMovingLeft
+    {
+        get
+        {
+            return movement.x < 0;
+        }
+    }
+
+    public override bool IsMovingUp
+    {
+        get
+        {
+            return movement.y > 0;
+        }
+    }
+
+    public override bool IsMovingDown
+    {
+        get
+        {
+            return movement.y < 0;
+        }
+    }
+
     private void FixedUpdate()
     {
         transform.position += new Vector3(GetMovementScalar() * movement.x,
-                                          GetMovementScalar() * movement.y, 0);
+                                          GetMovementScalar() * movement.y, 
+                                          0);
         StopMoving();
     }
 
@@ -17,7 +50,7 @@ class FreeMovementController : MovementController
     {
         var actor = gameObject.GetComponent<Actor>();
         var fromPosition = new Vector3(actor.transform.position.x, 
-                                       actor.transform.position.y - (this.game.CurrentLevel.TileScale / 2), 
+                                       actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f), 
                                        0);
         if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Up))
         {
@@ -31,7 +64,7 @@ class FreeMovementController : MovementController
     {
         var actor = gameObject.GetComponent<Actor>();
         var fromPosition = new Vector3(actor.transform.position.x,
-                                       actor.transform.position.y + (this.game.CurrentLevel.TileScale / 2),
+                                       actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        0);
         if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Down))
         {
@@ -44,7 +77,7 @@ class FreeMovementController : MovementController
     public override void GoLeft()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x + (this.game.CurrentLevel.TileScale / 2),
+        var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y,
                                        0);
         if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Left))
@@ -58,7 +91,7 @@ class FreeMovementController : MovementController
     public override void GoRight()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x - (this.game.CurrentLevel.TileScale / 2),
+        var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y,
                                        0);
         if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Right))

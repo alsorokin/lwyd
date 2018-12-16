@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 using System;
+using Direction = MovementController.Direction;
 
 public class Hero : Fighter
 {
+    public Command onMoveRight = new NullCommand();
+    public Command onMoveLeft = new NullCommand();
+    public Command onMoveUp = new NullCommand();
+    public Command onMoveDown = new NullCommand();
+
     private const float inputThreshold = 0.001f;
 
     private float horizontalAxis;
@@ -11,6 +17,26 @@ public class Hero : Fighter
     protected override void Start()
     {
         base.Start();
+
+        if (onMoveRight.GetType() == typeof(NullCommand))
+        {
+            onMoveRight = new MoveCommand(mc, Direction.Right);
+        }
+
+        if (onMoveLeft.GetType() == typeof(NullCommand))
+        {
+            onMoveLeft = new MoveCommand(mc, Direction.Left);
+        }
+
+        if (onMoveUp.GetType() == typeof(NullCommand))
+        {
+            onMoveUp = new MoveCommand(mc, Direction.Up);
+        }
+
+        if (onMoveDown.GetType() == typeof(NullCommand))
+        {
+            onMoveDown = new MoveCommand(mc, Direction.Down);
+        }
     }
     void FixedUpdate()
     {
@@ -21,11 +47,11 @@ public class Hero : Fighter
         {
             if (horizontalAxis > 0)
             {
-                mc.GoRight();
+                onMoveRight.Execute();
             }
             else
             {
-                mc.GoLeft();
+                onMoveLeft.Execute();
             }
         }
 
@@ -33,11 +59,11 @@ public class Hero : Fighter
         {
             if (verticalAxis > 0)
             {
-                mc.GoUp();
+                onMoveUp.Execute();
             }
             else
             {
-                mc.GoDown();
+                onMoveDown.Execute();
             }
         }
     }

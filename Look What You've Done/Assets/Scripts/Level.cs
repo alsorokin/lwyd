@@ -44,19 +44,20 @@ public class Level
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                if (h == 0 && w == levelWidth / 2)
+                if ((h == 0 && w == levelWidth / 2) || (h == levelHeight - 1 && w == levelWidth / 2))
                 {
+                    var isFree = h == 0 ? false : true;
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
-                    GameObject spawnerObj = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/SpawnerTile"));
+                    var spawnerObj = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/SpawnerTile"));
                     var spawnerScale = spawnerObj.transform.localScale;
                     spawnerObj.transform.localScale = new Vector3(spawnerScale.x * TileScale, spawnerScale.y * TileScale, spawnerScale.z);
                     spawnerObj.transform.position = new Vector3(TranslateGridToX(w), TranslateGridToY(h), 0.9f);
 
-                    Spawner spawner = spawnerObj.GetComponent<Spawner>();
+                    var spawner = spawnerObj.GetComponent<Spawner>();
                     AddActor(spawner);
                     spawner.SetLevel(this);
 
-                    GameObject geProto = SpawnGenericEnemyAt(w, h);
+                    var geProto = SpawnGenericEnemyAt(w, h, isFree);
                     geProto.GetComponent<Actor>().enabled = false;
                     geProto.GetComponent<SpriteRenderer>().enabled = false;
                     spawner.Prototype = geProto;
@@ -69,15 +70,15 @@ public class Level
                 {
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
-                else if (h == 2*levelHeight / 3 && w == 2*levelWidth / 3)
+                else if (h == 2 * levelHeight / 3 && w == 2 * levelWidth / 3)
                 {
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
-                else if (h == 2*levelHeight / 3 && w == levelWidth / 3)
+                else if (h == 2 * levelHeight / 3 && w == levelWidth / 3)
                 {
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
-                else if (h == levelHeight / 3 && w == 2*levelWidth / 3)
+                else if (h == levelHeight / 3 && w == 2 * levelWidth / 3)
                 {
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
@@ -109,13 +110,28 @@ public class Level
         cameraController.level = this;
     }
 
-    public GameObject SpawnGenericEnemyAt(int gridX, int gridY)
+    // TODO: Use it or remove it
+    public GameObject SpawnGenericEnemyAtRandomPoint(List<Tuple<int, int>> points, bool isFree)
     {
-        GameObject genericEnemy = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/GenericEnemyTile"));
+        foreach (var p in points)
+        {
+            if (!this.levelTiles[p.Item1, p.Item2].passable)
+            {
+                points.Remove(p);
+            }
+        }
+
+        var chosenPoint = points.ElementAt(UnityEngine.Random.Range(0, points.Count));
+        return SpawnGenericEnemyAt(chosenPoint.Item1, chosenPoint.Item2, isFree);
+    }
+
+    public GameObject SpawnGenericEnemyAt(int gridX, int gridY, bool isFree)
+    {
+        var genericEnemy = GameObject.Instantiate(Resources.Load<GameObject>(isFree ? "Tiles/GenericFreeEnemyTile" : "Tiles/GenericGridEnemyTile"));
         genericEnemy.transform.position = new Vector3(TranslateGridToX(gridX), TranslateGridToY(gridY), 1f);
         var localScale = genericEnemy.transform.localScale;
         genericEnemy.transform.localScale = new Vector3(localScale.x * TileScale, localScale.y * TileScale, localScale.z);
-        GenericEnemy ge = genericEnemy.GetComponent<GenericEnemy>();
+        var ge = genericEnemy.GetComponent<GenericEnemy>();
         ge.SetLevel(this);
         ge.Cloneable = true;
         ge.Health = ge.MaxHealth;
