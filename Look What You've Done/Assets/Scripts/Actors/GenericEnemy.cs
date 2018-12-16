@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Direction = MovementController.Direction;
 
 class GenericEnemy : Actor
 {
@@ -97,7 +98,7 @@ class GenericEnemy : Actor
         ge.enabled = true;
 
         //configuring MovementController
-        MovementController geMc = result.GetComponent<MovementController>();
+        GridMovementController geMc = result.GetComponent<GridMovementController>();
         geMc.movementSpeed = UnityEngine.Random.Range(100, 300);
 
         return result;

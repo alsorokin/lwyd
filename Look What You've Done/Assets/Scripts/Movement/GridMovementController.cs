@@ -1,13 +1,8 @@
 ﻿using UnityEngine;
 
-public enum Direction : sbyte
+public class GridMovementController : MovementController
 {
-    None = 0, Down = 1, Bottom = 1, Right = 2, Up = 3, Top = 3, Left = 4
-}
-
-public class MovementController : MonoBehaviour
-{
-    public float movementSpeed = 333;
+    
     public static float collisionCheckFrequency = 0.1f;
 
     private Direction direction = Direction.Up;
@@ -15,13 +10,13 @@ public class MovementController : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 stopPosition;
     private Direction whereToNext = Direction.None;
-    private Game game;
+
     private float collisionTimer = 0f;
 
     // Use this for initialization
-    void Start()
+    protected override void Start()
     {
-        game = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        base.Start();
     }
 
     // Update is called once per frame
@@ -65,7 +60,7 @@ public class MovementController : MonoBehaviour
             switch (direction)
             {
                 case Direction.Down:
-                    transform.position += new Vector3(0, -GetMovementScalar(movementSpeed), 0);
+                    transform.position += new Vector3(0, -GetMovementScalar(), 0);
                     if (transform.position.y <= stopPosition.y)
                     {
                         StopMoving();
@@ -73,7 +68,7 @@ public class MovementController : MonoBehaviour
 
                     break;
                 case Direction.Up:
-                    transform.position += new Vector3(0, GetMovementScalar(movementSpeed), 0);
+                    transform.position += new Vector3(0, GetMovementScalar(), 0);
                     if (transform.position.y >= stopPosition.y)
                     {
                         StopMoving();
@@ -81,7 +76,7 @@ public class MovementController : MonoBehaviour
 
                     break;
                 case Direction.Left:
-                    transform.position += new Vector3(-GetMovementScalar(movementSpeed), 0, 0);
+                    transform.position += new Vector3(-GetMovementScalar(), 0, 0);
                     if (transform.position.x <= stopPosition.x)
                     {
                         StopMoving();
@@ -89,7 +84,7 @@ public class MovementController : MonoBehaviour
 
                     break;
                 case Direction.Right:
-                    transform.position += new Vector3(GetMovementScalar(movementSpeed), 0, 0);
+                    transform.position += new Vector3(GetMovementScalar(), 0, 0);
                     if (transform.position.x >= stopPosition.x)
                     {
                         StopMoving();
@@ -100,7 +95,7 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    private void StopMoving()
+    public override void StopMoving()
     {
         // align to grid
         Align();
@@ -115,26 +110,7 @@ public class MovementController : MonoBehaviour
         whereToNext = Direction.None;
     }
 
-    public void Go(Direction dir)
-    {
-        switch (dir)
-        {
-            case Direction.Up:
-                GoUp();
-                break;
-            case Direction.Down:
-                GoDown();
-                break;
-            case Direction.Left:
-                GoLeft();
-                break;
-            case Direction.Right:
-                GoRight();
-                break;
-        }
-    }
-
-    public void GoUp()
+    public override void GoUp()
     {
         if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
         {
@@ -153,7 +129,7 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    public void GoDown()
+    public override void GoDown()
     {
         if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Down))
         {
@@ -172,7 +148,7 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    public void GoLeft()
+    public override void GoLeft()
     {
         if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Left))
         {
@@ -191,7 +167,7 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    public void GoRight()
+    public override void GoRight()
     {
         if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Right))
         {
@@ -208,11 +184,6 @@ public class MovementController : MonoBehaviour
         {
             whereToNext = direction == Direction.Right ? Direction.None : Direction.Right;
         }
-    }
-
-    private float GetMovementScalar(float speed)
-    {
-        return speed * game.CurrentLevel.TileScale * Time.deltaTime / 100;
     }
 
     // align to grid

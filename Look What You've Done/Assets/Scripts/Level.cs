@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Direction = MovementController.Direction;
 
 public class Level
 {
@@ -9,7 +10,7 @@ public class Level
     private int levelHeight;
     private List<Actor> actors = new List<Actor>();
     private Tile[,] levelTiles;
-    public readonly float TileScale = 2.7f;
+    public readonly float TileScale = 1f;
 
     public Tile GetLeftmostTile()
     {
@@ -147,6 +148,7 @@ public class Level
     {
         int x = TranslateXToGrid(fromPosition.x);
         int y = TranslateYToGrid(fromPosition.y);
+
         if (dir == Direction.Left)
         {
             x--;

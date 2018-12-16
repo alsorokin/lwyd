@@ -3,11 +3,6 @@ using System;
 
 public class Hero : Fighter
 {
-    public Command onMoveRight = new NullCommand();
-    public Command onMoveLeft = new NullCommand();
-    public Command onMoveUp = new NullCommand();
-    public Command onMoveDown = new NullCommand();
-
     private const float inputThreshold = 0.001f;
 
     private float horizontalAxis;
@@ -16,57 +11,33 @@ public class Hero : Fighter
     protected override void Start()
     {
         base.Start();
-        MovementController mc = GetComponent<MovementController>();
-        if (onMoveRight.GetType() == typeof(NullCommand))
-        {
-            onMoveRight = new MoveCommand(mc, Direction.Right);
-        }
-
-        if (onMoveLeft.GetType() == typeof(NullCommand))
-        {
-            onMoveLeft = new MoveCommand(mc, Direction.Left);
-        }
-
-        if (onMoveUp.GetType() == typeof(NullCommand))
-        {
-            onMoveUp = new MoveCommand(mc, Direction.Up);
-        }
-
-        if (onMoveDown.GetType() == typeof(NullCommand))
-        {
-            onMoveDown = new MoveCommand(mc, Direction.Down);
-        }
     }
     void FixedUpdate()
     {
         horizontalAxis = Input.GetAxis("Horizontal");
         verticalAxis = Input.GetAxis("Vertical");
 
-        if (Math.Abs(horizontalAxis) < inputThreshold && Math.Abs(verticalAxis) < inputThreshold)
+        if (Math.Abs(horizontalAxis) > inputThreshold)
         {
-            return;
+            if (horizontalAxis > 0)
+            {
+                mc.GoRight();
+            }
+            else
+            {
+                mc.GoLeft();
+            }
         }
 
-        if (Math.Abs(horizontalAxis) > Math.Abs(verticalAxis))
+        if (Math.Abs(verticalAxis) > inputThreshold)
         {
-            if (horizontalAxis < 0)
+            if (verticalAxis > 0)
             {
-                onMoveLeft.Execute();
+                mc.GoUp();
             }
             else
             {
-                onMoveRight.Execute();
-            }
-        }
-        else
-        {
-            if (verticalAxis < 0)
-            {
-                onMoveDown.Execute();
-            }
-            else
-            {
-                onMoveUp.Execute();
+                mc.GoDown();
             }
         }
     }
