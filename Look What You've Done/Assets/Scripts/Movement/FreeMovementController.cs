@@ -42,8 +42,92 @@ class FreeMovementController : MovementController
     {
         transform.position += new Vector3(GetMovementScalar() * movement.x,
                                           GetMovementScalar() * movement.y, 
-                                          0);
+                                          0f);
+
         StopMoving();
+
+        // Detect collisions here
+        var threshold = 0.005f;
+
+        var gridX = this.game.CurrentLevel.TranslateXToGrid(transform.position.x);
+        var snappedX = this.game.CurrentLevel.TranslateGridToX(gridX);
+        var distanceX = (transform.position.x - snappedX) / 10f;
+        if (System.Math.Abs(distanceX) < threshold)
+        {
+            distanceX = 0f;
+        }
+
+        var gridY = this.game.CurrentLevel.TranslateYToGrid(transform.position.y);
+        var snappedY = this.game.CurrentLevel.TranslateGridToY(gridY);
+        var distanceY = (transform.position.y - snappedY) / 10f;
+        if (System.Math.Abs(distanceY) < threshold)
+        {
+            distanceY = 0f;
+        }
+
+        // check if something is blocking us by x
+        var shouldSnapX = false;
+        if (distanceX > 0f)
+        {
+            shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Right);
+            if (!shouldSnapX && distanceY > 0f)
+            {
+                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight);
+            }
+            else if (!shouldSnapX && distanceY < 0f)
+            {
+                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight);
+            }
+        }
+        else if(distanceX < 0f)
+        {
+            shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Left);
+            if (!shouldSnapX && distanceY > 0f)
+            {
+                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft);
+            }
+            else if (!shouldSnapX && distanceY < 0f)
+            {
+                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft);
+            }
+        }
+
+        if (shouldSnapX)
+        {
+            transform.position -= new Vector3(distanceX, 0f, 0f);
+        }
+
+        // check if something is blocking us by y
+        var shouldSnapY = false;
+        if (distanceY > 0f)
+        {
+            shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Top);
+            if (!shouldSnapY && distanceX > 0f)
+            {
+                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight);
+            }
+            else if (!shouldSnapY && distanceX < 0f)
+            {
+                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft);
+            }
+        }
+        else if (distanceY < 0f)
+        {
+            shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Bottom);
+            if (!shouldSnapY && distanceX > 0f)
+            {
+                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight);
+            }
+            else if (!shouldSnapY && distanceX < 0f)
+            {
+                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft);
+            }
+        }
+
+        if (shouldSnapY)
+        {
+            transform.position -= new Vector3(0f, distanceY, 0f);
+        }
     }
 
     public override void GoUp()

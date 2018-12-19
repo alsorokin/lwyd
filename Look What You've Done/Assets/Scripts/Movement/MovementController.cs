@@ -4,10 +4,19 @@ public abstract class MovementController : MonoBehaviour
 {
     public enum Direction : sbyte
     {
-        None = 0, Down = 1, Bottom = 1, Right = 2, Up = 3, Top = 3, Left = 4
+        None = 0,
+        Down = 1, Bottom = 1,
+        Right = 2,
+        Up = 3, Top = 3,
+        Left = 4,
+        TopLeft = 5,
+        TopRight = 6,
+        BottomRight = 7,
+        BottomLeft = 8
     }
 
     protected Game game;
+    protected Actor actor;
     public float movementSpeed = 333;
 
     public abstract bool IsMovingRight { get; }
@@ -27,6 +36,14 @@ public abstract class MovementController : MonoBehaviour
                 return IsMovingLeft;
             case Direction.Right:
                 return IsMovingRight;
+            case Direction.BottomLeft:
+                return IsMovingDown && IsMovingLeft;
+            case Direction.BottomRight:
+                return IsMovingDown && IsMovingRight;
+            case Direction.TopLeft:
+                return IsMovingUp && IsMovingLeft;
+            case Direction.TopRight:
+                return IsMovingUp && IsMovingRight;
             default:
                 return false;
         }
@@ -35,6 +52,7 @@ public abstract class MovementController : MonoBehaviour
     protected virtual void Start()
     {
         game = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        actor = gameObject.GetComponent<Actor>();
     }
 
     public abstract void GoUp();
@@ -48,7 +66,7 @@ public abstract class MovementController : MonoBehaviour
     public abstract void StopMoving();
 
 
-    public void Go(Direction dir)
+    public virtual void Go(Direction dir)
     {
         switch (dir)
         {

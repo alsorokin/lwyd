@@ -165,26 +165,38 @@ public class Level
         int x = TranslateXToGrid(fromPosition.x);
         int y = TranslateYToGrid(fromPosition.y);
 
-        if (dir == Direction.Left)
+        switch (dir)
         {
-            x--;
-        }
-        else if (dir == Direction.Top)
-        {
-            y++;
-        }
-        else if (dir == Direction.Right)
-        {
-            x++;
-        }
-        else if (dir == Direction.Down)
-        {
-            y--;
-        }
-        else
-        {
-            // Direction.None or unknown direction
-            return false;
+            case Direction.Left:
+                x--;
+                break;
+            case Direction.Top:
+                y++;
+                break;
+            case Direction.Right:
+                x++;
+                break;
+            case Direction.Down:
+                y--;
+                break;
+            case Direction.TopLeft:
+                x--;
+                y++;
+                break;
+            case Direction.TopRight:
+                x++;
+                y++;
+                break;
+            case Direction.BottomRight:
+                x++;
+                y--;
+                break;
+            case Direction.BottomLeft:
+                x--;
+                y--;
+                break;
+            default:
+                return false;
         }
 
         // edge cases
