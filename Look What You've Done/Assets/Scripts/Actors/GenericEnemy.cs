@@ -13,6 +13,7 @@ class GenericEnemy : Actor
 
     private float timeElapsed;
     private Direction currentDirection = Direction.None;
+    private bool isThinking = false;
 
     protected override void Start()
     {
@@ -54,10 +55,15 @@ class GenericEnemy : Actor
             if (!Cloneable)
             {
                 // --all you zombies--
+                // wait... not cloneable equals cloned?
                 Suffer(1);
             }
 
             timeElapsed = 0;
+
+            // stay awhile and listen...
+            isThinking = !isThinking;
+
             List<Direction> dirs = new List<Direction>();
             if (myLevel.CanIGo(this, Direction.Up))
             {
@@ -79,6 +85,26 @@ class GenericEnemy : Actor
                 dirs.Add(Direction.Right);
             }
 
+            if (myLevel.CanIGo(this, Direction.TopLeft))
+            {
+                dirs.Add(Direction.TopLeft);
+            }
+
+            if (myLevel.CanIGo(this, Direction.TopRight))
+            {
+                dirs.Add(Direction.TopRight);
+            }
+
+            if (myLevel.CanIGo(this, Direction.BottomRight))
+            {
+                dirs.Add(Direction.BottomRight);
+            }
+
+            if (myLevel.CanIGo(this, Direction.BottomLeft))
+            {
+                dirs.Add(Direction.BottomLeft);
+            }
+
             if (dirs.Count == 0)
             {
                 // I'm suffocating!
@@ -89,6 +115,8 @@ class GenericEnemy : Actor
             var rnd = Random.Range(0, dirs.Count);
             currentDirection = dirs[rnd];
         }
+
+        if (isThinking) { return; }
 
         // We have to call Move() every frame
         switch (currentDirection)
@@ -104,6 +132,18 @@ class GenericEnemy : Actor
                 break;
             case Direction.Right:
                 onMoveRight.Execute();
+                break;
+            case Direction.TopLeft:
+                mc.GoTopLeft();
+                break;
+            case Direction.TopRight:
+                mc.GoTopRight();
+                break;
+            case Direction.BottomLeft:
+                mc.GoBottomLeft();
+                break;
+            case Direction.BottomRight:
+                mc.GoBottomRight();
                 break;
         }
     }

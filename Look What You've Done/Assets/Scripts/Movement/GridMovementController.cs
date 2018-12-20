@@ -45,6 +45,11 @@ public class GridMovementController : MovementController
         }
     }
 
+    public override bool IsMoving()
+    {
+        return isMoving;
+    }
+
     // Use this for initialization
     protected override void Start()
     {
@@ -139,6 +144,7 @@ public class GridMovementController : MovementController
             direction = whereToNext;
             Go(direction);
         }
+
         whereToNext = Direction.None;
     }
 
@@ -148,6 +154,7 @@ public class GridMovementController : MovementController
         {
             return;
         }
+
         if (!isMoving)
         {
             isMoving = true;
@@ -167,6 +174,7 @@ public class GridMovementController : MovementController
         {
             return;
         }
+
         if (!isMoving)
         {
             isMoving = true;
@@ -186,6 +194,7 @@ public class GridMovementController : MovementController
         {
             return;
         }
+
         if (!isMoving)
         {
             isMoving = true;
@@ -205,6 +214,7 @@ public class GridMovementController : MovementController
         {
             return;
         }
+
         if (!isMoving)
         {
             isMoving = true;
@@ -215,6 +225,86 @@ public class GridMovementController : MovementController
         else
         {
             whereToNext = direction == Direction.Right ? Direction.None : Direction.Right;
+        }
+    }
+
+    public override void GoTopRight()
+    {
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.TopRight))
+        {
+            return;
+        }
+
+        if (!isMoving)
+        {
+            isMoving = true;
+            direction = Direction.TopRight;
+            startPosition = transform.position;
+            stopPosition = transform.position + new Vector3(game.CurrentLevel.TileScale, game.CurrentLevel.TileScale, 0);
+        }
+        else
+        {
+            whereToNext = direction == Direction.TopRight ? Direction.None : Direction.TopRight;
+        }
+    }
+
+    public override void GoTopLeft()
+    {
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.TopLeft))
+        {
+            return;
+        }
+
+        if (!isMoving)
+        {
+            isMoving = true;
+            direction = Direction.TopLeft;
+            startPosition = transform.position;
+            stopPosition = transform.position + new Vector3(-game.CurrentLevel.TileScale, game.CurrentLevel.TileScale, 0);
+        }
+        else
+        {
+            whereToNext = direction == Direction.TopLeft ? Direction.None : Direction.TopLeft;
+        }
+    }
+
+    public override void GoBottomLeft()
+    {
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.BottomLeft))
+        {
+            return;
+        }
+
+        if (!isMoving)
+        {
+            isMoving = true;
+            direction = Direction.BottomLeft;
+            startPosition = transform.position;
+            stopPosition = transform.position + new Vector3(-game.CurrentLevel.TileScale, -game.CurrentLevel.TileScale, 0);
+        }
+        else
+        {
+            whereToNext = direction == Direction.BottomLeft ? Direction.None : Direction.BottomLeft;
+        }
+    }
+
+    public override void GoBottomRight()
+    {
+        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.BottomRight))
+        {
+            return;
+        }
+
+        if (!isMoving)
+        {
+            isMoving = true;
+            direction = Direction.BottomRight;
+            startPosition = transform.position;
+            stopPosition = transform.position + new Vector3(game.CurrentLevel.TileScale, -game.CurrentLevel.TileScale, 0);
+        }
+        else
+        {
+            whereToNext = direction == Direction.BottomRight ? Direction.None : Direction.BottomRight;
         }
     }
 

@@ -44,35 +44,17 @@ public class Level
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                if ((h == 0 && w == levelWidth / 2) || (h == levelHeight - 1 && w == levelWidth / 2))
-                {
-                    var isFree = h == 0 ? false : true;
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
-                    var spawnerObj = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/SpawnerTile"));
-                    var spawnerScale = spawnerObj.transform.localScale;
-                    spawnerObj.transform.localScale = new Vector3(spawnerScale.x * TileScale, spawnerScale.y * TileScale, spawnerScale.z);
-                    spawnerObj.transform.position = new Vector3(TranslateGridToX(w), TranslateGridToY(h), 0.9f);
-
-                    var spawner = spawnerObj.GetComponent<Spawner>();
-                    AddActor(spawner);
-                    spawner.SetLevel(this);
-
-                    var geProto = SpawnGenericEnemyAt(w, h, isFree);
-                    geProto.GetComponent<Actor>().enabled = false;
-                    geProto.GetComponent<SpriteRenderer>().enabled = false;
-                    spawner.Prototype = geProto;
-                }
-                else if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
+                if (h == 0 || h == levelHeight - 1 || w == 0 || w == levelWidth - 1)
                 {
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
                 else if (h == levelHeight / 3 && w == levelWidth / 3)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
+                    PutSpawnerAt(w, h, false);
                 }
                 else if (h == 2 * levelHeight / 3 && w == 2 * levelWidth / 3)
                 {
-                    levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
+                    PutSpawnerAt(w, h, true);
                 }
                 else if (h == 2 * levelHeight / 3 && w == levelWidth / 3)
                 {
@@ -108,6 +90,24 @@ public class Level
         var cameraController = cameraObj.GetComponent<CameraMovementController>();
         cameraController.player = player;
         cameraController.level = this;
+    }
+
+    private void PutSpawnerAt(int w, int h, bool free)
+    {
+        levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/GrassTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
+        var spawnerObj = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/SpawnerTile"));
+        var spawnerScale = spawnerObj.transform.localScale;
+        spawnerObj.transform.localScale = new Vector3(spawnerScale.x * TileScale, spawnerScale.y * TileScale, spawnerScale.z);
+        spawnerObj.transform.position = new Vector3(TranslateGridToX(w), TranslateGridToY(h), 0.9f);
+
+        var spawner = spawnerObj.GetComponent<Spawner>();
+        AddActor(spawner);
+        spawner.SetLevel(this);
+
+        var geProto = SpawnGenericEnemyAt(w, h, free);
+        geProto.GetComponent<Actor>().enabled = false;
+        geProto.GetComponent<SpriteRenderer>().enabled = false;
+        spawner.Prototype = geProto;
     }
 
     // TODO: Use it or remove it
@@ -202,10 +202,7 @@ public class Level
         }
 
         // edge cases
-        if ((x < 0 && dir == Direction.Left) ||
-            (x >= levelWidth && dir == Direction.Right) ||
-            (y < 0 && dir == Direction.Down) ||
-            (y >= levelHeight && dir == Direction.Up))
+        if (x < 0 || x >= levelWidth || y < 0 || y >= levelHeight)
         {
             return false;
         }

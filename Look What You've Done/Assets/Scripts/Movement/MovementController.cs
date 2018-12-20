@@ -63,8 +63,15 @@ public abstract class MovementController : MonoBehaviour
 
     public abstract void GoRight();
 
-    public abstract void StopMoving();
+    public abstract void GoTopLeft();
 
+    public abstract void GoTopRight();
+
+    public abstract void GoBottomLeft();
+
+    public abstract void GoBottomRight();
+
+    public abstract void StopMoving();
 
     public virtual void Go(Direction dir)
     {
@@ -82,8 +89,26 @@ public abstract class MovementController : MonoBehaviour
             case Direction.Right:
                 GoRight();
                 break;
+            case Direction.TopLeft:
+                GoUp();
+                GoLeft();
+                break;
+            case Direction.TopRight:
+                GoUp();
+                GoRight();
+                break;
+            case Direction.BottomLeft:
+                GoLeft();
+                GoDown();
+                break;
+            case Direction.BottomRight:
+                GoRight();
+                GoDown();
+                break;
         }
     }
+
+    public abstract bool IsMoving();
 
     protected float GetMovementScalar()
     {

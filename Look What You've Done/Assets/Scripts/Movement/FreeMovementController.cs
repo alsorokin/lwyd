@@ -40,6 +40,11 @@ class FreeMovementController : MovementController
         }
     }
 
+    public override bool IsMoving()
+    {
+        return movement.x > 0 || movement.y > 0;
+    }
+
     private void FixedUpdate()
     {
         transform.position += new Vector3(GetMovementScalar() * movement.x,
@@ -290,5 +295,61 @@ class FreeMovementController : MovementController
     public override void StopMoving()
     {
         movement = Vector2.zero;
+    }
+
+    public override void GoTopLeft()
+    {
+        var actor = gameObject.GetComponent<Actor>();
+        var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       0);
+        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.TopLeft))
+        {
+            return;
+        }
+
+        movement = new Vector2(-1, 1);
+    }
+
+    public override void GoTopRight()
+    {
+        var actor = gameObject.GetComponent<Actor>();
+        var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       0);
+        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.TopRight))
+        {
+            return;
+        }
+
+        movement = new Vector2(1, 1);
+    }
+
+    public override void GoBottomLeft()
+    {
+        var actor = gameObject.GetComponent<Actor>();
+        var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       0);
+        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.BottomLeft))
+        {
+            return;
+        }
+
+        movement = new Vector2(-1, -1);
+    }
+
+    public override void GoBottomRight()
+    {
+        var actor = gameObject.GetComponent<Actor>();
+        var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       0);
+        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.BottomRight))
+        {
+            return;
+        }
+
+        movement = new Vector2(1, -1);
     }
 }
