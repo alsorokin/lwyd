@@ -2,7 +2,9 @@
 
 class FreeMovementController : MovementController
 {
-    public static float collisionCheckFrequency = 0.1f;
+    public float collisionCheckFrequency = 0.1f;
+    private const float bumpSpeed = 0.01f;
+    private const float bumpSpeedThreshold = 0.005f;
 
     private Vector2 movement = Vector2.zero;
 
@@ -46,13 +48,10 @@ class FreeMovementController : MovementController
 
         StopMoving();
 
-        // Detect collisions here
-        var threshold = 0.005f;
-
         var gridX = this.game.CurrentLevel.TranslateXToGrid(transform.position.x);
         var snappedX = this.game.CurrentLevel.TranslateGridToX(gridX);
         var distanceX = (transform.position.x - snappedX) / 10f;
-        if (System.Math.Abs(distanceX) < threshold)
+        if (System.Math.Abs(distanceX) < bumpSpeedThreshold)
         {
             distanceX = 0f;
         }
@@ -60,73 +59,175 @@ class FreeMovementController : MovementController
         var gridY = this.game.CurrentLevel.TranslateYToGrid(transform.position.y);
         var snappedY = this.game.CurrentLevel.TranslateGridToY(gridY);
         var distanceY = (transform.position.y - snappedY) / 10f;
-        if (System.Math.Abs(distanceY) < threshold)
+        if (System.Math.Abs(distanceY) < bumpSpeedThreshold)
         {
             distanceY = 0f;
         }
 
-        // check if something is blocking us by x
-        var shouldSnapX = false;
-        if (distanceX > 0f)
+        // If we're stacked, try to break free
+        if (!this.game.CurrentLevel.CanIGo(this.actor, Direction.None))
         {
-            shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Right);
-            if (!shouldSnapX && distanceY > 0f)
-            {
-                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight);
-            }
-            else if (!shouldSnapX && distanceY < 0f)
-            {
-                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight);
-            }
-        }
-        else if(distanceX < 0f)
-        {
-            shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Left);
-            if (!shouldSnapX && distanceY > 0f)
-            {
-                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft);
-            }
-            else if (!shouldSnapX && distanceY < 0f)
-            {
-                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft);
-            }
-        }
+            var bumpDistanceX = 0f;
+            var bumpDistanceY = 0f;
 
-        if (shouldSnapX)
-        {
-            transform.position -= new Vector3(distanceX, 0f, 0f);
-        }
+            // We need to choose the side we're about to be bumped to
+            // First, check three tiles on the right and on the left
+            if (distanceX >= 0f)
+            {
+                if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Right))
+                {
+                    bumpDistanceX = bumpSpeed;
+                }
+                else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight))
+                {
+                    bumpDistanceX = bumpSpeed;
+                    bumpDistanceY = bumpSpeed;
+                }
+                else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight))
+                {
+                    bumpDistanceX = bumpSpeed;
+                    bumpDistanceY = -bumpSpeed;
+                }
+            }
+            else // if (distanceX < 0f)
+            {
+                if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Left))
+                {
+                    bumpDistanceX = -bumpSpeed;
+                }
+                else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft))
+                {
+                    bumpDistanceX = -bumpSpeed;
+                    bumpDistanceY = -bumpSpeed;
+                }
+                else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft))
+                {
+                    bumpDistanceX = -bumpSpeed;
+                    bumpDistanceY = bumpSpeed;
+                }
+            }
 
-        // check if something is blocking us by y
-        var shouldSnapY = false;
-        if (distanceY > 0f)
-        {
-            shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Top);
-            if (!shouldSnapY && distanceX > 0f)
+            // Then, check two remaining tiles (top and bottom)
+            if (distanceY >= 0f)
             {
-                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight);
+                if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Up))
+                {
+                    bumpDistanceY = bumpSpeed;
+                }
             }
-            else if (!shouldSnapY && distanceX < 0f)
+            else // if (distanceY < 0f)
             {
-                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft);
+                if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Down))
+                {
+                    bumpDistanceY = -bumpSpeed;
+                }
             }
-        }
-        else if (distanceY < 0f)
-        {
-            shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Bottom);
-            if (!shouldSnapY && distanceX > 0f)
-            {
-                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight);
-            }
-            else if (!shouldSnapY && distanceX < 0f)
-            {
-                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft);
-            }
-        }
 
-        if (shouldSnapY)
+            transform.position -= new Vector3(bumpDistanceX, bumpDistanceY, 0f);
+        }
+        else
         {
-            transform.position -= new Vector3(0f, distanceY, 0f);
+            // We're not stacked, so let's check if we're colliding with something around us
+
+            // check if something is blocking us by x
+            var shouldSnapX = false;
+            if (distanceX > 0f)
+            {
+                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Right);
+                if (!shouldSnapX && distanceY > 0f)
+                {
+                    shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight);
+                }
+                else if (!shouldSnapX && distanceY < 0f)
+                {
+                    shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight);
+                }
+            }
+            else if (distanceX < 0f)
+            {
+                shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Left);
+                if (!shouldSnapX && distanceY > 0f)
+                {
+                    shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft);
+                }
+                else if (!shouldSnapX && distanceY < 0f)
+                {
+                    shouldSnapX = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft);
+                }
+            }
+
+            if (shouldSnapX)
+            {
+                transform.position -= new Vector3(distanceX, 0f, 0f);
+            }
+
+            // check if something is blocking us by y
+            var shouldSnapY = false;
+            if (distanceY > 0f)
+            {
+                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Top);
+                if (!shouldSnapY && distanceX > 0f)
+                {
+                    shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight);
+                }
+                else if (!shouldSnapY && distanceX < 0f)
+                {
+                    shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft);
+                }
+            }
+            else if (distanceY < 0f)
+            {
+                shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.Bottom);
+                if (!shouldSnapY && distanceX > 0f)
+                {
+                    shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight);
+                }
+                else if (!shouldSnapY && distanceX < 0f)
+                {
+                    shouldSnapY = !this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft);
+                }
+            }
+
+            if (shouldSnapY)
+            {
+                transform.position -= new Vector3(0f, distanceY, 0f);
+            }
+        }
+    }
+
+    private void BumpSomewhere()
+    {
+        if (this.game.CurrentLevel.CanIGo(this.actor, Direction.TopLeft))
+        {
+            transform.position += new Vector3(-bumpSpeed, bumpSpeed, 0f);
+        }
+        else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Top))
+        {
+            transform.position += new Vector3(0f, bumpSpeed, 0f);
+        }
+        else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.TopRight))
+        {
+            transform.position += new Vector3(bumpSpeed, bumpSpeed, 0f);
+        }
+        else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Right))
+        {
+            transform.position += new Vector3(bumpSpeed, 0f, 0f);
+        }
+        else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomRight))
+        {
+            transform.position += new Vector3(bumpSpeed, -bumpSpeed, 0f);
+        }
+        else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Down))
+        {
+            transform.position += new Vector3(0f, -bumpSpeed, 0f);
+        }
+        else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.BottomLeft))
+        {
+            transform.position += new Vector3(-bumpSpeed, -bumpSpeed, 0f);
+        }
+        else if (this.game.CurrentLevel.CanIGo(this.actor, Direction.Left))
+        {
+            transform.position += new Vector3(-bumpSpeed, 0f, 0f);
         }
     }
 

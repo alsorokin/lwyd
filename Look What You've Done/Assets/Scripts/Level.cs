@@ -32,7 +32,7 @@ public class Level
         return GetLeftmostTile();
     }
 
-    public Level(int width, int height, Texture2D tilesTexture)
+    public Level(int width, int height)
     {
         // TODO: load from file
         levelWidth = width;
@@ -194,6 +194,8 @@ public class Level
             case Direction.BottomLeft:
                 x--;
                 y--;
+                break;
+            case Direction.None:
                 break;
             default:
                 return false;
