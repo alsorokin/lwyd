@@ -158,6 +158,11 @@ class GenericEnemy : Actor
         // configuring GameObject
         GameObject result = GameObject.Instantiate(this.gameObject);
         result.GetComponent<SpriteRenderer>().enabled = true;
+        var rb = result.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.simulated = true;
+        }
 
         // configuring Actor
         GenericEnemy ge = result.GetComponent<GenericEnemy>();

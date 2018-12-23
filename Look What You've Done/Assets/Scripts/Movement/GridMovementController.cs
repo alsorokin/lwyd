@@ -2,16 +2,11 @@
 
 public class GridMovementController : MovementController
 {
-    
-    public static float collisionCheckFrequency = 0.1f;
-
     private Direction direction = Direction.Up;
     private bool isMoving = false;
     private Vector3 startPosition;
     private Vector3 stopPosition;
     private Direction whereToNext = Direction.None;
-
-    private float collisionTimer = 0f;
 
     public override bool IsMovingUp
     {
@@ -59,41 +54,10 @@ public class GridMovementController : MovementController
     // Update is called once per frame
     void Update() { }
 
-    private void SwapDirection()
-    {
-        Vector3 temp = startPosition;
-        startPosition = stopPosition;
-        stopPosition = temp;
-        switch (direction)
-        {
-            case Direction.Up:
-                direction = Direction.Down;
-                break;
-            case Direction.Down:
-                direction = Direction.Up;
-                break;
-            case Direction.Left:
-                direction = Direction.Right;
-                break;
-            case Direction.Right:
-                direction = Direction.Left;
-                break;
-        }
-    }
-
     void FixedUpdate()
     {
         if (isMoving)
         {
-            collisionTimer += Time.deltaTime;
-            if (collisionTimer >= collisionCheckFrequency)
-            {
-                collisionTimer = 0f;
-                if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), startPosition, direction))
-                {
-                    SwapDirection();
-                }
-            }
             switch (direction)
             {
                 case Direction.Down:
@@ -128,6 +92,38 @@ public class GridMovementController : MovementController
                     }
 
                     break;
+                case Direction.TopRight:
+                    transform.position += new Vector3(GetMovementScalar(), GetMovementScalar(), 0);
+                    if (transform.position.x >= stopPosition.x || transform.position.y >= stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.TopLeft:
+                    transform.position += new Vector3(-GetMovementScalar(), GetMovementScalar(), 0);
+                    if (transform.position.x <= stopPosition.x || transform.position.y >= stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.BottomRight:
+                    transform.position += new Vector3(GetMovementScalar(), -GetMovementScalar(), 0);
+                    if (transform.position.x >= stopPosition.x || transform.position.y <= stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.BottomLeft:
+                    transform.position += new Vector3(-GetMovementScalar(), -GetMovementScalar(), 0);
+                    if (transform.position.x <= stopPosition.x || transform.position.y <= stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
             }
         }
     }
@@ -138,14 +134,51 @@ public class GridMovementController : MovementController
         Align();
         // stop
         isMoving = false;
+
         // then start moving again, if user has already issued a new command
-        if (direction != whereToNext)
-        {
-            direction = whereToNext;
-            Go(direction);
-        }
+        // commented out for the time being. whereToNext is not working good with generic enemy script right now
+        // and we don't use grid movement for the player anymore, so looks like we don't need it
+        //if (direction != whereToNext)
+        //{
+        //    direction = whereToNext;
+        //    Go(direction);
+        //}
 
         whereToNext = Direction.None;
+    }
+
+    private void SwapDirection()
+    {
+        Vector3 temp = startPosition;
+        startPosition = stopPosition;
+        stopPosition = temp;
+        switch (direction)
+        {
+            case Direction.Up:
+                direction = Direction.Down;
+                break;
+            case Direction.Down:
+                direction = Direction.Up;
+                break;
+            case Direction.Left:
+                direction = Direction.Right;
+                break;
+            case Direction.Right:
+                direction = Direction.Left;
+                break;
+            case Direction.TopRight:
+                direction = Direction.BottomLeft;
+                break;
+            case Direction.TopLeft:
+                direction = Direction.BottomRight;
+                break;
+            case Direction.BottomLeft:
+                direction = Direction.TopRight;
+                break;
+            case Direction.BottomRight:
+                direction = Direction.TopLeft;
+                break;
+        }
     }
 
     public override void GoUp()
@@ -321,4 +354,10 @@ public class GridMovementController : MovementController
     }
 
     void OnGUI() {}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Swapping");
+        SwapDirection();
+    }
 }
