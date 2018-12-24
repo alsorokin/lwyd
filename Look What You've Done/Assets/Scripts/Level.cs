@@ -48,11 +48,7 @@ public class Level
                 {
                     levelTiles[w, h] = TileFactory.Instance.CreateTileFromResourse("Tiles/WallTile", TranslateGridToX(w), TranslateGridToY(h), TileScale, false);
                 }
-                else if (h == levelHeight / 3 && w == levelWidth / 3)
-                {
-                    PutSpawnerAt(w, h, false);
-                }
-                else if (h == 2 * levelHeight / 3 && w == 2 * levelWidth / 3)
+                else if ((h == 2 * levelHeight / 3 && w == 2 * levelWidth / 3) || (h == levelHeight / 3 && w == levelWidth / 3))
                 {
                     PutSpawnerAt(w, h, true);
                 }
