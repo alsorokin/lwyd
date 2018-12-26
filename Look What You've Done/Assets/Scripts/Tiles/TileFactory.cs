@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Xml;
+using System.IO;
+using System;
 
 class TileFactory
 {
     private static TileFactory instance;
-    private Dictionary<string, GameObject> prefabs = new Dictionary<string, GameObject>();
+    private Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
+    private Dictionary<int, Tile> tiles = new Dictionary<int, Tile>();
 
-    private TileFactory() { }
+    private TileFactory() {
+        ReadTiles();
+    }
 
     public static TileFactory Instance
     {
@@ -21,22 +27,44 @@ class TileFactory
         }
     }
 
-    public Tile CreateTileFromResourse(string resourcePath, float x, float y, float scale, bool passable)
+    public Tile CreateTile(int id, float x, float y, float scale)
     {
-        GameObject prefab;
-        if (prefabs.ContainsKey(resourcePath))
-        {
-            prefab = prefabs[resourcePath];
-        }
-        else
-        {
-            prefab = Resources.Load<GameObject>(resourcePath);
-            prefabs.Add(resourcePath, prefab);
-        }
+        throw new NotImplementedException();
+    }
 
-        var result = new Tile(prefab, new Vector3(x, y, 2), passable);
-        var localScale = result.gameObject.transform.localScale;
-        result.gameObject.transform.localScale = new Vector3(localScale.x * scale, localScale.y * scale, localScale.z);
-        return result;
+    private void ReadTiles()
+    {
+        var fileStream = new FileStream("Assets\\Resources\\Tiles\\test.tsx", FileMode.Open);
+        var smth = XmlReader.Create(fileStream);
+
+        XmlReaderSettings settings = new XmlReaderSettings();
+        settings.Async = false;
+
+        using (XmlReader reader = XmlReader.Create(fileStream, settings))
+        {
+            while (reader.Read())
+            {
+                switch (reader.NodeType)
+                {
+                    case XmlNodeType.Element:
+                        Console.WriteLine("Start Element {0}", reader.Name);
+                        if (reader.Name == "tile")
+                        {
+                            Console.WriteLine("Its id is {0}", reader.GetAttribute("id"));
+                        }
+                        break;
+                    case XmlNodeType.Text:
+                        Console.WriteLine("Text Node: {0}", reader.Value);
+                        break;
+                    case XmlNodeType.EndElement:
+                        Console.WriteLine("End Element {0}", reader.Name);
+                        break;
+                    default:
+                        Console.WriteLine("Other node {0} with value {1}",
+                                        reader.NodeType, reader.Value);
+                        break;
+                }
+            }
+        }
     }
 }
