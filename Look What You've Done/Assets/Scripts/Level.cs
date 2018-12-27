@@ -44,13 +44,13 @@ public class Level
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                levelTiles[w, h] = TileFactory.Instance.CreateTile(11, TranslateGridToX(w), TranslateGridToY(h), TileScale);
+                levelTiles[w, h] = TileFactory.Instance.CreateTile(23, TranslateGridToX(w), TranslateGridToY(h), TileScale);
             }
         }
 
         // Adding player
         GameObject player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
-        player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), 0f);
+        player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), -10f);
         var playerLocalScale = player.transform.localScale;
         player.transform.localScale = new Vector3(playerLocalScale.x * TileScale, playerLocalScale.y * TileScale, playerLocalScale.z);
         Actor playerActor = player.GetComponent<Hero>();
@@ -61,7 +61,7 @@ public class Level
         // Adding camera and its controller
         var cameraObj = new GameObject();
         var playerCamera = cameraObj.AddComponent<Camera>();
-        cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
+        cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -100f);
         playerCamera.orthographic = true;
         cameraObj.AddComponent<CameraMovementController>();
         var cameraController = cameraObj.GetComponent<CameraMovementController>();

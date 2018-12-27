@@ -32,7 +32,7 @@ class TileFactory
     {
         if (!tiles.ContainsKey(id))
         {
-            throw new Exception("Cannot create tile " + id.ToString() + ". I don't know such an id.");
+            throw new Exception("Cannot create tile " + id.ToString() + ". I don't know of such an id.");
         }
 
         var newTile = tiles[id].Clone();
@@ -117,11 +117,12 @@ class TileFactory
             {
                 var texture = Resources.Load(source) as Texture2D;
                 texture.filterMode = FilterMode.Point;
-                sprite = Sprite.Create(texture, new Rect(0f, 0f, width, height), Vector2.zero);
+                var pivotPoint = 0.5f;
+                sprite = Sprite.Create(texture, new Rect(0f, 0f, width, height), new Vector2(pivotPoint, pivotPoint), width);
                 sprites.Add(source, sprite);
             }
 
-            var tile = new Tile(sprite, id, Vector3.zero);
+            var tile = new Tile(sprite, id, Vector3.zero, 1f);
             tile.gameObject.SetActive(false);
             tiles.Add(id, tile);
         }
