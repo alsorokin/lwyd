@@ -44,7 +44,7 @@ public class Level
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                levelTiles[w, h] = TileFactory.Instance.CreateTile(7, TranslateGridToX(w), TranslateGridToY(h), TileScale);
+                levelTiles[w, h] = TileFactory.Instance.CreateTile(11, TranslateGridToX(w), TranslateGridToY(h), TileScale);
             }
         }
 

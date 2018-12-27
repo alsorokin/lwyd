@@ -82,6 +82,12 @@ class TileFactory
             }
 
             string source = docImage.Attributes["source"].Value;
+            source = source.Substring(0, source.LastIndexOf('.'));
+            if (source.StartsWith("./"))
+            {
+                source = source.Substring(2);
+            }
+
             if (string.IsNullOrEmpty(source))
             {
                 Debug.LogWarning("Source is empty for tile " + id.ToString());

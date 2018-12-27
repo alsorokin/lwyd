@@ -25,6 +25,6 @@ public class Tile
 
     public Tile Clone()
     {
-        return GameObject.Instantiate(gameObject).GetComponent<Tile>();
+        return new Tile(spriteRenderer.sprite, id, this.gameObject.transform.position);
     }
 }
