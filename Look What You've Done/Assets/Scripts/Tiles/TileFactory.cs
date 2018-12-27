@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Xml;
 using System.IO;
 using System;
+using System.Linq;
 
 class TileFactory
 {
@@ -29,42 +30,94 @@ class TileFactory
 
     public Tile CreateTile(int id, float x, float y, float scale)
     {
-        throw new NotImplementedException();
+        if (!tiles.ContainsKey(id))
+        {
+            throw new Exception("Cannot create tile " + id.ToString() + ". I don't know such an id.");
+        }
+
+        var newTile = tiles[id].Clone();
+        newTile.gameObject.transform.position = new Vector3(x, y);
+        newTile.gameObject.transform.localScale = new Vector3(scale, scale, 1);
+        newTile.gameObject.SetActive(true);
+
+        return newTile;
     }
 
     private void ReadTiles()
     {
-        var fileStream = new FileStream("Assets\\Resources\\Tiles\\test.tsx", FileMode.Open);
-        var smth = XmlReader.Create(fileStream);
+        var fileContents = File.ReadAllText("Assets\\Resources\\test.tsx");
 
         XmlReaderSettings settings = new XmlReaderSettings();
         settings.Async = false;
 
-        using (XmlReader reader = XmlReader.Create(fileStream, settings))
+        var doc = new XmlDocument();
+        doc.LoadXml(fileContents);
+        var docTiles = doc.GetElementsByTagName("tile");
+        foreach (XmlNode docTile in docTiles)
         {
-            while (reader.Read())
+            XmlNode docImage = null;
+            foreach (XmlNode dImage in docTile.ChildNodes)
             {
-                switch (reader.NodeType)
+                if (dImage.Name == "image")
                 {
-                    case XmlNodeType.Element:
-                        Console.WriteLine("Start Element {0}", reader.Name);
-                        if (reader.Name == "tile")
-                        {
-                            Console.WriteLine("Its id is {0}", reader.GetAttribute("id"));
-                        }
-                        break;
-                    case XmlNodeType.Text:
-                        Console.WriteLine("Text Node: {0}", reader.Value);
-                        break;
-                    case XmlNodeType.EndElement:
-                        Console.WriteLine("End Element {0}", reader.Name);
-                        break;
-                    default:
-                        Console.WriteLine("Other node {0} with value {1}",
-                                        reader.NodeType, reader.Value);
-                        break;
+                    docImage = dImage;
                 }
             }
+
+            if (docImage == null)
+            {
+                throw new XmlException("Tile should have an image element");
+            }
+
+            int id = -1;
+            if (!int.TryParse(docTile.Attributes["id"].Value, out id))
+            {
+                throw new XmlException("All tiles should have id");
+            }
+
+            if (tiles.ContainsKey(id))
+            {
+                Debug.LogWarning("Duplicated tile? " + id.ToString());
+                continue;
+            }
+
+            string source = docImage.Attributes["source"].Value;
+            if (string.IsNullOrEmpty(source))
+            {
+                Debug.LogWarning("Source is empty for tile " + id.ToString());
+                continue;
+            }
+
+            int width = -1;
+            if (!int.TryParse(docImage.Attributes["width"].Value, out width))
+            {
+                Debug.LogWarning("Tile image should have width! Id: " + id.ToString());
+                continue;
+            }
+
+            int height = -1;
+            if (!int.TryParse(docImage.Attributes["height"].Value, out height))
+            {
+                Debug.LogWarning("Tile image should have height! Id: " + id.ToString());
+                continue;
+            }
+
+            Sprite sprite;
+            if (sprites.ContainsKey(source))
+            {
+                sprite = sprites[source];
+            }
+            else
+            {
+                var texture = Resources.Load(source) as Texture2D;
+                texture.filterMode = FilterMode.Point;
+                sprite = Sprite.Create(texture, new Rect(0f, 0f, width, height), Vector2.zero);
+                sprites.Add(source, sprite);
+            }
+
+            var tile = new Tile(sprite, id, Vector3.zero);
+            tile.gameObject.SetActive(false);
+            tiles.Add(id, tile);
         }
     }
 }

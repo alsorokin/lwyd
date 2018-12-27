@@ -56,10 +56,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x, 
                                        actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f), 
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Up))
-        {
-            return;
-        }
 
         movement = new Vector2(movement.x, 1);
     }
@@ -70,10 +66,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x,
                                        actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Down))
-        {
-            return;
-        }
 
         movement = new Vector2(movement.x, -1);
     }
@@ -84,10 +76,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y,
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Left))
-        {
-            return;
-        }
 
         movement = new Vector2(-1, movement.y);
     }
@@ -98,10 +86,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y,
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.Right))
-        {
-            return;
-        }
 
         movement = new Vector2(1, movement.y);
     }
@@ -117,10 +101,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.TopLeft))
-        {
-            return;
-        }
 
         movement = new Vector2(-1, 1);
     }
@@ -131,10 +111,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.TopRight))
-        {
-            return;
-        }
 
         movement = new Vector2(1, 1);
     }
@@ -145,10 +121,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.BottomLeft))
-        {
-            return;
-        }
 
         movement = new Vector2(-1, -1);
     }
@@ -159,10 +131,6 @@ class FreeMovementController : MovementController
         var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
                                        0);
-        if (!game.CurrentLevel.CanIGo(actor, fromPosition, Direction.BottomRight))
-        {
-            return;
-        }
 
         movement = new Vector2(1, -1);
     }

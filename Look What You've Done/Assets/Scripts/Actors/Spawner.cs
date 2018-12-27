@@ -34,7 +34,7 @@ public class Spawner : Actor
             timeElapsed += Time.deltaTime;
         }
 
-        if (timeElapsed >= cloneInterval && myLevel.DoIHaveSomewhereToGo(this.Prototype.GetComponent<Actor>()))
+        if (timeElapsed >= cloneInterval)
         {
             timeElapsed = 0;
             actor.Clone();
