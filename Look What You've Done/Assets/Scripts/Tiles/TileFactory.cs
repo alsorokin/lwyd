@@ -56,12 +56,31 @@ class TileFactory
         foreach (XmlNode docTile in docTiles)
         {
             XmlNode docImage = null;
-            foreach (XmlNode dImage in docTile.ChildNodes)
+            var collider = TileCollider.Zero;
+            foreach (XmlNode aNode in docTile.ChildNodes)
             {
-                if (dImage.Name == "image")
+                switch (aNode.Name)
                 {
-                    docImage = dImage;
+                    case "image":
+                        docImage = aNode;
+                        break;
+                    case "objectgroup":
+                        foreach (XmlNode bNode in aNode.ChildNodes)
+                        {
+                            if (bNode.Name == "object" && bNode.Attributes["id"].Value == "1")
+                            {
+                                var cType = bNode.ChildNodes.Count > 0 ?
+                                    bNode.ChildNodes.Item(0).Name == "ellipse" ?
+                                        ColliderType.Ellipse
+                                        : ColliderType.Box
+                                    : ColliderType.None;
+
+                            }
+                        }
+
+                        break;
                 }
+
             }
 
             if (docImage == null)

@@ -3,6 +3,7 @@
 public class Tile
 {
     public GameObject gameObject;
+    public TileCollider tileCollider = TileCollider.Zero;
 
     public SpriteRenderer spriteRenderer
     {
@@ -13,6 +14,19 @@ public class Tile
     }
 
     public int id { get; }
+
+    public Tile(Sprite sprite, int id, Vector3 position, float scale, TileCollider tc) : this (sprite, id, position, scale)
+    {
+        tileCollider = tc;
+        switch(tc.type)
+        {
+            case ColliderType.Box:
+                var box = gameObject.AddComponent<BoxCollider2D>();
+                // relative?
+                box.transform.position = new Vector3(tc.bounds.position.x, tc.bounds.position.y, position.z);
+                break;
+        }
+    }
 
     public Tile(Sprite sprite, int id, Vector3 position, float scale)
     {
