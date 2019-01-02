@@ -69,12 +69,14 @@ class TileFactory
                         {
                             if (bNode.Name == "object" && bNode.Attributes["id"].Value == "1")
                             {
-                                var cType = bNode.ChildNodes.Count > 0 ?
-                                    bNode.ChildNodes.Item(0).Name == "ellipse" ?
-                                        ColliderType.Ellipse
-                                        : ColliderType.Box
-                                    : ColliderType.None;
-
+                                var bChildren = bNode.ChildNodes.Cast<XmlNode>();
+                                collider.type = bChildren.Count() > 0 && bChildren.Any(bn => bn.Name == "ellipse") ? 
+                                    ColliderType.Circle : ColliderType.Box;
+                                float.TryParse(bNode.Attributes["x"].Value, out float cx);
+                                float.TryParse(bNode.Attributes["y"].Value, out float cy);
+                                float.TryParse(bNode.Attributes["width"].Value, out float cWidth);
+                                float.TryParse(bNode.Attributes["height"].Value, out float cHeight);
+                                collider.bounds = new Rect(cx, cy, cWidth, cHeight);
                             }
                         }
 
@@ -91,7 +93,7 @@ class TileFactory
             int id = -1;
             if (!int.TryParse(docTile.Attributes["id"].Value, out id))
             {
-                throw new XmlException("All tiles should have id");
+                throw new XmlException("All tiles should have an id");
             }
 
             if (tiles.ContainsKey(id))
@@ -142,6 +144,11 @@ class TileFactory
             }
 
             var tile = new Tile(sprite, id, Vector3.zero, 1f);
+            if (collider.type != ColliderType.None)
+            {
+                tile.SetCollider(collider);
+            }
+
             tile.gameObject.SetActive(false);
             tiles.Add(id, tile);
         }

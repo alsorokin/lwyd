@@ -21,7 +21,7 @@
  <tile id="5">
   <image width="16" height="16" source="Sprites/trava1.png"/>
   <objectgroup draworder="index">
-   <object id="1" x="0" y="0" width="16" height="16"/>
+   <object id="1" x="2" y="2" width="12" height="12"/>
   </objectgroup>
  </tile>
  <tile id="6">

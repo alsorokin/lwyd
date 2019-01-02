@@ -2,7 +2,7 @@
 
 public enum ColliderType
 {
-    None, Box, Ellipse
+    None, Box, Circle
 }
 
 public struct TileCollider

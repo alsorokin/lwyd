@@ -44,7 +44,15 @@ public class Level
         {
             for (int h = 0; h < levelHeight; h++)
             {
-                levelTiles[w, h] = TileFactory.Instance.CreateTile(23, TranslateGridToX(w), TranslateGridToY(h), TileScale);
+                if (w == 0 || h == 0)
+                {
+                    CreateTile(5, w, h);
+                }
+                else
+                {
+                    CreateTile(23, w, h);
+                }
+                
             }
         }
 
@@ -68,7 +76,6 @@ public class Level
         cameraController.player = player;
         cameraController.level = this;
     }
-
 
     public GameObject SpawnGenericEnemyAt(int gridX, int gridY, bool isFree)
     {
@@ -111,5 +118,10 @@ public class Level
         {
             actors.Add(actor);
         }
+    }
+
+    private void CreateTile(int id, int w, int h)
+    {
+        levelTiles[w, h] = TileFactory.Instance.CreateTile(id, TranslateGridToX(w), TranslateGridToY(h), TileScale);
     }
 }
