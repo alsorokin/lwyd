@@ -13,16 +13,18 @@ public class Tile
         }
     }
 
-    public int id { get; }
+    public int Id { get; }
+    public int Gid { get; set; }
 
-    public Tile(Sprite sprite, int id, Vector3 position, float scale, TileCollider tc) : this (sprite, id, position, scale)
+    public Tile(Sprite sprite, int id, int gid, Vector3 position, float scale, TileCollider tc) : this (sprite, id, gid, position, scale)
     {
         SetCollider(tc);
     }
 
-    public Tile(Sprite sprite, int id, Vector3 position, float scale)
+    public Tile(Sprite sprite, int id, int gid, Vector3 position, float scale)
     {
-        this.id = id;
+        this.Id = id;
+        this.Gid = gid;
         gameObject = new GameObject("tile-" + id.ToString());
         gameObject.transform.localScale = new Vector3(scale, scale, 1f);
         gameObject.transform.position = position;
@@ -83,7 +85,7 @@ public class Tile
 
     public Tile Clone()
     {
-        var newTile = new Tile(SpriteRenderer.sprite, id, this.gameObject.transform.position, this.gameObject.transform.localScale.x);
+        var newTile = new Tile(SpriteRenderer.sprite, Id, Gid, this.gameObject.transform.position, this.gameObject.transform.localScale.x);
         newTile.SetCollider(this.tileCollider);
 
         return newTile;

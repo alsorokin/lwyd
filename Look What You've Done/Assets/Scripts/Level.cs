@@ -46,11 +46,16 @@ public class Level
             {
                 if (w == 0 || h == 0)
                 {
-                    CreateTile(5, w, h);
+                    CreateTile(6, w, h);
+                }
+                else if (w == h && w == 3)
+                {
+                    CreateTile(26, w, h);
+                    continue;
                 }
                 else
                 {
-                    CreateTile(23, w, h);
+                    CreateTile(25, w, h);
                 }
                 
             }

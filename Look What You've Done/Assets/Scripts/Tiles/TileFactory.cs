@@ -4,6 +4,7 @@ using System.Xml;
 using System.IO;
 using System;
 using System.Linq;
+using UnityEditor;
 
 class TileFactory
 {
@@ -12,7 +13,9 @@ class TileFactory
     private Dictionary<int, Tile> tiles = new Dictionary<int, Tile>();
 
     private TileFactory() {
-        ReadTiles();
+        int nextGid = 1;
+        nextGid = ReadTiles("Assets\\Resources\\test.tsx", nextGid);
+        nextGid = ReadTiles("Assets\\Resources\\tree-sample.tsx", nextGid);
     }
 
     public static TileFactory Instance
@@ -28,14 +31,14 @@ class TileFactory
         }
     }
 
-    public Tile CreateTile(int id, float x, float y, float scale)
+    public Tile CreateTile(int gid, float x, float y, float scale)
     {
-        if (!tiles.ContainsKey(id))
+        if (!tiles.ContainsKey(gid))
         {
-            throw new Exception("Cannot create tile " + id.ToString() + ". I don't know of such an id.");
+            throw new Exception("Cannot create tile " + gid.ToString() + ". I don't know of such a gid.");
         }
 
-        var newTile = tiles[id].Clone();
+        var newTile = tiles[gid].Clone();
         newTile.gameObject.transform.position = new Vector3(x, y);
         newTile.gameObject.transform.localScale = new Vector3(scale, scale, 1);
         newTile.gameObject.SetActive(true);
@@ -43,16 +46,76 @@ class TileFactory
         return newTile;
     }
 
-    private void ReadTiles()
+    private int ReadTiles(string tileMap, int firstGid)
     {
-        var fileContents = File.ReadAllText("Assets\\Resources\\test.tsx");
+        var fileContents = File.ReadAllText(tileMap);
+        var gid = firstGid;
 
         XmlReaderSettings settings = new XmlReaderSettings();
         settings.Async = false;
 
         var doc = new XmlDocument();
         doc.LoadXml(fileContents);
-        var docTiles = doc.GetElementsByTagName("tile");
+        XmlNodeList docTiles = doc.GetElementsByTagName("tile");
+        if (docTiles.Count > 0)
+        {
+            // Individual images
+            gid = LoadTilesFromTileNodes(docTiles, gid);
+        }
+        else
+        {
+            // Single tileset image
+            XmlNode imageNode = doc.GetElementsByTagName("image")[0];
+
+            gid = LoadTilesFromSingleNode(imageNode, gid);
+        }
+
+        return gid;
+    }
+
+    private int LoadTilesFromSingleNode(XmlNode imageNode, int firstGid)
+    {
+        var gid = firstGid;
+        int id = 1;
+
+        string source = imageNode.Attributes["source"].Value;
+        source = source.Substring(0, source.LastIndexOf('.'));
+        if (source.StartsWith("./"))
+        {
+            source = source.Substring(2);
+        }
+
+        if (string.IsNullOrEmpty(source))
+        {
+            Debug.LogWarning("Source is empty for tile " + id.ToString());
+        }
+
+        if (sprites.ContainsKey(source + ":0"))
+        {
+            Debug.LogWarning("Sprites already loaded: " + source);
+        }
+
+        var texture = Resources.Load<Texture2D>(source);
+        string spriteSheet = AssetDatabase.GetAssetPath(texture);
+        Sprite[] loadedSprites = AssetDatabase.LoadAllAssetsAtPath(spriteSheet).OfType<Sprite>().ToArray();
+        for (var i = 0; i < loadedSprites.Length; i++)
+        {
+            sprites.Add(source + ":" + i.ToString(), loadedSprites[i]);
+            var tile = new Tile(loadedSprites[i], -1, gid++, Vector3.zero, 1f);
+            tiles.Add(tile.Gid, tile);
+        }
+
+        return gid;
+    }
+
+    private int LoadTilesFromTileNodes(XmlNodeList docTiles, int firstGid)
+    {
+        if (docTiles == null || docTiles.Cast<XmlNode>().Count() == 0)
+        {
+            return firstGid;
+        }
+
+        var gid = firstGid;
         foreach (XmlNode docTile in docTiles)
         {
             XmlNode docImage = null;
@@ -70,7 +133,7 @@ class TileFactory
                             if (bNode.Name == "object" && bNode.Attributes["id"].Value == "1")
                             {
                                 var bChildren = bNode.ChildNodes.Cast<XmlNode>();
-                                collider.type = bChildren.Count() > 0 && bChildren.Any(bn => bn.Name == "ellipse") ? 
+                                collider.type = bChildren.Count() > 0 && bChildren.Any(bn => bn.Name == "ellipse") ?
                                     ColliderType.Circle : ColliderType.Box;
                                 float.TryParse(bNode.Attributes["x"].Value, out float cx);
                                 float.TryParse(bNode.Attributes["y"].Value, out float cy);
@@ -93,13 +156,7 @@ class TileFactory
             int id = -1;
             if (!int.TryParse(docTile.Attributes["id"].Value, out id))
             {
-                throw new XmlException("All tiles should have an id");
-            }
-
-            if (tiles.ContainsKey(id))
-            {
-                Debug.LogWarning("Duplicated tile? " + id.ToString());
-                continue;
+                throw new XmlException("All single-file tiles should have an id");
             }
 
             string source = docImage.Attributes["source"].Value;
@@ -136,21 +193,21 @@ class TileFactory
             }
             else
             {
-                var texture = Resources.Load(source) as Texture2D;
-                texture.filterMode = FilterMode.Point;
-                var pivotPoint = 0.5f;
-                sprite = Sprite.Create(texture, new Rect(0f, 0f, width, height), new Vector2(pivotPoint, pivotPoint), width);
+                sprite = Resources.Load<Sprite>(source);
                 sprites.Add(source, sprite);
             }
 
-            var tile = new Tile(sprite, id, Vector3.zero, 1f);
+            
+            var tile = new Tile(sprite, id, id + firstGid, Vector3.zero, 1f);
             if (collider.type != ColliderType.None)
             {
                 tile.SetCollider(collider);
             }
 
             tile.gameObject.SetActive(false);
-            tiles.Add(id, tile);
+            tiles.Add(tile.Gid, tile);
         }
+
+        return tiles.Last().Value.Gid + 1;
     }
 }
