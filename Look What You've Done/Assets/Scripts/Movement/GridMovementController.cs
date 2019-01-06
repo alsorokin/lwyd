@@ -183,11 +183,6 @@ public class GridMovementController : MovementController
 
     public override void GoUp()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Up))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;
@@ -203,11 +198,6 @@ public class GridMovementController : MovementController
 
     public override void GoDown()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Down))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;
@@ -223,11 +213,6 @@ public class GridMovementController : MovementController
 
     public override void GoLeft()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Left))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;
@@ -243,11 +228,6 @@ public class GridMovementController : MovementController
 
     public override void GoRight()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.Right))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;
@@ -263,11 +243,6 @@ public class GridMovementController : MovementController
 
     public override void GoTopRight()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.TopRight))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;
@@ -283,11 +258,6 @@ public class GridMovementController : MovementController
 
     public override void GoTopLeft()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.TopLeft))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;
@@ -303,11 +273,6 @@ public class GridMovementController : MovementController
 
     public override void GoBottomLeft()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.BottomLeft))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;
@@ -323,11 +288,6 @@ public class GridMovementController : MovementController
 
     public override void GoBottomRight()
     {
-        if (!game.CurrentLevel.CanIGo(gameObject.GetComponent<Actor>(), Direction.BottomRight))
-        {
-            return;
-        }
-
         if (!isMoving)
         {
             isMoving = true;

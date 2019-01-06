@@ -2,14 +2,92 @@
 
 public class Tile
 {
-    public bool passable;
     public GameObject gameObject;
+    private TileCollider tileCollider = TileCollider.Zero;
 
-    private static readonly Quaternion zeroRotation = new Quaternion();
-
-    public Tile(GameObject prefab, Vector3 position, bool passable)
+    public SpriteRenderer SpriteRenderer
     {
-        this.passable = passable;
-        gameObject = Object.Instantiate(prefab, position, zeroRotation);
+        get
+        {
+            return gameObject.GetComponent<SpriteRenderer>();
+        }
+    }
+
+    public int Id { get; }
+    public int Gid { get; set; }
+
+    public Tile(Sprite sprite, int id, int gid, Vector3 position, float scale, TileCollider tc) : this (sprite, id, gid, position, scale)
+    {
+        SetCollider(tc);
+    }
+
+    public Tile(Sprite sprite, int id, int gid, Vector3 position, float scale)
+    {
+        this.Id = id;
+        this.Gid = gid;
+        gameObject = new GameObject("tile-" + id.ToString());
+        gameObject.transform.localScale = new Vector3(scale, scale, 1f);
+        gameObject.transform.position = position;
+        var renderer = gameObject.AddComponent<SpriteRenderer>();
+        renderer.sprite = sprite;
+    }
+
+    public void SetCollider(TileCollider collider)
+    {
+        if (this.tileCollider.type == ColliderType.None)
+        {
+            switch (this.tileCollider.type)
+            {
+                case ColliderType.Box:
+                    var boxCollider = gameObject.GetComponent<BoxCollider2D>();
+                    GameObject.Destroy(boxCollider);
+                    break;
+                case ColliderType.Circle:
+                    var circleCollider = gameObject.GetComponent<CircleCollider2D>();
+                    GameObject.Destroy(circleCollider);
+                    break;
+            }
+        }
+
+        var rigidbody = gameObject.GetComponent<Rigidbody2D>();
+        if (rigidbody == null)
+        {
+            rigidbody = gameObject.AddComponent<Rigidbody2D>();
+        }
+
+        rigidbody.bodyType = RigidbodyType2D.Static;
+        rigidbody.simulated = true;
+
+        this.tileCollider = collider;
+        var tileWidthPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
+        var tileWidthPixelsHalf = tileWidthPixels / 2;
+        var tileHeightPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
+        switch (collider.type)
+        {
+            case ColliderType.Box:
+                var newBoxCollider = gameObject.AddComponent<BoxCollider2D>();
+                newBoxCollider.size = new Vector2(
+                    collider.bounds.width / this.SpriteRenderer.sprite.pixelsPerUnit,
+                    collider.bounds.height / this.SpriteRenderer.sprite.pixelsPerUnit);
+                newBoxCollider.offset = new Vector2(
+                    ((collider.bounds.width / 2) - tileWidthPixelsHalf + collider.bounds.x) / this.SpriteRenderer.sprite.pixelsPerUnit,
+                    -((collider.bounds.height / 2) - tileWidthPixelsHalf + collider.bounds.y) / this.SpriteRenderer.sprite.pixelsPerUnit);
+                break;
+            case ColliderType.Circle:
+                var newCircleCollider = gameObject.AddComponent<CircleCollider2D>();
+                newCircleCollider.radius = collider.bounds.width / this.SpriteRenderer.sprite.pixelsPerUnit / 2;
+                newCircleCollider.offset = new Vector2(
+                    ((collider.bounds.width / 2) - tileWidthPixelsHalf + collider.bounds.x) / this.SpriteRenderer.sprite.pixelsPerUnit,
+                    -((collider.bounds.height / 2) - tileWidthPixelsHalf + collider.bounds.y) / this.SpriteRenderer.sprite.pixelsPerUnit);
+                break;
+        }
+    }
+
+    public Tile Clone()
+    {
+        var newTile = new Tile(SpriteRenderer.sprite, Id, Gid, this.gameObject.transform.position, this.gameObject.transform.localScale.x);
+        newTile.SetCollider(this.tileCollider);
+
+        return newTile;
     }
 }

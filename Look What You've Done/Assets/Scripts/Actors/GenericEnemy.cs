@@ -65,52 +65,14 @@ class GenericEnemy : Actor
             isThinking = !isThinking;
 
             List<Direction> dirs = new List<Direction>();
-            if (myLevel.CanIGo(this, Direction.Up))
-            {
-                dirs.Add(Direction.Up);
-            }
-
-            if (myLevel.CanIGo(this, Direction.Down))
-            {
-                dirs.Add(Direction.Down);
-            }
-
-            if (myLevel.CanIGo(this, Direction.Left))
-            {
-                dirs.Add(Direction.Left);
-            }
-
-            if (myLevel.CanIGo(this, Direction.Right))
-            {
-                dirs.Add(Direction.Right);
-            }
-
-            if (myLevel.CanIGo(this, Direction.TopLeft))
-            {
-                dirs.Add(Direction.TopLeft);
-            }
-
-            if (myLevel.CanIGo(this, Direction.TopRight))
-            {
-                dirs.Add(Direction.TopRight);
-            }
-
-            if (myLevel.CanIGo(this, Direction.BottomRight))
-            {
-                dirs.Add(Direction.BottomRight);
-            }
-
-            if (myLevel.CanIGo(this, Direction.BottomLeft))
-            {
-                dirs.Add(Direction.BottomLeft);
-            }
-
-            if (dirs.Count == 0)
-            {
-                // I'm suffocating!
-                Suffer(5);
-                return;
-            }
+            dirs.Add(Direction.Up);
+            dirs.Add(Direction.Down);
+            dirs.Add(Direction.Left);
+            dirs.Add(Direction.Right);
+            dirs.Add(Direction.TopLeft);
+            dirs.Add(Direction.TopRight);
+            dirs.Add(Direction.BottomRight);
+            dirs.Add(Direction.BottomLeft);
 
             var rnd = Random.Range(0, dirs.Count);
             currentDirection = dirs[rnd];

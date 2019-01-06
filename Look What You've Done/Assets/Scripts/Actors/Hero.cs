@@ -68,7 +68,10 @@ public class Hero : Fighter
         }
     }
 
-    void OnGUI() {}
+    void OnGUI()
+    {
+        GUI.Label(new Rect(new Vector2(0f, 0f), new Vector2(300f, 30f)), transform.position.x.ToString() + ":" + transform.position.y.ToString());
+    }
 
     public override GameObject Clone()
     {
