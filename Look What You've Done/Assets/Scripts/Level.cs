@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml;
 using UnityEngine;
 using Direction = MovementController.Direction;
 
@@ -32,34 +34,9 @@ public class Level
         return GetLeftmostTile();
     }
 
-    public Level(int width, int height)
+    public Level()
     {
-        // TODO: load from file
-        levelWidth = width;
-        levelHeight = height;
-        levelTiles = new Tile[levelWidth, levelHeight];
-
-        // A stub of level generation
-        for (int w = 0; w < levelWidth; w++)
-        {
-            for (int h = 0; h < levelHeight; h++)
-            {
-                if (w == 0 || h == 0)
-                {
-                    CreateTile(6, w, h);
-                }
-                else if (w == h && w == 3)
-                {
-                    CreateTile(26, w, h);
-                    continue;
-                }
-                else
-                {
-                    CreateTile(25, w, h);
-                }
-                
-            }
-        }
+        LoadFromFile("Assets\\Levels\\test.tmx");
 
         // Adding player
         GameObject player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
@@ -80,6 +57,83 @@ public class Level
         var cameraController = cameraObj.GetComponent<CameraMovementController>();
         cameraController.player = player;
         cameraController.level = this;
+    }
+
+    private void LoadFromFile(string fileName)
+    {
+        string content = File.ReadAllText(fileName);
+        XmlReaderSettings settings = new XmlReaderSettings { Async = false };
+        var doc = new XmlDocument();
+        doc.LoadXml(content);
+
+        XmlNodeList mapNodes = doc.GetElementsByTagName("map");
+        if (mapNodes.Count == 0)
+        {
+            throw new Exception("Can\'t see the map node in level file " + fileName);
+        }
+
+        XmlNode mapNode = mapNodes[0];
+        if (!int.TryParse(mapNode.Attributes["width"].Value, out levelWidth))
+        {
+            levelWidth = 100;
+        }
+
+        if (!int.TryParse(mapNode.Attributes["height"].Value, out levelHeight))
+        {
+            levelHeight = 100;
+        }
+
+        levelTiles = new Tile[levelWidth, levelHeight];
+
+        XmlNodeList dataNodes = doc.GetElementsByTagName("data");
+        if (dataNodes.Count == 0)
+        {
+            throw new Exception("Can\'t see the data node in level file " + fileName);
+        }
+
+        XmlNode dataNode = dataNodes[0];
+        string encoding = dataNode.Attributes["encoding"].Value;
+        if (encoding != "csv")
+        {
+            throw new Exception("Unknown level data encoding: " + encoding);
+        }
+
+        var data = dataNode.InnerText.Trim();
+        ParseCsvData(data, levelWidth, levelHeight, out int[,] dataArray);
+        for (int i = 0; i < levelWidth; i++)
+        {
+            for (int j = 0; j < levelHeight; j++)
+            {
+                CreateTile(dataArray[i, j], i, levelHeight - j - 1);
+            }
+        }
+    }
+
+    private void ParseCsvData(string data, int width, int height, out int[,] dataArray)
+    {
+        var processedData = data.Replace("\r", "");
+        dataArray = new int[width, height];
+        int j = 0;
+        foreach (var line in processedData.Split('\n'))
+        {
+            int i = 0;
+            var processedLine = line.Trim(',');
+            foreach (string pos in processedLine.Split(','))
+            {
+                if (int.TryParse(pos, out int parsed))
+                {
+                    dataArray[i, j] = parsed;
+                }
+                else
+                {
+                    dataArray[i, j] = 0;
+                }
+
+                i++;
+            }
+
+            j++;
+        }
     }
 
     public GameObject SpawnGenericEnemyAt(int gridX, int gridY, bool isFree)

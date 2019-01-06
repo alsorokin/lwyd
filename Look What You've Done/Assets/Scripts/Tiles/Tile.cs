@@ -75,7 +75,7 @@ public class Tile
                 break;
             case ColliderType.Circle:
                 var newCircleCollider = gameObject.AddComponent<CircleCollider2D>();
-                newCircleCollider.radius = collider.bounds.width / this.SpriteRenderer.sprite.pixelsPerUnit;
+                newCircleCollider.radius = collider.bounds.width / this.SpriteRenderer.sprite.pixelsPerUnit / 2;
                 newCircleCollider.offset = new Vector2(
                     ((collider.bounds.width / 2) - tileWidthPixelsHalf + collider.bounds.x) / this.SpriteRenderer.sprite.pixelsPerUnit,
                     -((collider.bounds.height / 2) - tileWidthPixelsHalf + collider.bounds.y) / this.SpriteRenderer.sprite.pixelsPerUnit);

@@ -51,9 +51,7 @@ class TileFactory
         var fileContents = File.ReadAllText(tileMap);
         var gid = firstGid;
 
-        XmlReaderSettings settings = new XmlReaderSettings();
-        settings.Async = false;
-
+        XmlReaderSettings settings = new XmlReaderSettings { Async = false };
         var doc = new XmlDocument();
         doc.LoadXml(fileContents);
         XmlNodeList docTiles = doc.GetElementsByTagName("tile");
