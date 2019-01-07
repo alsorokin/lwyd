@@ -11,17 +11,17 @@ public class Level
     private int levelWidth;
     private int levelHeight;
     private List<Actor> actors = new List<Actor>();
-    private Tile[,] levelTiles;
+    private Tile[,,] levelTiles;
     public readonly float TileScale = 1f;
 
     public Tile GetLeftmostTile()
     {
-        return levelTiles[0, 0];
+        return levelTiles[0, 0, 0];
     }
 
     public Tile GetRightmostTile()
     {
-        return levelTiles[levelWidth - 1, levelHeight - 1];
+        return levelTiles[levelWidth - 1, levelHeight - 1, 0];
     }
 
     public Tile GetTopmostTile()
@@ -61,11 +61,13 @@ public class Level
 
     private void LoadFromFile(string fileName)
     {
+        // parsing xml
         string content = File.ReadAllText(fileName);
         XmlReaderSettings settings = new XmlReaderSettings { Async = false };
         var doc = new XmlDocument();
         doc.LoadXml(content);
 
+        // getting the main node and its attributes
         XmlNodeList mapNodes = doc.GetElementsByTagName("map");
         if (mapNodes.Count == 0)
         {
@@ -83,28 +85,41 @@ public class Level
             levelHeight = 100;
         }
 
-        levelTiles = new Tile[levelWidth, levelHeight];
+        // getting layers
+        IEnumerable<XmlNode> layerNodes = doc.GetElementsByTagName("layer").Cast<XmlNode>();
+        int layerCount = layerNodes.Count();
+        if (layerCount == 0)
+        {
+            throw new Exception("Can\'t see any layers in level file " + fileName);
+        }
 
+        levelTiles = new Tile[levelWidth, levelHeight, layerCount];
+
+        // getting data nodes
         XmlNodeList dataNodes = doc.GetElementsByTagName("data");
         if (dataNodes.Count == 0)
         {
             throw new Exception("Can\'t see the data node in level file " + fileName);
         }
 
-        XmlNode dataNode = dataNodes[0];
-        string encoding = dataNode.Attributes["encoding"].Value;
-        if (encoding != "csv")
+        // reading layers from data nodes
+        for (var z = 0; z < dataNodes.Count; z++)
         {
-            throw new Exception("Unknown level data encoding: " + encoding);
-        }
-
-        var data = dataNode.InnerText.Trim();
-        ParseCsvData(data, levelWidth, levelHeight, out int[,] dataArray);
-        for (int i = 0; i < levelWidth; i++)
-        {
-            for (int j = 0; j < levelHeight; j++)
+            XmlNode dataNode = dataNodes[z];
+            string encoding = dataNode.Attributes["encoding"].Value;
+            if (encoding != "csv")
             {
-                CreateTile(dataArray[i, j], i, levelHeight - j - 1);
+                throw new Exception("Unknown level data encoding: " + encoding);
+            }
+
+            var data = dataNode.InnerText.Trim();
+            ParseCsvData(data, levelWidth, levelHeight, out int[,] dataArray);
+            for (int i = 0; i < levelWidth; i++)
+            {
+                for (int j = 0; j < levelHeight; j++)
+                {
+                    CreateTile(dataArray[i, j], i, levelHeight - j - 1, z);
+                }
             }
         }
     }
@@ -179,8 +194,8 @@ public class Level
         }
     }
 
-    private void CreateTile(int id, int w, int h)
+    private void CreateTile(int id, int w, int h, int z)
     {
-        levelTiles[w, h] = TileFactory.Instance.CreateTile(id, TranslateGridToX(w), TranslateGridToY(h), TileScale);
+        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(id, TranslateGridToX(w), TranslateGridToY(h), TileScale);
     }
 }

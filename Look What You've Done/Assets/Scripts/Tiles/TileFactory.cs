@@ -33,6 +33,11 @@ class TileFactory
 
     public Tile CreateTile(int gid, float x, float y, float scale)
     {
+        if (gid == 0)
+        {
+            return CreateEmptyTile();
+        }
+
         if (!tiles.ContainsKey(gid))
         {
             throw new Exception("Cannot create tile " + gid.ToString() + ". I don't know of such a gid.");
@@ -46,6 +51,15 @@ class TileFactory
         return newTile;
     }
 
+    private Tile CreateEmptyTile()
+    {
+        var emptyTile = new Tile(Sprite.Create(new Texture2D(0, 0), new Rect(0, 0, 0, 0), Vector2.zero), 0, 0, new Vector3(0f, 0f, 0f), 0f);
+        emptyTile.gameObject.transform.position = Vector3.zero;
+        emptyTile.gameObject.SetActive(true);
+
+        return emptyTile;
+    }
+
     private int ReadTiles(string tileMap, int firstGid)
     {
         var fileContents = File.ReadAllText(tileMap);
@@ -54,18 +68,18 @@ class TileFactory
         XmlReaderSettings settings = new XmlReaderSettings { Async = false };
         var doc = new XmlDocument();
         doc.LoadXml(fileContents);
-        XmlNodeList docTiles = doc.GetElementsByTagName("tile");
-        if (docTiles.Count > 0)
+        XmlNodeList tileNodes = doc.GetElementsByTagName("tile");
+        XmlNodeList imageNodes = doc.GetElementsByTagName("image");
+
+        if (tileNodes.Count == 0 || (imageNodes.Count > 0 && imageNodes[0].ParentNode.Name == "tile"))
         {
-            // Individual images
-            gid = LoadTilesFromTileNodes(docTiles, gid);
+            // Individual tile images
+            gid = LoadTilesFromTileNodes(tileNodes, gid);
         }
         else
         {
             // Single tileset image
-            XmlNode imageNode = doc.GetElementsByTagName("image")[0];
-
-            gid = LoadTilesFromSingleNode(imageNode, gid);
+            gid = LoadTilesFromSingleNode(imageNodes[0], gid);
         }
 
         return gid;
