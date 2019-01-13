@@ -10,10 +10,10 @@ class TileFactory
 {
     private static TileFactory instance;
     private Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
-    private Dictionary<int, Tile> tiles = new Dictionary<int, Tile>();
+    private Dictionary<uint, Tile> tiles = new Dictionary<uint, Tile>();
 
     private TileFactory() {
-        int nextGid = 1;
+        uint nextGid = 1;
         nextGid = ReadTiles("Assets\\Resources\\test.tsx", nextGid);
         nextGid = ReadTiles("Assets\\Resources\\tree-sample.tsx", nextGid);
     }
@@ -31,7 +31,7 @@ class TileFactory
         }
     }
 
-    public Tile CreateTile(int gid, float x, float y, float scale)
+    public Tile CreateTile(uint gid, float x, float y, float scale)
     {
         if (gid == 0)
         {
@@ -40,7 +40,8 @@ class TileFactory
 
         if (!tiles.ContainsKey(gid))
         {
-            throw new Exception("Cannot create tile " + gid.ToString() + ". I don't know of such a gid.");
+            Debug.LogWarning("Cannot create tile " + gid.ToString() + ". I don't know of such a gid.");
+            return CreateEmptyTile();
         }
 
         var newTile = tiles[gid].Clone();
@@ -60,10 +61,10 @@ class TileFactory
         return emptyTile;
     }
 
-    private int ReadTiles(string tileMap, int firstGid)
+    private uint ReadTiles(string tileMap, uint firstGid)
     {
         var fileContents = File.ReadAllText(tileMap);
-        var gid = firstGid;
+        uint gid = firstGid;
 
         XmlReaderSettings settings = new XmlReaderSettings { Async = false };
         var doc = new XmlDocument();
@@ -85,7 +86,7 @@ class TileFactory
         return gid;
     }
 
-    private int LoadTilesFromSingleNode(XmlNode imageNode, int firstGid)
+    private uint LoadTilesFromSingleNode(XmlNode imageNode, uint firstGid)
     {
         var gid = firstGid;
         int id = 1;
@@ -114,13 +115,14 @@ class TileFactory
         {
             sprites.Add(source + ":" + i.ToString(), loadedSprites[i]);
             var tile = new Tile(loadedSprites[i], -1, gid++, Vector3.zero, 1f);
+            tile.gameObject.SetActive(false);
             tiles.Add(tile.Gid, tile);
         }
 
         return gid;
     }
 
-    private int LoadTilesFromTileNodes(XmlNodeList docTiles, int firstGid)
+    private uint LoadTilesFromTileNodes(XmlNodeList docTiles, uint firstGid)
     {
         if (docTiles == null || docTiles.Cast<XmlNode>().Count() == 0)
         {
@@ -210,7 +212,7 @@ class TileFactory
             }
 
             
-            var tile = new Tile(sprite, id, id + firstGid, Vector3.zero, 1f);
+            var tile = new Tile(sprite, id, (uint)(id + firstGid), Vector3.zero, 1f);
             if (collider.type != ColliderType.None)
             {
                 tile.SetCollider(collider);

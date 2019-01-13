@@ -14,14 +14,14 @@ public class Tile
     }
 
     public int Id { get; }
-    public int Gid { get; set; }
+    public uint Gid { get; set; }
 
-    public Tile(Sprite sprite, int id, int gid, Vector3 position, float scale, TileCollider tc) : this (sprite, id, gid, position, scale)
+    public Tile(Sprite sprite, int id, uint gid, Vector3 position, float scale, TileCollider tc) : this (sprite, id, gid, position, scale)
     {
         SetCollider(tc);
     }
 
-    public Tile(Sprite sprite, int id, int gid, Vector3 position, float scale)
+    public Tile(Sprite sprite, int id, uint gid, Vector3 position, float scale)
     {
         this.Id = id;
         this.Gid = gid;

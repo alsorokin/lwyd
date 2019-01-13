@@ -113,7 +113,7 @@ public class Level
             }
 
             var data = dataNode.InnerText.Trim();
-            ParseCsvData(data, levelWidth, levelHeight, out int[,] dataArray);
+            ParseCsvData(data, levelWidth, levelHeight, out uint[,] dataArray);
             for (int i = 0; i < levelWidth; i++)
             {
                 for (int j = 0; j < levelHeight; j++)
@@ -124,10 +124,10 @@ public class Level
         }
     }
 
-    private void ParseCsvData(string data, int width, int height, out int[,] dataArray)
+    private void ParseCsvData(string data, int width, int height, out uint[,] dataArray)
     {
         var processedData = data.Replace("\r", "");
-        dataArray = new int[width, height];
+        dataArray = new uint[width, height];
         int j = 0;
         foreach (var line in processedData.Split('\n'))
         {
@@ -135,7 +135,7 @@ public class Level
             var processedLine = line.Trim(',');
             foreach (string pos in processedLine.Split(','))
             {
-                if (int.TryParse(pos, out int parsed))
+                if (uint.TryParse(pos, out uint parsed))
                 {
                     dataArray[i, j] = parsed;
                 }
@@ -194,7 +194,7 @@ public class Level
         }
     }
 
-    private void CreateTile(int id, int w, int h, int z)
+    private void CreateTile(uint id, int w, int h, int z)
     {
         levelTiles[w, h, z] = TileFactory.Instance.CreateTile(id, TranslateGridToX(w), TranslateGridToY(h), TileScale);
     }
