@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="12" height="9" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="12" height="9" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="3">
  <tileset firstgid="1" source="../Resources/test.tsx"/>
  <tileset firstgid="26" source="../Resources/tree-sample.tsx"/>
  <layer id="2" name="Tile Layer 1" width="12" height="9">
   <data encoding="csv">
-6,6,6,6,6,6,6,6,6,6,6,6,
+6,6,6,6,6,6,6,6,6,6,1073741830,6,
 6,25,25,25,25,25,25,25,25,25,25,6,
 6,25,25,25,25,25,25,25,25,25,25,6,
 6,25,25,25,25,24,24,25,25,25,25,6,
-6,25,25,25,25,24,25,25,25,25,25,6,
-6,25,25,25,25,25,24,25,25,25,25,6,
-6,25,25,25,25,25,25,25,25,25,25,6,
+6,25,25,25,25,24,25,25,25,3221225495,25,6,
+6,25,25,25,25,25,24,25,2684354583,21,1610612759,6,
+6,25,25,25,25,25,25,25,25,23,25,6,
 6,25,25,25,25,25,25,25,25,25,25,6,
 6,6,6,6,6,6,6,6,6,6,6,6
 </data>
  </layer>
- <layer id="3" name="Tile Layer 2" width="12" height="9">
+ <layer id="3" name="Tile Layer 2" width="12" height="9" offsetx="0" offsety="-16">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,

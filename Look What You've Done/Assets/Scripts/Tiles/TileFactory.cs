@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System.Xml;
 using System.IO;
@@ -31,8 +32,26 @@ class TileFactory
         }
     }
 
-    public Tile CreateTile(uint gid, float x, float y, float scale)
+    private bool GetBit(uint value, int bitPosition)
     {
+        return (value & (1 << bitPosition - 1)) != 0;
+    }
+
+    private uint ZeroBit(uint num, int bitPosition)
+    {
+        return num &= ~(1u << bitPosition - 1);
+    }
+
+    public Tile CreateTile(uint globalId, float x, float y, float scale)
+    {
+        var gid = globalId;
+        var bit32 = GetBit(gid, 32);
+        gid = ZeroBit(gid, 32);
+        var bit31 = GetBit(gid, 31);
+        gid = ZeroBit(gid, 31);
+        var bit30 = GetBit(gid, 30);
+        gid = ZeroBit(gid, 30);
+
         if (gid == 0)
         {
             return CreateEmptyTile();
