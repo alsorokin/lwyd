@@ -16,6 +16,46 @@ public class Tile
     public int Id { get; }
     public uint Gid { get; set; }
 
+    public bool IsFlippedHorizontally
+    {
+        get
+        {
+            return SpriteRenderer.flipX;
+        }
+
+        set
+        {
+            this.SpriteRenderer.flipX = value;
+        }
+    }
+
+    public bool IsFlippedVertically
+    {
+        get
+        {
+            return SpriteRenderer.flipY;
+        }
+
+        set
+        {
+            this.SpriteRenderer.flipY = value;
+        }
+    }
+
+    private bool isFlippedDiagonally = false;
+    public bool IsFlippedDiagonally
+    {
+        get
+        {
+            return isFlippedDiagonally;
+        }
+
+        set
+        {
+            isFlippedDiagonally = value;
+        }
+    }
+
     public Tile(Sprite sprite, int id, uint gid, Vector3 position, float scale, TileCollider tc) : this (sprite, id, gid, position, scale)
     {
         SetCollider(tc);
@@ -87,6 +127,10 @@ public class Tile
     {
         var newTile = new Tile(SpriteRenderer.sprite, Id, Gid, this.gameObject.transform.position, this.gameObject.transform.localScale.x);
         newTile.SetCollider(this.tileCollider);
+        
+        newTile.IsFlippedHorizontally = this.IsFlippedHorizontally;
+        newTile.IsFlippedVertically = this.IsFlippedVertically;
+        newTile.IsFlippedDiagonally = this.IsFlippedDiagonally;
 
         return newTile;
     }

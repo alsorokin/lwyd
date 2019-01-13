@@ -45,11 +45,11 @@ class TileFactory
     public Tile CreateTile(uint globalId, float x, float y, float scale)
     {
         var gid = globalId;
-        var bit32 = GetBit(gid, 32);
+        var flippedHorizontally = GetBit(gid, 32);
         gid = ZeroBit(gid, 32);
-        var bit31 = GetBit(gid, 31);
+        var flippedVertically = GetBit(gid, 31);
         gid = ZeroBit(gid, 31);
-        var bit30 = GetBit(gid, 30);
+        var flippedDiagonally = GetBit(gid, 30);
         gid = ZeroBit(gid, 30);
 
         if (gid == 0)
@@ -67,6 +67,9 @@ class TileFactory
         newTile.gameObject.transform.position = new Vector3(x, y);
         newTile.gameObject.transform.localScale = new Vector3(scale, scale, 1);
         newTile.gameObject.SetActive(true);
+        newTile.IsFlippedHorizontally = flippedHorizontally;
+        newTile.IsFlippedVertically = flippedVertically;
+        newTile.IsFlippedDiagonally = flippedDiagonally;
 
         return newTile;
     }
