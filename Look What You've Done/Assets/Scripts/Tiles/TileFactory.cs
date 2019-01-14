@@ -67,9 +67,7 @@ class TileFactory
         newTile.gameObject.transform.position = new Vector3(x, y);
         newTile.gameObject.transform.localScale = new Vector3(scale, scale, 1);
         newTile.gameObject.SetActive(true);
-        newTile.IsFlippedHorizontally = flippedHorizontally;
-        newTile.IsFlippedVertically = flippedVertically;
-        newTile.IsFlippedDiagonally = flippedDiagonally;
+        newTile.SetFlipped(flippedHorizontally, flippedVertically, flippedDiagonally);
 
         return newTile;
     }

@@ -16,45 +16,11 @@ public class Tile
     public int Id { get; }
     public uint Gid { get; set; }
 
-    public bool IsFlippedHorizontally
-    {
-        get
-        {
-            return SpriteRenderer.flipX;
-        }
+    public bool IsFlippedHorizontally { get; private set; }
 
-        set
-        {
-            this.SpriteRenderer.flipX = value;
-        }
-    }
+    public bool IsFlippedVertically { get; private set; }
 
-    public bool IsFlippedVertically
-    {
-        get
-        {
-            return SpriteRenderer.flipY;
-        }
-
-        set
-        {
-            this.SpriteRenderer.flipY = value;
-        }
-    }
-
-    private bool isFlippedDiagonally = false;
-    public bool IsFlippedDiagonally
-    {
-        get
-        {
-            return isFlippedDiagonally;
-        }
-
-        set
-        {
-            isFlippedDiagonally = value;
-        }
-    }
+    public bool IsFlippedDiagonally { get; private set; }
 
     public Tile(Sprite sprite, int id, uint gid, Vector3 position, float scale, TileCollider tc) : this (sprite, id, gid, position, scale)
     {
@@ -123,15 +89,64 @@ public class Tile
         }
     }
 
+    public void SetFlipped(bool h, bool v, bool d)
+    {
+        IsFlippedHorizontally = h;
+        IsFlippedVertically = v;
+        IsFlippedDiagonally = d;
+
+        // 000 - std - 5
+        if (!h && !v && !d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+        // 001 - fv90 - 536870917
+        else if (!h && !v && d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(180, 0, 90);
+        }
+        // 010 - fv - 1073741829
+        else if (!h && v && !d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(180, 0, 0);
+        }
+        // 100 - fh - 2147483653
+        else if (h && !v && !d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(0, 180, 0);
+        }
+        // 011 - std90 - 1610612741
+        else if (!h && v && d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(0, 0, 90);
+        }
+        // 101 - std270 - 2684354565
+        else if (h && !v && d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(0, 0, 270);
+        }
+        // 110 - std180 - 3221225477
+        else if (h && v && !d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
+        }
+        // 111 - fh90 - 3758096389
+        else if (h && v && d)
+        {
+            this.gameObject.transform.localRotation = Quaternion.Euler(0, 180, 90);
+        }
+        // wtf?
+        else
+        {
+            throw new System.Exception("Looks like I didn't handle all possible variants of tile flipping. Please contact me and tell me I'm dumb.");
+        }
+    }
+
     public Tile Clone()
     {
         var newTile = new Tile(SpriteRenderer.sprite, Id, Gid, this.gameObject.transform.position, this.gameObject.transform.localScale.x);
         newTile.SetCollider(this.tileCollider);
         
-        newTile.IsFlippedHorizontally = this.IsFlippedHorizontally;
-        newTile.IsFlippedVertically = this.IsFlippedVertically;
-        newTile.IsFlippedDiagonally = this.IsFlippedDiagonally;
-
         return newTile;
     }
 }
