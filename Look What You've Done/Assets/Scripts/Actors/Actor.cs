@@ -5,6 +5,14 @@ public abstract class Actor : MonoBehaviour
     protected MovementController mc;
     private float health = 75;
     protected Level myLevel;
+    private float Offset
+    {
+        get
+        {
+            return -(this.GetComponent<SpriteRenderer>().bounds.size.y / 2);
+        }
+    }
+    private readonly float originalZ = -1f;
 
     public bool Alive
     {
@@ -31,7 +39,22 @@ public abstract class Actor : MonoBehaviour
 
     public bool Cloneable { get; set; }
 
+    private float OrderInLayer
+    {
+        get
+        {
+            return (this.gameObject.transform.position.y + Offset) * 0.001f;
+        }
+    }
+
     public abstract GameObject Clone();
+
+    public void LateUpdate()
+    {
+        this.gameObject.transform.position = new Vector3(this.transform.position.x,
+                                                         this.transform.position.y,
+                                                         originalZ + OrderInLayer);
+    }
 
     protected virtual void Start()
     {

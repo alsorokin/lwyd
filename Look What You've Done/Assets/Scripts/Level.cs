@@ -196,8 +196,6 @@ public class Level
 
     private void CreateTile(uint id, int w, int h, int z)
     {
-        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(id, TranslateGridToX(w), TranslateGridToY(h), TileScale);
-        var pos = levelTiles[w, h, z].gameObject.transform.position;
-        levelTiles[w, h, z].gameObject.transform.position = new Vector3(pos.x, pos.y, 0f - (0.01f * z));
+        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(id, TranslateGridToX(w), TranslateGridToY(h), 0f - z, TileScale);
     }
 }

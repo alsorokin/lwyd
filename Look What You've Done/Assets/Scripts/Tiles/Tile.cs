@@ -4,6 +4,16 @@ public class Tile
 {
     public GameObject gameObject;
     private TileCollider tileCollider = TileCollider.Zero;
+    private float offset;
+    private readonly float originalZ;
+
+    private float OrderInLayer
+    {
+        get
+        {
+            return (this.gameObject.transform.position.y + offset) * 0.001f;
+        }
+    }
 
     public SpriteRenderer SpriteRenderer
     {
@@ -31,11 +41,14 @@ public class Tile
     {
         this.Id = id;
         this.Gid = gid;
-        gameObject = new GameObject("tile-" + id.ToString());
-        gameObject.transform.localScale = new Vector3(scale, scale, 1f);
-        gameObject.transform.position = position;
+        this.gameObject = new GameObject("tile-" + id.ToString());
+        this.gameObject.transform.localScale = new Vector3(scale, scale, 1f);
+        this.gameObject.transform.position = position;
         var renderer = gameObject.AddComponent<SpriteRenderer>();
         renderer.sprite = sprite;
+        this.offset = -(this.SpriteRenderer.bounds.size.y / 2);
+        this.originalZ = position.z;
+        UpdateZPosition();
     }
 
     public void SetCollider(TileCollider collider)
@@ -68,25 +81,30 @@ public class Tile
         var tileWidthPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
         var tileWidthPixelsHalf = tileWidthPixels / 2;
         var tileHeightPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
+        float ppu = this.SpriteRenderer.sprite.pixelsPerUnit;
         switch (collider.type)
         {
             case ColliderType.Box:
                 var newBoxCollider = gameObject.AddComponent<BoxCollider2D>();
                 newBoxCollider.size = new Vector2(
-                    collider.bounds.width / this.SpriteRenderer.sprite.pixelsPerUnit,
-                    collider.bounds.height / this.SpriteRenderer.sprite.pixelsPerUnit);
+                    collider.bounds.width / ppu,
+                    collider.bounds.height / ppu);
                 newBoxCollider.offset = new Vector2(
-                    ((collider.bounds.width / 2) - tileWidthPixelsHalf + collider.bounds.x) / this.SpriteRenderer.sprite.pixelsPerUnit,
-                    -((collider.bounds.height / 2) - tileWidthPixelsHalf + collider.bounds.y) / this.SpriteRenderer.sprite.pixelsPerUnit);
+                    ((collider.bounds.width / 2) - tileWidthPixelsHalf + collider.bounds.x) / ppu,
+                    -((collider.bounds.height / 2) - tileWidthPixelsHalf + collider.bounds.y) / ppu);
+                this.offset = newBoxCollider.offset.y - (this.SpriteRenderer.sprite.texture.height / 2 / ppu);
                 break;
             case ColliderType.Circle:
                 var newCircleCollider = gameObject.AddComponent<CircleCollider2D>();
-                newCircleCollider.radius = collider.bounds.width / this.SpriteRenderer.sprite.pixelsPerUnit / 2;
+                newCircleCollider.radius = collider.bounds.width / ppu / 2;
                 newCircleCollider.offset = new Vector2(
-                    ((collider.bounds.width / 2) - tileWidthPixelsHalf + collider.bounds.x) / this.SpriteRenderer.sprite.pixelsPerUnit,
-                    -((collider.bounds.height / 2) - tileWidthPixelsHalf + collider.bounds.y) / this.SpriteRenderer.sprite.pixelsPerUnit);
+                    ((collider.bounds.width / 2) - tileWidthPixelsHalf + collider.bounds.x) / ppu,
+                    -((collider.bounds.height / 2) - tileWidthPixelsHalf + collider.bounds.y) / ppu);
+                this.offset = newCircleCollider.offset.y - (this.SpriteRenderer.sprite.texture.height / 2 / ppu);
                 break;
         }
+
+        UpdateZPosition();
     }
 
     public void SetFlipped(bool h, bool v, bool d)
@@ -138,15 +156,23 @@ public class Tile
         // wtf?
         else
         {
-            throw new System.Exception("Looks like I didn't handle all possible variants of tile flipping. Please contact me and tell me I'm dumb.");
+            throw new System.Exception("Looks like I didn't handle every possible variant of tile flipping. Please contact me and tell me I'm dumb.");
         }
     }
 
-    public Tile Clone()
+    public Tile CloneTo(float x, float y, float z)
     {
-        var newTile = new Tile(SpriteRenderer.sprite, Id, Gid, this.gameObject.transform.position, this.gameObject.transform.localScale.x);
+        var newPosition = new Vector3(x, y, z);
+        var newTile = new Tile(SpriteRenderer.sprite, Id, Gid, newPosition, this.gameObject.transform.localScale.x);
         newTile.SetCollider(this.tileCollider);
         
         return newTile;
+    }
+
+    private void UpdateZPosition()
+    {
+        this.gameObject.transform.position = new Vector3(this.gameObject.transform.position.x,
+                                                         this.gameObject.transform.position.y,
+                                                         originalZ + OrderInLayer);
     }
 }

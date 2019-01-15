@@ -43,9 +43,9 @@ class FreeMovementController : MovementController
 
     private void FixedUpdate()
     {
-        transform.position += new Vector3(GetMovementScalar() * movement.x,
-                                          GetMovementScalar() * movement.y, 
-                                          0f);
+        this.transform.position += new Vector3(GetMovementScalar() * movement.x,
+                                               GetMovementScalar() * movement.y, 
+                                               0f);
 
         StopMoving();
     }
@@ -133,15 +133,5 @@ class FreeMovementController : MovementController
                                        0);
 
         movement = new Vector2(1, -1);
-    }
-
-    void OnTriggerEnter2D(Collider2D collider)
-    {
-        Debug.Log("onEnter");
-    }
-
-    void OnTriggerStay2D(Collider2D collider)
-    {
-        Debug.Log("onStay");
     }
 }
