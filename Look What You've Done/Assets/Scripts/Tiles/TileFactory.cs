@@ -17,6 +17,7 @@ class TileFactory
         uint nextGid = 1;
         nextGid = ReadTiles("Assets\\Resources\\test.tsx", nextGid);
         nextGid = ReadTiles("Assets\\Resources\\tree-sample.tsx", nextGid);
+        nextGid = ReadTiles("Assets\\Resources\\sprite-pack-sample.tsx", nextGid);
     }
 
     public static TileFactory Instance
@@ -91,7 +92,7 @@ class TileFactory
         XmlNodeList tileNodes = doc.GetElementsByTagName("tile");
         XmlNodeList imageNodes = doc.GetElementsByTagName("image");
 
-        if (tileNodes.Count == 0 || (imageNodes.Count > 0 && imageNodes[0].ParentNode.Name == "tile"))
+        if (imageNodes.Count > 0 && imageNodes[0].ParentNode.Name == "tile")
         {
             // Individual tile images
             gid = LoadTilesFromTileNodes(tileNodes, gid);
@@ -130,10 +131,23 @@ class TileFactory
         var texture = Resources.Load<Texture2D>(source);
         string spriteSheet = AssetDatabase.GetAssetPath(texture);
         Sprite[] loadedSprites = AssetDatabase.LoadAllAssetsAtPath(spriteSheet).OfType<Sprite>().ToArray();
+        IEnumerable<XmlNode> tileNodes = imageNode.OwnerDocument.GetElementsByTagName("tile").Cast<XmlNode>();
+
         for (var i = 0; i < loadedSprites.Length; i++)
         {
             sprites.Add(source + ":" + i.ToString(), loadedSprites[i]);
-            var tile = new Tile(loadedSprites[i], -1, gid++, Vector3.zero, 1f);
+
+            XmlNode tileNode = tileNodes.FirstOrDefault(n => n.Attributes["id"].Value == i.ToString());
+            var collider = TileCollider.Zero;
+            if (tileNode != null)
+            {
+                // TODO: Parse multiple colliders
+                XmlNode objectGroupNode = tileNode.ChildNodes[0];
+                XmlNode objectNode = objectGroupNode.ChildNodes[0];
+                collider = ParseObjectNode(objectNode);
+            }
+
+            var tile = new Tile(loadedSprites[i], -1, gid++, Vector3.zero, 1f, collider);
             tile.gameObject.SetActive(false);
             tiles.Add(tile.Gid, tile);
         }
@@ -141,19 +155,19 @@ class TileFactory
         return gid;
     }
 
-    private uint LoadTilesFromTileNodes(XmlNodeList docTiles, uint firstGid)
+    private uint LoadTilesFromTileNodes(XmlNodeList tileNodes, uint firstGid)
     {
-        if (docTiles == null || docTiles.Cast<XmlNode>().Count() == 0)
+        if (tileNodes == null || tileNodes.Cast<XmlNode>().Count() == 0)
         {
             return firstGid;
         }
 
         var gid = firstGid;
-        foreach (XmlNode docTile in docTiles)
+        foreach (XmlNode tileNode in tileNodes)
         {
             XmlNode docImage = null;
             var collider = TileCollider.Zero;
-            foreach (XmlNode aNode in docTile.ChildNodes)
+            foreach (XmlNode aNode in tileNode.ChildNodes)
             {
                 switch (aNode.Name)
                 {
@@ -163,22 +177,15 @@ class TileFactory
                     case "objectgroup":
                         foreach (XmlNode bNode in aNode.ChildNodes)
                         {
+                            // TODO: Add support for multiple colliders
                             if (bNode.Name == "object" && bNode.Attributes["id"].Value == "1")
                             {
-                                var bChildren = bNode.ChildNodes.Cast<XmlNode>();
-                                collider.type = bChildren.Count() > 0 && bChildren.Any(bn => bn.Name == "ellipse") ?
-                                    ColliderType.Circle : ColliderType.Box;
-                                float.TryParse(bNode.Attributes["x"].Value, out float cx);
-                                float.TryParse(bNode.Attributes["y"].Value, out float cy);
-                                float.TryParse(bNode.Attributes["width"].Value, out float cWidth);
-                                float.TryParse(bNode.Attributes["height"].Value, out float cHeight);
-                                collider.bounds = new Rect(cx, cy, cWidth, cHeight);
+                                collider = ParseObjectNode(bNode);
                             }
                         }
 
                         break;
                 }
-
             }
 
             if (docImage == null)
@@ -187,7 +194,7 @@ class TileFactory
             }
 
             int id = -1;
-            if (!int.TryParse(docTile.Attributes["id"].Value, out id))
+            if (!int.TryParse(tileNode.Attributes["id"].Value, out id))
             {
                 throw new XmlException("All single-file tiles should have an id");
             }
@@ -242,5 +249,20 @@ class TileFactory
         }
 
         return tiles.Last().Value.Gid + 1;
+    }
+
+    private TileCollider ParseObjectNode(XmlNode objectNode)
+    {
+        var collider = TileCollider.Zero;
+        var children = objectNode.ChildNodes.Cast<XmlNode>();
+        collider.type = children.Count() > 0 && children.Any(bn => bn.Name == "ellipse") ?
+            ColliderType.Circle : ColliderType.Box;
+        float.TryParse(objectNode.Attributes["x"].Value, out float cx);
+        float.TryParse(objectNode.Attributes["y"].Value, out float cy);
+        float.TryParse(objectNode.Attributes["width"].Value, out float cWidth);
+        float.TryParse(objectNode.Attributes["height"].Value, out float cHeight);
+        collider.bounds = new Rect(cx, cy, cWidth, cHeight);
+
+        return collider;
     }
 }

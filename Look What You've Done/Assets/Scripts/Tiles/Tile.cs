@@ -3,6 +3,7 @@
 public class Tile
 {
     public GameObject gameObject;
+    // TODO: Add support for multiple colliders
     private TileCollider tileCollider = TileCollider.Zero;
     private float offset;
     private readonly float originalZ;
