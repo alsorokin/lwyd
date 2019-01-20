@@ -3,7 +3,9 @@
  <image source="Sprites/sprite-pack-sample.png" trans="003039" width="52" height="52"/>
  <tile id="0">
   <objectgroup draworder="index">
-   <object id="1" x="7" y="6" width="9" height="10"/>
+   <object id="3" x="0" y="16">
+    <polygon points="11.5455,-6 16.0909,-6.36364 16,-10.6364 8.09091,-8.81818 7.63636,-0.0909091 10.8182,-0.181818"/>
+   </object>
   </objectgroup>
  </tile>
  <tile id="1">

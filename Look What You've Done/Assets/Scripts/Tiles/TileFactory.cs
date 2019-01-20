@@ -138,7 +138,7 @@ class TileFactory
             sprites.Add(source + ":" + i.ToString(), loadedSprites[i]);
 
             XmlNode tileNode = tileNodes.FirstOrDefault(n => n.Attributes["id"].Value == i.ToString());
-            var collider = TileCollider.Zero;
+            TileCollider collider = null;
             if (tileNode != null)
             {
                 // TODO: Parse multiple colliders
@@ -166,7 +166,7 @@ class TileFactory
         foreach (XmlNode tileNode in tileNodes)
         {
             XmlNode docImage = null;
-            var collider = TileCollider.Zero;
+            TileCollider collider = null;
             foreach (XmlNode aNode in tileNode.ChildNodes)
             {
                 switch (aNode.Name)
@@ -239,7 +239,7 @@ class TileFactory
 
             
             var tile = new Tile(sprite, id, (uint)(id + firstGid), Vector3.zero, 1f);
-            if (collider.type != ColliderType.None)
+            if (collider != null)
             {
                 tile.SetCollider(collider);
             }
@@ -253,16 +253,42 @@ class TileFactory
 
     private TileCollider ParseObjectNode(XmlNode objectNode)
     {
-        var collider = TileCollider.Zero;
-        var children = objectNode.ChildNodes.Cast<XmlNode>();
-        collider.type = children.Count() > 0 && children.Any(bn => bn.Name == "ellipse") ?
-            ColliderType.Circle : ColliderType.Box;
-        float.TryParse(objectNode.Attributes["x"].Value, out float cx);
-        float.TryParse(objectNode.Attributes["y"].Value, out float cy);
-        float.TryParse(objectNode.Attributes["width"].Value, out float cWidth);
-        float.TryParse(objectNode.Attributes["height"].Value, out float cHeight);
-        collider.bounds = new Rect(cx, cy, cWidth, cHeight);
+        if (objectNode == null)
+        {
+            throw new ArgumentNullException("objectNode");
+        }
 
-        return collider;
+        var children = objectNode.ChildNodes.Cast<XmlNode>();
+        float.TryParse(objectNode.Attributes["x"]?.Value, out float cx);
+        float.TryParse(objectNode.Attributes["y"]?.Value, out float cy);
+
+        if (children.Count() == 0)
+        {
+            float.TryParse(objectNode.Attributes["width"].Value, out float cWidth);
+            float.TryParse(objectNode.Attributes["height"].Value, out float cHeight);
+
+            var collider = new BoxTileCollider();
+            collider.bounds = new Rect(cx, cy, cWidth, cHeight);
+
+            return collider;
+        }
+        else if (children.First().Name == "ellipse")
+        {
+            float.TryParse(objectNode.Attributes["width"].Value, out float cWidth);
+            float.TryParse(objectNode.Attributes["height"].Value, out float cHeight);
+
+            var collider = new CircleTileCollider();
+            collider.bounds = new Rect(cx, cy, cWidth, cHeight);
+
+            return collider;
+        }
+        else if (children.First().Name == "polygon")
+        {
+            var collider = new PolygonTileCollider();
+
+            return collider;
+        }
+
+        return null;
     }
 }

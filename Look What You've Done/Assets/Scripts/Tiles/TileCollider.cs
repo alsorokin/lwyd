@@ -1,24 +1,29 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-public enum ColliderType
+public abstract class TileCollider
 {
-    None, Box, Circle
+    
 }
 
-public struct TileCollider
+public class PolygonTileCollider : TileCollider
 {
-    public ColliderType type;
-    public Rect bounds;
+    public List<Vector2> Vertices = new List<Vector2>();
+}
 
-    public static TileCollider Zero
+public class CircleTileCollider : TileCollider
+{
+    public Rect bounds;
+    public float Radius
     {
         get
         {
-            return new TileCollider()
-            {
-                type = ColliderType.None,
-                bounds = new Rect(0f, 0f, 0f, 0f)
-            };
+            return bounds.width / 2;
         }
     }
+}
+
+public class BoxTileCollider : TileCollider
+{
+    public Rect bounds;
 }
