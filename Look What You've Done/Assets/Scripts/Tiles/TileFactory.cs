@@ -285,7 +285,16 @@ class TileFactory
         else if (children.First().Name == "polygon")
         {
             var collider = new PolygonTileCollider();
+            IEnumerable<Vector2> points = children.First().Attributes["points"].Value.Split(' ')
+                .Select(value => {
+                    string[] pair = value.Split(',');
+                    float.TryParse(pair[0], out float x);
+                    float.TryParse(pair[1], out float y);
 
+                    return new Vector2(x + cx, y + cy);
+                });
+
+            collider.Vertices = points.ToList();
             return collider;
         }
 

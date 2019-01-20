@@ -94,9 +94,10 @@ public class Tile
         var tileWidthPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
         var tileWidthPixelsHalf = tileWidthPixels / 2;
         var tileHeightPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
+        var tileHeightPixelsHalf = tileHeightPixels / 2;
         float ppu = this.SpriteRenderer.sprite.pixelsPerUnit;
 
-        if (collider.GetType() == typeof(BoxTileCollider))
+        if (collider is BoxTileCollider)
         {
             var boxCollider = collider as BoxTileCollider;
             var newBoxCollider = gameObject.AddComponent<BoxCollider2D>();
@@ -105,24 +106,26 @@ public class Tile
                 boxCollider.bounds.height / ppu);
             newBoxCollider.offset = new Vector2(
                 ((boxCollider.bounds.width / 2) - tileWidthPixelsHalf + boxCollider.bounds.x) / ppu,
-                -((boxCollider.bounds.height / 2) - tileWidthPixelsHalf + boxCollider.bounds.y) / ppu);
+                -((boxCollider.bounds.height / 2) - tileHeightPixelsHalf + boxCollider.bounds.y) / ppu);
             this.offset = newBoxCollider.offset.y - (this.SpriteRenderer.sprite.texture.height / 2 / ppu);
         }
-        else if (collider.GetType() == typeof(CircleTileCollider))
+        else if (collider is CircleTileCollider)
         {
             var circleCollider = collider as CircleTileCollider;
             var newCircleCollider = gameObject.AddComponent<CircleCollider2D>();
             newCircleCollider.radius = circleCollider.Radius / ppu;
             newCircleCollider.offset = new Vector2(
                 ((circleCollider.bounds.width / 2) - tileWidthPixelsHalf + circleCollider.bounds.x) / ppu,
-                -((circleCollider.bounds.height / 2) - tileWidthPixelsHalf + circleCollider.bounds.y) / ppu);
+                -((circleCollider.bounds.height / 2) - tileHeightPixelsHalf + circleCollider.bounds.y) / ppu);
             this.offset = newCircleCollider.offset.y - (this.SpriteRenderer.sprite.texture.height / 2 / ppu);
         }
-        else if (collider.GetType() == typeof(PolygonTileCollider))
+        else if (collider is PolygonTileCollider)
         {
             var polygonCollider = collider as PolygonTileCollider;
             var newPolygonCollider = gameObject.AddComponent<PolygonCollider2D>();
-            newPolygonCollider.points = polygonCollider.Vertices.ToArray();
+            newPolygonCollider.points = polygonCollider.Vertices.Select(v => new Vector2(v.x / ppu, -v.y / ppu)).ToArray();
+            newPolygonCollider.offset = new Vector2(-tileWidthPixelsHalf / ppu, tileHeightPixelsHalf / ppu);
+            this.offset = newPolygonCollider.offset.y - (this.SpriteRenderer.sprite.texture.height / 2 / ppu);
         }
 
 
