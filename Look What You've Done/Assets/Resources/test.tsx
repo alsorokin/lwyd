@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.2" tiledversion="1.2.1" name="test" tilewidth="16" tileheight="16" tilecount="22" columns="0">
+<tileset version="1.2" tiledversion="1.2.1" name="test" tilewidth="16" tileheight="16" tilecount="29" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="16" height="16" source="Sprites/CatGirl2.png"/>
@@ -82,5 +82,26 @@
  </tile>
  <tile id="24">
   <image width="16" height="16" source="Sprites/tr/tr10.png"/>
+ </tile>
+ <tile id="32">
+  <image width="16" height="16" source="Sprites/trees01/1.png"/>
+ </tile>
+ <tile id="33">
+  <image width="16" height="16" source="Sprites/trees01/2.png"/>
+ </tile>
+ <tile id="34">
+  <image width="16" height="16" source="Sprites/trees01/3.png"/>
+ </tile>
+ <tile id="35">
+  <image width="16" height="16" source="Sprites/trees01/4.png"/>
+ </tile>
+ <tile id="36">
+  <image width="16" height="16" source="Sprites/trees01/5.png"/>
+ </tile>
+ <tile id="37">
+  <image width="16" height="16" source="Sprites/trees01/6.png"/>
+ </tile>
+ <tile id="38">
+  <image width="16" height="16" source="Sprites/trees01/7.png"/>
  </tile>
 </tileset>
