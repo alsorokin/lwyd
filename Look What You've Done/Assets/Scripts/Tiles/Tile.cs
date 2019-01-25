@@ -48,7 +48,7 @@ public class Tile
         this.gameObject.transform.position = position;
         var renderer = gameObject.AddComponent<SpriteRenderer>();
         renderer.sprite = sprite;
-        this.offset = -(this.SpriteRenderer.bounds.size.y / 2);
+        this.offset = -(this.SpriteRenderer.sprite.pivot.y / this.SpriteRenderer.sprite.pixelsPerUnit);
         this.originalZ = position.z;
         UpdateZPosition();
     }
