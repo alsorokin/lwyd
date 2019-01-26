@@ -13,7 +13,7 @@ public class Level
     private List<Actor> actors = new List<Actor>();
     private Tile[,,] levelTiles;
     private readonly List<Tile> objects = new List<Tile>();
-    public readonly float TileScale = 1f;
+    public readonly float TileScale = 2f;
 
     private const float default_ppu = 16f;
     private const float default_object_layer_index = 10f;
@@ -218,12 +218,12 @@ public class Level
         // if any tile is present, use first tile's ppu
         //float ppu = levelTiles.Length > 0 && levelTiles[0, 0, 0] != null ? levelTiles[0, 0, 0].SpriteRenderer.sprite.pixelsPerUnit : default_ppu;
 
-        return (pixels / default_ppu) * TileScale;
+        return pixels / default_ppu * TileScale;
     }
 
     private float TranslateYFromTmx(float tmxY)
     {
-        float levelHeightInPixels = levelHeight * default_ppu * TileScale;
+        float levelHeightInPixels = levelHeight * default_ppu;
         return levelHeightInPixels - tmxY;
     }
 
