@@ -9,7 +9,7 @@ class CameraMovementController : MonoBehaviour
     {
         get
         {
-            return Screen.width / 500 / level.TileScale;
+            return Screen.width / 500;
         }
     }
 
@@ -17,7 +17,7 @@ class CameraMovementController : MonoBehaviour
     {
         get
         {
-            return Screen.height / 500 / level.TileScale;
+            return Screen.height / 500;
         }
     }
 

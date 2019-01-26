@@ -43,7 +43,7 @@ class TileFactory
         return num &= ~(1u << bitPosition - 1);
     }
 
-    public Tile CreateTile(uint globalId, float x, float y, float z, float scale)
+    public Tile CreateTile(uint globalId, float x, float y, float z)
     {
         var gid = globalId;
         var flippedHorizontally = GetBit(gid, 32);
@@ -65,7 +65,6 @@ class TileFactory
         }
 
         var newTile = tiles[gid].CloneTo(x, y, z);
-        newTile.gameObject.transform.localScale = new Vector3(scale, scale, 1);
         newTile.gameObject.SetActive(true);
         newTile.SetFlipped(flippedHorizontally, flippedVertically, flippedDiagonally);
 

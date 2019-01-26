@@ -12,7 +12,7 @@ public abstract class Actor : MonoBehaviour
             return -(this.GetComponent<SpriteRenderer>().bounds.size.y / 2);
         }
     }
-    private readonly float originalZ = -1f;
+    private readonly float originalZ = -10f;
 
     public bool Alive
     {
@@ -43,7 +43,7 @@ public abstract class Actor : MonoBehaviour
     {
         get
         {
-            return (this.gameObject.transform.position.y + Offset) * 0.001f;
+            return (this.gameObject.transform.position.y + Offset) * 0.001f + originalZ;
         }
     }
 
@@ -53,7 +53,7 @@ public abstract class Actor : MonoBehaviour
     {
         this.gameObject.transform.position = new Vector3(this.transform.position.x,
                                                          this.transform.position.y,
-                                                         originalZ + OrderInLayer);
+                                                         OrderInLayer);
     }
 
     protected virtual void Start()

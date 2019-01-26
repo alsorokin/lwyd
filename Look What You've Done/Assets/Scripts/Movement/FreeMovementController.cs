@@ -54,7 +54,7 @@ class FreeMovementController : MovementController
     {
         var actor = gameObject.GetComponent<Actor>();
         var fromPosition = new Vector3(actor.transform.position.x, 
-                                       actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f), 
+                                       actor.transform.position.y + 0.001f, 
                                        0);
 
         movement = new Vector2(movement.x, 1);
@@ -64,7 +64,7 @@ class FreeMovementController : MovementController
     {
         var actor = gameObject.GetComponent<Actor>();
         var fromPosition = new Vector3(actor.transform.position.x,
-                                       actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+                                       actor.transform.position.y - 0.001f,
                                        0);
 
         movement = new Vector2(movement.x, -1);
@@ -73,7 +73,7 @@ class FreeMovementController : MovementController
     public override void GoLeft()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+        var fromPosition = new Vector3(actor.transform.position.x - 0.001f,
                                        actor.transform.position.y,
                                        0);
 
@@ -83,7 +83,7 @@ class FreeMovementController : MovementController
     public override void GoRight()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+        var fromPosition = new Vector3(actor.transform.position.x + 0.001f,
                                        actor.transform.position.y,
                                        0);
 
@@ -98,8 +98,8 @@ class FreeMovementController : MovementController
     public override void GoTopLeft()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
-                                       actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+        var fromPosition = new Vector3(actor.transform.position.x - 0.001f,
+                                       actor.transform.position.y + 0.001f,
                                        0);
 
         movement = new Vector2(-1, 1);
@@ -108,8 +108,8 @@ class FreeMovementController : MovementController
     public override void GoTopRight()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
-                                       actor.transform.position.y - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+        var fromPosition = new Vector3(actor.transform.position.x + 0.001f,
+                                       actor.transform.position.y + 0.001f,
                                        0);
 
         movement = new Vector2(1, 1);
@@ -118,8 +118,8 @@ class FreeMovementController : MovementController
     public override void GoBottomLeft()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
-                                       actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+        var fromPosition = new Vector3(actor.transform.position.x - 0.001f,
+                                       actor.transform.position.y - 0.001f,
                                        0);
 
         movement = new Vector2(-1, -1);
@@ -128,8 +128,8 @@ class FreeMovementController : MovementController
     public override void GoBottomRight()
     {
         var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x - ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
-                                       actor.transform.position.y + ((this.game.CurrentLevel.TileScale / 2) - 0.001f),
+        var fromPosition = new Vector3(actor.transform.position.x + 0.001f,
+                                       actor.transform.position.y - 0.001f,
                                        0);
 
         movement = new Vector2(1, -1);

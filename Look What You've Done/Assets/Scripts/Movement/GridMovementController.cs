@@ -188,7 +188,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.Up;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(0, game.CurrentLevel.TileScale, 0);
+            stopPosition = transform.position + new Vector3(0, 1f, 0);
         }
         else
         {
@@ -203,7 +203,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.Down;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(0, -game.CurrentLevel.TileScale, 0);
+            stopPosition = transform.position + new Vector3(0, -1f, 0);
         }
         else
         {
@@ -218,7 +218,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.Left;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(-game.CurrentLevel.TileScale, 0, 0);
+            stopPosition = transform.position + new Vector3(-1f, 0, 0);
         }
         else
         {
@@ -233,7 +233,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.Right;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(game.CurrentLevel.TileScale, 0, 0);
+            stopPosition = transform.position + new Vector3(1f, 0, 0);
         }
         else
         {
@@ -248,7 +248,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.TopRight;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(game.CurrentLevel.TileScale, game.CurrentLevel.TileScale, 0);
+            stopPosition = transform.position + new Vector3(1f, 1f, 0);
         }
         else
         {
@@ -263,7 +263,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.TopLeft;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(-game.CurrentLevel.TileScale, game.CurrentLevel.TileScale, 0);
+            stopPosition = transform.position + new Vector3(-1f, 1f, 0);
         }
         else
         {
@@ -278,7 +278,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.BottomLeft;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(-game.CurrentLevel.TileScale, -game.CurrentLevel.TileScale, 0);
+            stopPosition = transform.position + new Vector3(-1f, -1f, 0);
         }
         else
         {
@@ -293,7 +293,7 @@ public class GridMovementController : MovementController
             isMoving = true;
             direction = Direction.BottomRight;
             startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(game.CurrentLevel.TileScale, -game.CurrentLevel.TileScale, 0);
+            stopPosition = transform.position + new Vector3(1f, -1f, 0);
         }
         else
         {

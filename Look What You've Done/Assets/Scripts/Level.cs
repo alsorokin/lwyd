@@ -13,7 +13,6 @@ public class Level
     private List<Actor> actors = new List<Actor>();
     private Tile[,,] levelTiles;
     private readonly List<Tile> objects = new List<Tile>();
-    public readonly float TileScale = 2f;
 
     private const float default_ppu = 16f;
     private const float default_object_layer_index = 10f;
@@ -45,8 +44,8 @@ public class Level
         // Adding player
         GameObject player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), -10f);
-        var playerLocalScale = player.transform.localScale;
-        player.transform.localScale = new Vector3(playerLocalScale.x * TileScale, playerLocalScale.y * TileScale, playerLocalScale.z);
+        Vector3 playerLocalScale = player.transform.localScale;
+        player.transform.localScale = new Vector3(playerLocalScale.x, playerLocalScale.y, playerLocalScale.z);
         Actor playerActor = player.GetComponent<Hero>();
         playerActor.SetLevel(this);
         playerActor.Cloneable = false;
@@ -183,7 +182,7 @@ public class Level
         var genericEnemy = GameObject.Instantiate(Resources.Load<GameObject>(isFree ? "Tiles/GenericFreeEnemyTile" : "Tiles/GenericGridEnemyTile"));
         genericEnemy.transform.position = new Vector3(TranslateGridToX(gridX), TranslateGridToY(gridY), 1f);
         var localScale = genericEnemy.transform.localScale;
-        genericEnemy.transform.localScale = new Vector3(localScale.x * TileScale, localScale.y * TileScale, localScale.z);
+        genericEnemy.transform.localScale = new Vector3(localScale.x, localScale.y, localScale.z);
         var ge = genericEnemy.GetComponent<GenericEnemy>();
         ge.SetLevel(this);
         ge.Cloneable = true;
@@ -195,22 +194,22 @@ public class Level
 
     public int TranslateXToGrid(float x)
     {
-        return (int)Math.Round(x / TileScale);
+        return (int)Math.Round(x);
     }
 
     public int TranslateYToGrid(float y)
     {
-        return (int)Math.Round(y / TileScale);
+        return (int)Math.Round(y);
     }
 
     public float TranslateGridToX(int gridX)
     {
-        return gridX * TileScale;
+        return gridX;
     }
 
     public float TranslateGridToY(int gridY)
     {
-        return gridY * TileScale;
+        return gridY;
     }
 
     public float TranslatePixelsToUnits(float pixels)
@@ -218,7 +217,7 @@ public class Level
         // if any tile is present, use first tile's ppu
         //float ppu = levelTiles.Length > 0 && levelTiles[0, 0, 0] != null ? levelTiles[0, 0, 0].SpriteRenderer.sprite.pixelsPerUnit : default_ppu;
 
-        return pixels / default_ppu * TileScale;
+        return pixels / default_ppu;
     }
 
     private float TranslateYFromTmx(float tmxY)
@@ -237,11 +236,11 @@ public class Level
 
     private void CreateTile(uint gid, int w, int h, int z)
     {
-        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(gid, TranslateGridToX(w), TranslateGridToY(h), 0f - z, TileScale);
+        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(gid, TranslateGridToX(w), TranslateGridToY(h), 0f - z);
     }
 
     private void CreateObject(uint gid, float pixelX, float pixelY, float z)
     {
-        objects.Add(TileFactory.Instance.CreateTile(gid, TranslatePixelsToUnits(pixelX), TranslatePixelsToUnits(pixelY), 0f - z, TileScale));
+        objects.Add(TileFactory.Instance.CreateTile(gid, TranslatePixelsToUnits(pixelX), TranslatePixelsToUnits(pixelY), 0f - z));
     }
 }

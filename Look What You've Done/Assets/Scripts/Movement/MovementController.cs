@@ -112,6 +112,6 @@ public abstract class MovementController : MonoBehaviour
 
     protected float GetMovementScalar()
     {
-        return this.movementSpeed * this.game.CurrentLevel.TileScale * Time.deltaTime / 100;
+        return this.movementSpeed * Time.deltaTime / 100;
     }
 }

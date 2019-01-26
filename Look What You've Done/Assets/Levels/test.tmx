@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="12" height="9" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="6" nextobjectid="6">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="12" height="9" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="6" nextobjectid="19">
  <tileset firstgid="1" source="../Resources/test.tsx"/>
  <tileset firstgid="44" source="../Resources/tree-sample.tsx"/>
  <tileset firstgid="53" source="../Resources/sprite-pack-sample.tsx"/>
@@ -16,22 +16,20 @@
 6,6,6,6,6,6,6,6,6,6,6,6
 </data>
  </layer>
- <layer id="3" name="Tile Layer 2" width="12" height="9">
-  <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,
-0,33,0,35,0,0,0,53,54,54,55,0,
-0,34,37,0,39,0,0,2684354614,0,0,56,0,
-0,38,0,36,0,0,0,59,2684354616,0,61,0,
-0,0,0,0,0,0,0,0,0,0,0,0,
-0,44,45,46,0,0,0,0,0,0,0,0,
-0,47,48,49,0,0,0,0,0,0,0,0,
-0,0,51,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0
-</data>
- </layer>
  <objectgroup id="5" name="obj">
   <object id="3" gid="40" x="144.455" y="104.545" width="18" height="41"/>
   <object id="4" gid="43" x="166.818" y="127.727" width="10" height="31"/>
   <object id="5" x="16.73" y="17.64" width="13.8182" height="45.2727"/>
+  <object id="6" gid="37" x="16" y="32" width="16" height="16"/>
+  <object id="7" gid="39" x="16" y="48" width="16" height="16"/>
+  <object id="8" gid="36" x="16" y="64" width="16" height="16"/>
+  <object id="9" gid="38" x="56.5455" y="59.0909" width="16" height="16"/>
+  <object id="10" gid="34" x="39.6364" y="112.909" width="16" height="16"/>
+  <object id="12" gid="33" x="140.182" y="36" width="16" height="16"/>
+  <object id="13" gid="33" x="157.273" y="36.3636" width="16" height="16"/>
+  <object id="14" gid="33" x="155.818" y="49.4545" width="16" height="16"/>
+  <object id="15" gid="33" x="140.364" y="53.6364" width="16" height="16"/>
+  <object id="16" gid="33" x="121.636" y="50.5455" width="16" height="16"/>
+  <object id="17" gid="33" x="124.909" y="34.3636" width="16" height="16"/>
  </objectgroup>
 </map>

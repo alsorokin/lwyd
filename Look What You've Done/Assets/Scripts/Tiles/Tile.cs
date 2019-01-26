@@ -13,7 +13,7 @@ public class Tile
     {
         get
         {
-            return (this.gameObject.transform.position.y + offset) * 0.001f;
+            return (this.gameObject.transform.position.y + offset) * 0.001f + originalZ;
         }
     }
 
@@ -198,6 +198,6 @@ public class Tile
     {
         this.gameObject.transform.position = new Vector3(this.gameObject.transform.position.x,
                                                          this.gameObject.transform.position.y,
-                                                         originalZ + OrderInLayer);
+                                                         OrderInLayer);
     }
 }
