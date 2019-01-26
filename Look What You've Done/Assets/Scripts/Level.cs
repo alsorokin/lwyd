@@ -12,7 +12,11 @@ public class Level
     private int levelHeight;
     private List<Actor> actors = new List<Actor>();
     private Tile[,,] levelTiles;
+    private readonly List<Tile> objects = new List<Tile>();
     public readonly float TileScale = 1f;
+
+    private const float default_ppu = 16f;
+    private const float default_object_layer_index = 10f;
 
     public Tile GetLeftmostTile()
     {
@@ -96,16 +100,16 @@ public class Level
         levelTiles = new Tile[levelWidth, levelHeight, layerCount];
 
         // getting data nodes
-        XmlNodeList dataNodes = doc.GetElementsByTagName("data");
-        if (dataNodes.Count == 0)
+        IEnumerable<XmlNode> dataNodes = doc.GetElementsByTagName("data").Cast<XmlNode>();
+        if (dataNodes.Count() == 0)
         {
             throw new Exception("Can\'t see the data node in level file " + fileName);
         }
 
         // reading layers from data nodes
-        for (var z = 0; z < dataNodes.Count; z++)
+        for (var z = 0; z < dataNodes.Count(); z++)
         {
-            XmlNode dataNode = dataNodes[z];
+            XmlNode dataNode = dataNodes.ElementAt(z);
             string encoding = dataNode.Attributes["encoding"].Value;
             if (encoding != "csv")
             {
@@ -120,6 +124,29 @@ public class Level
                 {
                     CreateTile(dataArray[i, j], i, levelHeight - j - 1, z);
                 }
+            }
+        }
+
+        // getting object groups
+        IEnumerable<XmlNode> objectGroups = doc.GetElementsByTagName("objectgroup").Cast<XmlNode>().Where(n => n.ParentNode.Name == "map");
+        foreach (XmlNode objectGroup in objectGroups)
+        {
+            foreach (XmlNode obj in objectGroup.ChildNodes)
+            {
+                string gidValue = obj.Attributes["gid"]?.Value;
+                if (string.IsNullOrEmpty(gidValue))
+                {
+                    // TODO: Parse other objects
+                    continue;
+                }
+
+                uint.TryParse(gidValue, out uint gid);
+                float.TryParse(obj.Attributes["x"].Value, out float x);
+                float.TryParse(obj.Attributes["y"].Value, out float y);
+                y = TranslateYFromTmx(y);
+                // TODO: use width and height attributes?
+
+                CreateObject(gid, x, y, default_object_layer_index);
             }
         }
     }
@@ -186,6 +213,20 @@ public class Level
         return gridY * TileScale;
     }
 
+    public float TranslatePixelsToUnits(float pixels)
+    {
+        // if any tile is present, use first tile's ppu
+        //float ppu = levelTiles.Length > 0 && levelTiles[0, 0, 0] != null ? levelTiles[0, 0, 0].SpriteRenderer.sprite.pixelsPerUnit : default_ppu;
+
+        return (pixels / default_ppu) * TileScale;
+    }
+
+    private float TranslateYFromTmx(float tmxY)
+    {
+        float levelHeightInPixels = levelHeight * default_ppu * TileScale;
+        return levelHeightInPixels - tmxY;
+    }
+
     public void AddActor(Actor actor)
     {
         if (!actors.Contains(actor))
@@ -194,8 +235,13 @@ public class Level
         }
     }
 
-    private void CreateTile(uint id, int w, int h, int z)
+    private void CreateTile(uint gid, int w, int h, int z)
     {
-        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(id, TranslateGridToX(w), TranslateGridToY(h), 0f - z, TileScale);
+        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(gid, TranslateGridToX(w), TranslateGridToY(h), 0f - z, TileScale);
+    }
+
+    private void CreateObject(uint gid, float pixelX, float pixelY, float z)
+    {
+        objects.Add(TileFactory.Instance.CreateTile(gid, TranslatePixelsToUnits(pixelX), TranslatePixelsToUnits(pixelY), 0f - z, TileScale));
     }
 }
