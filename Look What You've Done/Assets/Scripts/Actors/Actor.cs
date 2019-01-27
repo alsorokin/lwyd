@@ -39,11 +39,11 @@ public abstract class Actor : MonoBehaviour
 
     public bool Cloneable { get; set; }
 
-    private float OrderInLayer
+    private int OrderInLayer
     {
         get
         {
-            return (this.gameObject.transform.position.y + Offset) * 0.001f + originalZ;
+            return (int)((-this.gameObject.transform.position.y - Offset - originalZ) * 100f);
         }
     }
 
@@ -51,9 +51,7 @@ public abstract class Actor : MonoBehaviour
 
     public void LateUpdate()
     {
-        this.gameObject.transform.position = new Vector3(this.transform.position.x,
-                                                         this.transform.position.y,
-                                                         OrderInLayer);
+        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = OrderInLayer;
     }
 
     protected virtual void Start()

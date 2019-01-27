@@ -9,11 +9,11 @@ public class Tile
     private float offset;
     private readonly float originalZ;
 
-    private float OrderInLayer
+    private int OrderInLayer
     {
         get
         {
-            return (this.gameObject.transform.position.y + offset) * 0.001f + originalZ;
+            return (int)((-this.gameObject.transform.position.y - offset - originalZ) * 100f);
         }
     }
 
@@ -196,8 +196,6 @@ public class Tile
 
     private void UpdateZPosition()
     {
-        this.gameObject.transform.position = new Vector3(this.gameObject.transform.position.x,
-                                                         this.gameObject.transform.position.y,
-                                                         OrderInLayer);
+        this.SpriteRenderer.sortingOrder = OrderInLayer;
     }
 }
