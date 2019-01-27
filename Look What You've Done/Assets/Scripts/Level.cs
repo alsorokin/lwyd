@@ -13,9 +13,26 @@ public class Level
     private List<Actor> actors = new List<Actor>();
     private Tile[,,] levelTiles;
     private readonly List<Tile> objects = new List<Tile>();
+    private float cameraSize = 10f;
 
     private const float default_ppu = 16f;
     private const float default_object_layer_index = 10f;
+
+    private GameObject player;
+    private Camera camera;
+    
+    public float Scale
+    {
+        get => 10f / cameraSize;
+        set 
+        {
+            cameraSize = 10f / value;
+            if (camera != null)
+            {
+                camera.orthographicSize = cameraSize;
+            }
+        }
+    }
 
     public Tile GetLeftmostTile()
     {
@@ -37,12 +54,21 @@ public class Level
         return GetLeftmostTile();
     }
 
+    public Level(float scale) : this()
+    {
+        this.Scale = scale;
+    }
+
     public Level()
     {
         LoadFromFile("Assets\\Levels\\test.tmx");
+        AddPlayer();
+    }
 
+    private void AddPlayer()
+    {
         // Adding player
-        GameObject player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
+        player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), -10f);
         Vector3 playerLocalScale = player.transform.localScale;
         player.transform.localScale = new Vector3(playerLocalScale.x, playerLocalScale.y, playerLocalScale.z);
@@ -53,9 +79,10 @@ public class Level
 
         // Adding camera and its controller
         var cameraObj = new GameObject();
-        var playerCamera = cameraObj.AddComponent<Camera>();
+        camera = cameraObj.AddComponent<Camera>();
         cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -100f);
-        playerCamera.orthographic = true;
+        camera.orthographic = true;
+        camera.orthographicSize = cameraSize;
         cameraObj.AddComponent<CameraMovementController>();
         var cameraController = cameraObj.GetComponent<CameraMovementController>();
         cameraController.player = player;

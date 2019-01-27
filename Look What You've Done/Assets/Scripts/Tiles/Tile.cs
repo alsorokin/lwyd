@@ -128,7 +128,6 @@ public class Tile
             this.offset = newPolygonCollider.offset.y - (this.SpriteRenderer.sprite.texture.height / 2 / ppu);
         }
 
-
         UpdateZPosition();
     }
 

@@ -9,7 +9,7 @@ public class Game : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        CurrentLevel = new Level();
+        CurrentLevel = new Level(1f);
 	}
 
     // Update is called once per frame
