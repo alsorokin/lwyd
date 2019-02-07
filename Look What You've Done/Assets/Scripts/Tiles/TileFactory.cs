@@ -64,9 +64,12 @@ class TileFactory
             return CreateEmptyTile();
         }
 
-        var newTile = tiles[gid].CloneTo(x, y, z);
-        newTile.gameObject.SetActive(true);
+        var sprite = tiles[gid].SpriteRenderer.sprite;
+        var normalizedX = x + (sprite.pivot.x / sprite.pixelsPerUnit);
+        var normalizedY = y + (sprite.pivot.y / sprite.pixelsPerUnit);
+        var newTile = tiles[gid].CloneTo(normalizedX, normalizedY, z);
         newTile.SetFlipped(flippedHorizontally, flippedVertically, flippedDiagonally);
+        newTile.gameObject.SetActive(true);
 
         return newTile;
     }

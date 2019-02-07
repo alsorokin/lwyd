@@ -13,7 +13,8 @@ public class Level
     private List<Actor> actors = new List<Actor>();
     private Tile[,,] levelTiles;
     private readonly List<Tile> objects = new List<Tile>();
-    private float cameraSize = 10f;
+    private float cameraSize = 3f;
+    private Vector2 playerSpawn = Vector2.zero;
 
     private const float default_ppu = 16f;
     private const float default_object_layer_index = 10f;
@@ -69,7 +70,9 @@ public class Level
     {
         // Adding player
         player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
-        player.transform.position = new Vector3(TranslateGridToX(levelWidth / 2), TranslateGridToY(levelHeight / 2), -10f);
+        float spawnX = playerSpawn == Vector2.zero ? TranslateGridToX(levelWidth / 2) : playerSpawn.x;
+        float spawnY = playerSpawn == Vector2.zero ? TranslateGridToY(levelHeight / 2) : playerSpawn.y;
+        player.transform.position = new Vector3(spawnX, spawnY, -10f);
         Vector3 playerLocalScale = player.transform.localScale;
         player.transform.localScale = new Vector3(playerLocalScale.x, playerLocalScale.y, playerLocalScale.z);
         Actor playerActor = player.GetComponent<Hero>();
@@ -83,8 +86,7 @@ public class Level
         cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -100f);
         camera.orthographic = true;
         camera.orthographicSize = cameraSize;
-        cameraObj.AddComponent<CameraMovementController>();
-        var cameraController = cameraObj.GetComponent<CameraMovementController>();
+        var cameraController = cameraObj.AddComponent<CameraMovementController>();
         cameraController.player = player;
         cameraController.level = this;
     }
@@ -162,6 +164,16 @@ public class Level
                 string gidValue = obj.Attributes["gid"]?.Value;
                 if (string.IsNullOrEmpty(gidValue))
                 {
+                    if (obj.FirstChild != null && obj.FirstChild.Name == "point" && obj.Attributes["type"].Value == "player_spawn")
+                    {
+                        if (float.TryParse(obj.Attributes["x"].Value, out float spawnX) 
+                            && float.TryParse(obj.Attributes["y"].Value, out float spawnY))
+                        {
+                            spawnX = TranslatePixelsToUnits(spawnX);
+                            spawnY = TranslatePixelsToUnits(TranslateYFromTmx(spawnY));
+                            playerSpawn = new Vector2(spawnX, spawnY);
+                        }
+                    }
                     // TODO: Parse other objects
                     continue;
                 }

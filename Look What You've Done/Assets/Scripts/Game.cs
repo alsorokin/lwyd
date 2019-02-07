@@ -9,9 +9,17 @@ public class Game : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        CurrentLevel = new Level(1f);
+        CurrentLevel = new Level(0.3f);
 	}
 
     // Update is called once per frame
     void Update() { }
+
+    void FixedUpdate()
+    {
+        if (CurrentLevel.Scale < 2.5f)
+        {
+            CurrentLevel.Scale *= 1.01f;
+        }
+    }
 }
