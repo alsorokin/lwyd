@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - actor_shadow
+  - actor_body
   layers:
   - Default
   - TransparentFX
