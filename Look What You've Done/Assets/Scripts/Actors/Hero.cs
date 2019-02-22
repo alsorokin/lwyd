@@ -37,6 +37,8 @@ public class Hero : Fighter
         {
             onMoveDown = new MoveCommand(mc, Direction.Down);
         }
+
+        this.HasShadow = true;
     }
     void FixedUpdate()
     {
