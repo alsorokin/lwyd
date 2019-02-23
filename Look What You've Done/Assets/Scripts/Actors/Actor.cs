@@ -92,6 +92,7 @@ public abstract class Actor : MonoBehaviour
     {
         get
         {
+            // lower sprite boundary
             return -(this.Body.GetComponent<SpriteRenderer>().bounds.size.y / 2);
         }
     }
@@ -105,6 +106,7 @@ public abstract class Actor : MonoBehaviour
         {
             // TODO: this actually should be ground layer
             this.Shadow.GetComponent<SpriteRenderer>().sortingOrder = OrderInLayer - 1;
+            // TODO: y-positioning code goes here (if jumping/flying is implemented)
         }
     }
 

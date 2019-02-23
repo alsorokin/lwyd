@@ -38,11 +38,13 @@ public class Tile
         this.Gid = gid;
         this.gameObject = new GameObject("tile-" + id.ToString());
         this.gameObject.transform.localScale = new Vector3(scale, scale, 1f);
-        this.gameObject.transform.position = position;
+        this.originalZ = position.z;
+        Vector3 normalizedPosition = new Vector3(position.x, position.y, 0f);
+        this.gameObject.transform.position = normalizedPosition;
         var renderer = gameObject.AddComponent<SpriteRenderer>();
         renderer.sprite = sprite;
         this.Offset = -(this.SpriteRenderer.sprite.pivot.y / this.SpriteRenderer.sprite.pixelsPerUnit);
-        this.originalZ = position.z;
+        
         UpdateZPosition();
     }
 

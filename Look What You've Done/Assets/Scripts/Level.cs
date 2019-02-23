@@ -72,7 +72,7 @@ public class Level
         player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
         float spawnX = playerSpawn == Vector2.zero ? TranslateGridToX(levelWidth / 2) : playerSpawn.x;
         float spawnY = playerSpawn == Vector2.zero ? TranslateGridToY(levelHeight / 2) : playerSpawn.y;
-        player.transform.position = new Vector3(spawnX, spawnY, -10f);
+        player.transform.position = new Vector3(spawnX, spawnY, 0f);
         Vector3 playerLocalScale = player.transform.localScale;
         player.transform.localScale = new Vector3(playerLocalScale.x, playerLocalScale.y, playerLocalScale.z);
         Actor playerActor = player.GetComponent<Hero>();
@@ -83,7 +83,7 @@ public class Level
         // Adding camera and its controller
         var cameraObj = new GameObject();
         camera = cameraObj.AddComponent<Camera>();
-        cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -100f);
+        cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -5f);
         camera.orthographic = true;
         camera.orthographicSize = cameraSize;
         var cameraController = cameraObj.AddComponent<CameraMovementController>();
