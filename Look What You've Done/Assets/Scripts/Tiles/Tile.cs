@@ -58,29 +58,40 @@ public class Tile
 
     public void SetCollider(TileCollider collider)
     {
-        if (collider == null)
-        {
-            return;
-        }
-        else if (collider is BoxTileCollider)
-        {
-            var boxCollider = gameObject.GetComponent<BoxCollider2D>();
-            GameObject.Destroy(boxCollider);
-        }
-        else if (collider is CircleTileCollider)
-        {
-            var circleCollider = gameObject.GetComponent<CircleCollider2D>();
-            GameObject.Destroy(circleCollider);
-        }
-        else if (collider is PolygonTileCollider)
-        {
-            var polygonCollider = gameObject.GetComponent<PolygonCollider2D>();
-            GameObject.Destroy(polygonCollider);
-        }
-        else
+        var isBox = collider is BoxTileCollider;
+        var isCircle = collider is CircleTileCollider;
+        var isPolygon = collider is PolygonTileCollider;
+
+        if (collider != null && !isBox && !isCircle && !isPolygon)
         {
             // unknown collider type
             Debug.LogWarning("Unknown collider type: " + collider.GetType().Name);
+            return;
+        }
+
+        // removing any existing collider
+        // TODO: support more than one collider
+        var oldBoxCollider = gameObject.GetComponent<BoxCollider2D>();
+        if (oldBoxCollider != null)
+        {
+            GameObject.Destroy(oldBoxCollider);
+        }
+
+        var oldCircleCollider = gameObject.GetComponent<CircleCollider2D>();
+        if (oldCircleCollider != null)
+        {
+            GameObject.Destroy(oldCircleCollider);
+        }
+
+        var oldPolygonCollider = gameObject.GetComponent<PolygonCollider2D>();
+        if (oldPolygonCollider != null)
+        {
+            GameObject.Destroy(oldPolygonCollider);
+        }
+
+        if (collider == null)
+        {
+            // at this point we have removed every collider
             return;
         }
 
@@ -94,9 +105,10 @@ public class Tile
         rigidbody.simulated = true;
 
         this.tileCollider = collider;
-        var tileWidthPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
+        // note that the tile is not always 1 unit, so this is not necessarily equal to ppu
+        var tileWidthPixels = this.SpriteRenderer.sprite.texture.width;
         var tileWidthPixelsHalf = tileWidthPixels / 2;
-        var tileHeightPixels = this.SpriteRenderer.sprite.pixelsPerUnit;
+        var tileHeightPixels = this.SpriteRenderer.sprite.texture.height;
         var tileHeightPixelsHalf = tileHeightPixels / 2;
         float ppu = this.SpriteRenderer.sprite.pixelsPerUnit;
 

@@ -161,6 +161,7 @@ public abstract class Actor : MonoBehaviour
         if (this.Shadow == null && hasShadow)
         {
             this.Shadow = new GameObject();
+            this.Shadow.name = "shadow";
             this.Shadow.transform.tag = shadow_tag;
             var spriteRenderer = this.Shadow.AddComponent<SpriteRenderer>();
             spriteRenderer.sprite = Resources.Load<Sprite>(shadow_sprite_name);
