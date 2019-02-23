@@ -7,7 +7,7 @@ public abstract class Actor : MonoBehaviour
     private float health = 75;
     protected Level myLevel;
     private bool hasShadow;
-    private readonly float originalZ = -10f;
+    private readonly float originalZ = -100f;
 
     private static readonly string shadow_tag = "actor_shadow";
     private static readonly string body_tag = "actor_body";
@@ -88,6 +88,14 @@ public abstract class Actor : MonoBehaviour
         }
     }
 
+    private int ShadowOrderInLayer
+    {
+        get
+        {
+            return (int)((-this.gameObject.transform.position.y - Offset + 10f) * 100f);
+        }
+    }
+
     private float Offset
     {
         get
@@ -104,8 +112,7 @@ public abstract class Actor : MonoBehaviour
         this.Body.GetComponent<SpriteRenderer>().sortingOrder = OrderInLayer;
         if (HasShadow)
         {
-            // TODO: this actually should be ground layer
-            this.Shadow.GetComponent<SpriteRenderer>().sortingOrder = OrderInLayer - 1;
+            this.Shadow.GetComponent<SpriteRenderer>().sortingOrder = ShadowOrderInLayer;
             // TODO: y-positioning code goes here (if jumping/flying is implemented)
         }
     }
@@ -168,7 +175,7 @@ public abstract class Actor : MonoBehaviour
             spriteRenderer.color = new Color(1f, 1f, 1f, 0.27f);
             Transform shadowTransform = this.Shadow.transform;
             shadowTransform.parent = gameObject.transform;
-            shadowTransform.localPosition = new Vector3(0f, -0.5f, 0f);
+            shadowTransform.localPosition = new Vector3(0f, Offset, 0f);
         }
         else if (this.Shadow != null && !hasShadow)
         {

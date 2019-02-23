@@ -17,7 +17,7 @@ public class Level
     private Vector2 playerSpawn = Vector2.zero;
 
     private const float default_ppu = 16f;
-    private const float default_object_layer_index = 10f;
+    private const float default_object_layer_index = 100f;
 
     private GameObject player;
     private Camera camera;
@@ -275,7 +275,7 @@ public class Level
 
     private void CreateTile(uint gid, int w, int h, int z)
     {
-        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(gid, TranslateGridToX(w), TranslateGridToY(h), 0f - z);
+        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(gid, TranslateGridToX(w), TranslateGridToY(h), 0f - (z * 10));
     }
 
     private void CreateObject(uint gid, float pixelX, float pixelY, float z)
