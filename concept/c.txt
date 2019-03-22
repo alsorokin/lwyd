@@ -1,0 +1,19 @@
+Ideas:
+1. Action
+- Actor rotation
+- Mouse-controlled aiming and simple projectiles
+- Reintroduce mossters, make them smarter
+- Melee attacks, hostile monsters
+2. Collectibles
+- Simple "coins" (mushrooms?) scattered around the level
+- Score display
+3. UI
+- Start menu (separate scene?)
+- Esc menu (in-game scene)
+- Dialogues
+4. Motivation
+- Player and monster HP display
+- Player death
+- Level objectives (quests?)
+
+x. Character progression: the chatacter should evolve from boring to bright and colorful as they progress through the game. The craziness should increase with time, and then culminate with some spectacular show or action.
