@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 using System.Xml;
 using System.IO;
@@ -9,9 +8,9 @@ using UnityEditor;
 
 class TileFactory
 {
-    private static TileFactory instance;
-    private Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
-    private Dictionary<uint, Tile> tiles = new Dictionary<uint, Tile>();
+    private static TileFactory _instance;
+    private Dictionary<string, Sprite> _sprites = new Dictionary<string, Sprite>();
+    private Dictionary<uint, Tile> _tiles = new Dictionary<uint, Tile>();
 
     private TileFactory() {
         uint nextGid = 1;
@@ -24,23 +23,13 @@ class TileFactory
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = new TileFactory();
+                _instance = new TileFactory();
             }
 
-            return instance;
+            return _instance;
         }
-    }
-
-    private bool GetBit(uint value, int bitPosition)
-    {
-        return (value & (1 << bitPosition - 1)) != 0;
-    }
-
-    private uint ZeroBit(uint num, int bitPosition)
-    {
-        return num &= ~(1u << bitPosition - 1);
     }
 
     public Tile CreateTile(uint globalId, float x, float y, float z)
@@ -58,18 +47,18 @@ class TileFactory
             return CreateEmptyTile();
         }
 
-        if (!tiles.ContainsKey(gid))
+        if (!_tiles.ContainsKey(gid))
         {
             Debug.LogWarning("Cannot create tile " + gid.ToString() + ". I don't know of such a gid.");
             return CreateEmptyTile();
         }
 
-        var sprite = tiles[gid].SpriteRenderer.sprite;
+        var sprite = _tiles[gid].SpriteRenderer.sprite;
         var normalizedX = x + (sprite.pivot.x / sprite.pixelsPerUnit);
         var normalizedY = y + (sprite.pivot.y / sprite.pixelsPerUnit);
-        var newTile = tiles[gid].CloneTo(normalizedX, normalizedY, z);
+        var newTile = _tiles[gid].CloneTo(normalizedX, normalizedY, z);
         newTile.SetFlipped(flippedHorizontally, flippedVertically, flippedDiagonally);
-        newTile.gameObject.SetActive(true);
+        newTile.GameObject.SetActive(true);
 
         return newTile;
     }
@@ -77,8 +66,8 @@ class TileFactory
     private Tile CreateEmptyTile()
     {
         var emptyTile = new Tile(Sprite.Create(new Texture2D(0, 0), new Rect(0, 0, 0, 0), Vector2.zero), 0, 0, new Vector3(0f, 0f, 0f), 0f);
-        emptyTile.gameObject.transform.position = Vector3.zero;
-        emptyTile.gameObject.SetActive(true);
+        emptyTile.GameObject.transform.position = Vector3.zero;
+        emptyTile.GameObject.SetActive(true);
 
         return emptyTile;
     }
@@ -88,7 +77,6 @@ class TileFactory
         var fileContents = File.ReadAllText(tileMap);
         uint gid = firstGid;
 
-        XmlReaderSettings settings = new XmlReaderSettings { Async = false };
         var doc = new XmlDocument();
         doc.LoadXml(fileContents);
         XmlNodeList tileNodes = doc.GetElementsByTagName("tile");
@@ -125,7 +113,7 @@ class TileFactory
             Debug.LogWarning("Source is empty for tile " + id.ToString());
         }
 
-        if (sprites.ContainsKey(source + ":0"))
+        if (_sprites.ContainsKey(source + ":0"))
         {
             Debug.LogWarning("Sprites already loaded: " + source);
         }
@@ -133,11 +121,11 @@ class TileFactory
         var texture = Resources.Load<Texture2D>(source);
         string spriteSheet = AssetDatabase.GetAssetPath(texture);
         Sprite[] loadedSprites = AssetDatabase.LoadAllAssetsAtPath(spriteSheet).OfType<Sprite>().ToArray();
-        IEnumerable<XmlNode> tileNodes = imageNode.OwnerDocument.GetElementsByTagName("tile").Cast<XmlNode>();
+        IEnumerable<XmlNode> tileNodes = imageNode.OwnerDocument.GetElementsByTagName("tile").Cast<XmlNode>().ToArray();
 
         for (var i = 0; i < loadedSprites.Length; i++)
         {
-            sprites.Add(source + ":" + i.ToString(), loadedSprites[i]);
+            _sprites.Add(source + ":" + i.ToString(), loadedSprites[i]);
 
             XmlNode tileNode = tileNodes.FirstOrDefault(n => n.Attributes["id"].Value == i.ToString());
             TileCollider collider = null;
@@ -150,8 +138,8 @@ class TileFactory
             }
 
             var tile = new Tile(loadedSprites[i], -1, gid++, Vector3.zero, 1f, collider);
-            tile.gameObject.SetActive(false);
-            tiles.Add(tile.Gid, tile);
+            tile.GameObject.SetActive(false);
+            _tiles.Add(tile.Gid, tile);
         }
 
         return gid;
@@ -164,7 +152,6 @@ class TileFactory
             return firstGid;
         }
 
-        var gid = firstGid;
         foreach (XmlNode tileNode in tileNodes)
         {
             XmlNode docImage = null;
@@ -195,8 +182,7 @@ class TileFactory
                 throw new XmlException("Tile should have an image element");
             }
 
-            int id = -1;
-            if (!int.TryParse(tileNode.Attributes["id"].Value, out id))
+            if (!int.TryParse(tileNode.Attributes["id"].Value, out int id))
             {
                 throw new XmlException("All single-file tiles should have an id");
             }
@@ -214,6 +200,7 @@ class TileFactory
                 continue;
             }
 
+            /*
             int width = -1;
             if (!int.TryParse(docImage.Attributes["width"].Value, out width))
             {
@@ -227,16 +214,17 @@ class TileFactory
                 Debug.LogWarning("Tile image should have height! Id: " + id.ToString());
                 continue;
             }
+            */
 
             Sprite sprite;
-            if (sprites.ContainsKey(source))
+            if (_sprites.ContainsKey(source))
             {
-                sprite = sprites[source];
+                sprite = _sprites[source];
             }
             else
             {
                 sprite = Resources.Load<Sprite>(source);
-                sprites.Add(source, sprite);
+                _sprites.Add(source, sprite);
             }
 
             
@@ -246,11 +234,11 @@ class TileFactory
                 tile.SetCollider(collider);
             }
 
-            tile.gameObject.SetActive(false);
-            tiles.Add(tile.Gid, tile);
+            tile.GameObject.SetActive(false);
+            _tiles.Add(tile.Gid, tile);
         }
 
-        return tiles.Last().Value.Gid + 1;
+        return _tiles.Last().Value.Gid + 1;
     }
 
     private TileCollider ParseObjectNode(XmlNode objectNode)
@@ -270,7 +258,7 @@ class TileFactory
             float.TryParse(objectNode.Attributes["height"].Value, out float cHeight);
 
             var collider = new BoxTileCollider();
-            collider.bounds = new Rect(cx, cy, cWidth, cHeight);
+            collider.Bounds = new Rect(cx, cy, cWidth, cHeight);
 
             return collider;
         }
@@ -280,7 +268,7 @@ class TileFactory
             float.TryParse(objectNode.Attributes["height"].Value, out float cHeight);
 
             var collider = new CircleTileCollider();
-            collider.bounds = new Rect(cx, cy, cWidth, cHeight);
+            collider.Bounds = new Rect(cx, cy, cWidth, cHeight);
 
             return collider;
         }
@@ -301,5 +289,15 @@ class TileFactory
         }
 
         return null;
+    }
+
+    private bool GetBit(uint value, int bitPosition)
+    {
+        return (value & (1 << bitPosition - 1)) != 0;
+    }
+
+    private uint ZeroBit(uint num, int bitPosition)
+    {
+        return num &= ~(1u << bitPosition - 1);
     }
 }

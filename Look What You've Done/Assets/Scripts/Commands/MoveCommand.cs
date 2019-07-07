@@ -1,18 +1,18 @@
 ﻿public class MoveCommand : Command {
-    private MovementController movementController;
-    private readonly MovementController.Direction direction;
+    private MovementController _movementController;
+    private readonly MovementController.Direction _direction;
 
     public MoveCommand (MovementController mc, MovementController.Direction dir)
     {
-        movementController = mc;
-        direction = dir;
+        _movementController = mc;
+        _direction = dir;
     }
 
     override public void Execute()
     {
-        if (!movementController.IsMoving(direction))
+        if (!_movementController.IsMovingInDirection(_direction))
         {
-            movementController.Go(direction);
+            _movementController.Go(_direction);
         }
     }
 }

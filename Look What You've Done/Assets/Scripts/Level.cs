@@ -4,60 +4,48 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using UnityEngine;
-using Direction = MovementController.Direction;
+using UnityObject = UnityEngine.Object;
 
 public class Level
 {
-    private int levelWidth;
-    private int levelHeight;
-    private List<Actor> actors = new List<Actor>();
-    private Tile[,,] levelTiles;
-    private readonly List<Tile> objects = new List<Tile>();
-    private float cameraSize = 3f;
-    private Vector2 playerSpawn = Vector2.zero;
+    private int _levelWidth;
+    private int _levelHeight;
+    private List<Actor> _actors = new List<Actor>();
+    private Tile[,,] _levelTiles;
+    private readonly List<Tile> _objects = new List<Tile>();
+    private float _cameraSize = 3f;
+    private Vector2 _playerSpawn = Vector2.zero;
 
-    private const float default_ppu = 16f;
-    private const float default_object_layer_index = 100f;
+    private const float DefaultPpu = 16f;
+    private const float DefaultObjectLayerIndex = 100f;
 
-    private GameObject player;
-    private Camera camera;
+    private GameObject _player;
+    private Camera _camera;
     
     public float Scale
     {
-        get => 10f / cameraSize;
+        get => 10f / _cameraSize;
         set 
         {
-            cameraSize = 10f / value;
-            if (camera != null)
+            _cameraSize = 10f / value;
+            if (_camera != null)
             {
-                camera.orthographicSize = cameraSize;
+                _camera.orthographicSize = _cameraSize;
             }
         }
     }
 
-    public Tile GetLeftmostTile()
-    {
-        return levelTiles[0, 0, 0];
-    }
+    public Tile LeftmostTile => _levelTiles[0, 0, 0];
 
-    public Tile GetRightmostTile()
-    {
-        return levelTiles[levelWidth - 1, levelHeight - 1, 0];
-    }
+    public Tile RightmostTile => _levelTiles[_levelWidth - 1, _levelHeight - 1, 0];
 
-    public Tile GetTopmostTile()
-    {
-        return GetRightmostTile();
-    }
+    public Tile TopmostTile => RightmostTile;
 
-    public Tile GetBottommostTile()
-    {
-        return GetLeftmostTile();
-    }
+    public Tile BottommostTile => LeftmostTile;
 
     public Level(float scale) : this()
     {
-        this.Scale = scale;
+        Scale = scale;
     }
 
     public Level()
@@ -69,33 +57,32 @@ public class Level
     private void AddPlayer()
     {
         // Adding player
-        player = GameObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
-        float spawnX = playerSpawn == Vector2.zero ? TranslateGridToX(levelWidth / 2) : playerSpawn.x;
-        float spawnY = playerSpawn == Vector2.zero ? TranslateGridToY(levelHeight / 2) : playerSpawn.y;
-        player.transform.position = new Vector3(spawnX, spawnY, 0f);
-        Vector3 playerLocalScale = player.transform.localScale;
-        player.transform.localScale = new Vector3(playerLocalScale.x, playerLocalScale.y, playerLocalScale.z);
-        Actor playerActor = player.GetComponent<Hero>();
+        _player = UnityObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
+        float spawnX = _playerSpawn == Vector2.zero ? TranslateGridToX(_levelWidth / 2) : _playerSpawn.x;
+        float spawnY = _playerSpawn == Vector2.zero ? TranslateGridToY(_levelHeight / 2) : _playerSpawn.y;
+        _player.transform.position = new Vector3(spawnX, spawnY, 0f);
+        Vector3 playerLocalScale = _player.transform.localScale;
+        _player.transform.localScale = new Vector3(playerLocalScale.x, playerLocalScale.y, playerLocalScale.z);
+        Actor playerActor = _player.GetComponent<Hero>();
         playerActor.SetLevel(this);
         playerActor.Cloneable = false;
         AddActor(playerActor);
 
         // Adding camera and its controller
         var cameraObj = new GameObject();
-        camera = cameraObj.AddComponent<Camera>();
-        cameraObj.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -5f);
-        camera.orthographic = true;
-        camera.orthographicSize = cameraSize;
+        _camera = cameraObj.AddComponent<Camera>();
+        cameraObj.transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, -5f);
+        _camera.orthographic = true;
+        _camera.orthographicSize = _cameraSize;
         var cameraController = cameraObj.AddComponent<CameraMovementController>();
-        cameraController.player = player;
-        cameraController.level = this;
+        cameraController.Player = _player;
+        cameraController.Level = this;
     }
 
     private void LoadFromFile(string fileName)
     {
         // parsing xml
         string content = File.ReadAllText(fileName);
-        XmlReaderSettings settings = new XmlReaderSettings { Async = false };
         var doc = new XmlDocument();
         doc.LoadXml(content);
 
@@ -105,16 +92,20 @@ public class Level
         {
             throw new Exception("Can\'t see the map node in level file " + fileName);
         }
-
-        XmlNode mapNode = mapNodes[0];
-        if (!int.TryParse(mapNode.Attributes["width"].Value, out levelWidth))
+        else if (mapNodes.Count > 1)
         {
-            levelWidth = 100;
+            Debug.LogWarning("Multiple map nodes found! Will use only the first one.");
         }
 
-        if (!int.TryParse(mapNode.Attributes["height"].Value, out levelHeight))
+        XmlNode mapNode = mapNodes[0];
+        if (!int.TryParse(mapNode.Attributes["width"]?.Value, out _levelWidth))
         {
-            levelHeight = 100;
+            _levelWidth = 100;
+        }
+
+        if (!int.TryParse(mapNode.Attributes["height"]?.Value, out _levelHeight))
+        {
+            _levelHeight = 100;
         }
 
         // getting layers
@@ -125,19 +116,19 @@ public class Level
             throw new Exception("Can\'t see any layers in level file " + fileName);
         }
 
-        levelTiles = new Tile[levelWidth, levelHeight, layerCount];
+        _levelTiles = new Tile[_levelWidth, _levelHeight, layerCount];
 
         // getting data nodes
-        IEnumerable<XmlNode> dataNodes = doc.GetElementsByTagName("data").Cast<XmlNode>();
-        if (dataNodes.Count() == 0)
+        XmlNode[] dataNodes = doc.GetElementsByTagName("data").Cast<XmlNode>().ToArray();
+        if (dataNodes.Length == 0)
         {
             throw new Exception("Can\'t see the data node in level file " + fileName);
         }
 
         // reading layers from data nodes
-        for (var z = 0; z < dataNodes.Count(); z++)
+        for (var z = 0; z < dataNodes.Length; z++)
         {
-            XmlNode dataNode = dataNodes.ElementAt(z);
+            XmlNode dataNode = dataNodes[z];
             string encoding = dataNode.Attributes["encoding"].Value;
             if (encoding != "csv")
             {
@@ -145,12 +136,12 @@ public class Level
             }
 
             var data = dataNode.InnerText.Trim();
-            ParseCsvData(data, levelWidth, levelHeight, out uint[,] dataArray);
-            for (int i = 0; i < levelWidth; i++)
+            ParseCsvData(data, _levelWidth, _levelHeight, out uint[,] dataArray);
+            for (int i = 0; i < _levelWidth; i++)
             {
-                for (int j = 0; j < levelHeight; j++)
+                for (int j = 0; j < _levelHeight; j++)
                 {
-                    CreateTile(dataArray[i, j], i, levelHeight - j - 1, z);
+                    CreateTile(dataArray[i, j], i, _levelHeight - j - 1, z);
                 }
             }
         }
@@ -171,7 +162,7 @@ public class Level
                         {
                             spawnX = TranslatePixelsToUnits(spawnX);
                             spawnY = TranslatePixelsToUnits(TranslateYFromTmx(spawnY));
-                            playerSpawn = new Vector2(spawnX, spawnY);
+                            _playerSpawn = new Vector2(spawnX, spawnY);
                         }
                     }
                     // TODO: Parse other objects
@@ -184,41 +175,14 @@ public class Level
                 y = TranslateYFromTmx(y);
                 // TODO: use width and height attributes?
 
-                CreateObject(gid, x, y, default_object_layer_index);
+                CreateObject(gid, x, y, DefaultObjectLayerIndex);
             }
-        }
-    }
-
-    private void ParseCsvData(string data, int width, int height, out uint[,] dataArray)
-    {
-        var processedData = data.Replace("\r", "");
-        dataArray = new uint[width, height];
-        int j = 0;
-        foreach (var line in processedData.Split('\n'))
-        {
-            int i = 0;
-            var processedLine = line.Trim(',');
-            foreach (string pos in processedLine.Split(','))
-            {
-                if (uint.TryParse(pos, out uint parsed))
-                {
-                    dataArray[i, j] = parsed;
-                }
-                else
-                {
-                    dataArray[i, j] = 0;
-                }
-
-                i++;
-            }
-
-            j++;
         }
     }
 
     public GameObject SpawnGenericEnemyAt(int gridX, int gridY, bool isFree)
     {
-        var genericEnemy = GameObject.Instantiate(Resources.Load<GameObject>(isFree ? "Tiles/GenericFreeEnemyTile" : "Tiles/GenericGridEnemyTile"));
+        var genericEnemy = UnityObject.Instantiate(Resources.Load<GameObject>(isFree ? "Tiles/GenericFreeEnemyTile" : "Tiles/GenericGridEnemyTile"));
         genericEnemy.transform.position = new Vector3(TranslateGridToX(gridX), TranslateGridToY(gridY), 1f);
         var localScale = genericEnemy.transform.localScale;
         genericEnemy.transform.localScale = new Vector3(localScale.x, localScale.y, localScale.z);
@@ -256,30 +220,65 @@ public class Level
         // if any tile is present, use first tile's ppu
         //float ppu = levelTiles.Length > 0 && levelTiles[0, 0, 0] != null ? levelTiles[0, 0, 0].SpriteRenderer.sprite.pixelsPerUnit : default_ppu;
 
-        return pixels / default_ppu;
+        return pixels / DefaultPpu;
     }
 
     private float TranslateYFromTmx(float tmxY)
     {
-        float levelHeightInPixels = levelHeight * default_ppu;
+        float levelHeightInPixels = _levelHeight * DefaultPpu;
         return levelHeightInPixels - tmxY;
     }
 
     public void AddActor(Actor actor)
     {
-        if (!actors.Contains(actor))
+        if (!_actors.Contains(actor))
         {
-            actors.Add(actor);
+            _actors.Add(actor);
+        }
+    }
+
+    private void ParseCsvData(string data, int width, int height, out uint[,] dataArray)
+    {
+        var processedData = data.Replace("\r", "");
+        dataArray = new uint[width, height];
+        int j = 0;
+        foreach (var line in processedData.Split('\n'))
+        {
+            int i = 0;
+            var processedLine = line.Trim(',');
+            foreach (string pos in processedLine.Split(','))
+            {
+                if (uint.TryParse(pos, out uint parsed))
+                {
+                    dataArray[i, j] = parsed;
+                }
+                else
+                {
+                    dataArray[i, j] = 0;
+                }
+
+                i++;
+            }
+
+            j++;
         }
     }
 
     private void CreateTile(uint gid, int w, int h, int z)
     {
-        levelTiles[w, h, z] = TileFactory.Instance.CreateTile(gid, TranslateGridToX(w), TranslateGridToY(h), 0f - (z * 10));
+        _levelTiles[w, h, z] = TileFactory.Instance.CreateTile(
+            gid,
+            TranslateGridToX(w),
+            TranslateGridToY(h),
+            0f - (z * 10));
     }
 
     private void CreateObject(uint gid, float pixelX, float pixelY, float z)
     {
-        objects.Add(TileFactory.Instance.CreateTile(gid, TranslatePixelsToUnits(pixelX), TranslatePixelsToUnits(pixelY), 0f - z));
+        _objects.Add(TileFactory.Instance.CreateTile(
+            gid,
+            TranslatePixelsToUnits(pixelX),
+            TranslatePixelsToUnits(pixelY),
+            0f - z));
     }
 }

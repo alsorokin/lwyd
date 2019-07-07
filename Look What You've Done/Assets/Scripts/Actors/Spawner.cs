@@ -3,46 +3,37 @@ using UnityEngine;
 
 public class Spawner : Actor
 {
+    public float CloneInterval = 5.0f;
 
-    private float timeElapsed;
-    private GameObject prototype;
-    private Actor actor;
+    private float _timeElapsed;
+    private Actor _actor;
 
-    public GameObject Prototype
+    public Spawner(GameObject proto)
     {
-        get
-        {
-            return prototype;
-        }
-        set
-        {
-            prototype = value;
-            actor = prototype.GetComponent<Actor>();
-        }
+        _actor = proto.GetComponent<Actor>();
     }
-    public float cloneInterval = 5.0f;
+    
+    public override GameObject Clone()
+    {
+        throw new Exception("Don't you dare to clone the clone masters!");
+    }
 
     private void FixedUpdate()
     {
-        if (actor == null)
+        if (_actor == null)
         {
             return;
         }
 
-        if (timeElapsed < cloneInterval)
+        if (_timeElapsed < CloneInterval)
         {
-            timeElapsed += Time.deltaTime;
+            _timeElapsed += Time.deltaTime;
         }
 
-        if (timeElapsed >= cloneInterval)
+        if (_timeElapsed >= CloneInterval)
         {
-            timeElapsed = 0;
-            actor.Clone();
+            _timeElapsed = 0;
+            _actor.Clone();
         }
-    }
-
-    public override GameObject Clone()
-    {
-        throw new Exception("Don't you dare to clone the clone masters!");
     }
 }

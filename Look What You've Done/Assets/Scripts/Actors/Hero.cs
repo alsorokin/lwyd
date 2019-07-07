@@ -1,82 +1,84 @@
 ﻿using UnityEngine;
 using System;
+using System.Globalization;
 using Direction = MovementController.Direction;
 
 public class Hero : Fighter
 {
-    public Command onMoveRight = new NullCommand();
-    public Command onMoveLeft = new NullCommand();
-    public Command onMoveUp = new NullCommand();
-    public Command onMoveDown = new NullCommand();
+    public Command OnMoveRight = new NullCommand();
+    public Command OnMoveLeft = new NullCommand();
+    public Command OnMoveUp = new NullCommand();
+    public Command OnMoveDown = new NullCommand();
 
-    private const float inputThreshold = 0.001f;
+    private const float InputThreshold = 0.001f;
 
-    private float horizontalAxis;
-    private float verticalAxis;
+    private float _horizontalAxis;
+    private float _verticalAxis;
+
+    public override GameObject Clone()
+    {
+        throw new Exception("Can't clone player... yet?");
+    }
 
     protected override void Start()
     {
         base.Start();
 
-        if (onMoveRight.GetType() == typeof(NullCommand))
+        if (OnMoveRight.GetType() == typeof(NullCommand))
         {
-            onMoveRight = new MoveCommand(mc, Direction.Right);
+            OnMoveRight = new MoveCommand(CurrentMovementController, Direction.Right);
         }
 
-        if (onMoveLeft.GetType() == typeof(NullCommand))
+        if (OnMoveLeft.GetType() == typeof(NullCommand))
         {
-            onMoveLeft = new MoveCommand(mc, Direction.Left);
+            OnMoveLeft = new MoveCommand(CurrentMovementController, Direction.Left);
         }
 
-        if (onMoveUp.GetType() == typeof(NullCommand))
+        if (OnMoveUp.GetType() == typeof(NullCommand))
         {
-            onMoveUp = new MoveCommand(mc, Direction.Up);
+            OnMoveUp = new MoveCommand(CurrentMovementController, Direction.Up);
         }
 
-        if (onMoveDown.GetType() == typeof(NullCommand))
+        if (OnMoveDown.GetType() == typeof(NullCommand))
         {
-            onMoveDown = new MoveCommand(mc, Direction.Down);
+            OnMoveDown = new MoveCommand(CurrentMovementController, Direction.Down);
         }
 
-        this.HasShadow = true;
+        HasShadow = true;
     }
+
     void FixedUpdate()
     {
-        horizontalAxis = Input.GetAxis("Horizontal");
-        verticalAxis = Input.GetAxis("Vertical");
+        _horizontalAxis = Input.GetAxis("Horizontal");
+        _verticalAxis = Input.GetAxis("Vertical");
 
-        if (Math.Abs(horizontalAxis) > inputThreshold)
+        if (Math.Abs(_horizontalAxis) > InputThreshold)
         {
-            if (horizontalAxis > 0)
+            if (_horizontalAxis > 0)
             {
-                onMoveRight.Execute();
+                OnMoveRight.Execute();
             }
             else
             {
-                onMoveLeft.Execute();
+                OnMoveLeft.Execute();
             }
         }
 
-        if (Math.Abs(verticalAxis) > inputThreshold)
+        if (Math.Abs(_verticalAxis) > InputThreshold)
         {
-            if (verticalAxis > 0)
+            if (_verticalAxis > 0)
             {
-                onMoveUp.Execute();
+                OnMoveUp.Execute();
             }
             else
             {
-                onMoveDown.Execute();
+                OnMoveDown.Execute();
             }
         }
     }
 
-    void OnGUI()
-    {
-        GUI.Label(new Rect(new Vector2(0f, 0f), new Vector2(300f, 30f)), transform.position.x.ToString() + ":" + transform.position.y.ToString());
-    }
-
-    public override GameObject Clone()
-    {
-        throw new Exception("Can't clone player... yet.");
-    }
+    void OnGUI() => GUI.Label(new Rect(
+            new Vector2(0f, 0f),
+            new Vector2(300f, 30f)),
+            transform.position.x.ToString(CultureInfo.InvariantCulture) + ":" + transform.position.y.ToString(CultureInfo.InvariantCulture));
 }

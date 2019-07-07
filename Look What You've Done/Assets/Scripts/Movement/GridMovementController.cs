@@ -2,313 +2,115 @@
 
 public class GridMovementController : MovementController
 {
-    private Direction direction = Direction.Up;
-    private bool isMoving = false;
-    private Vector3 startPosition;
-    private Vector3 stopPosition;
-    private Direction whereToNext = Direction.None;
+    private Direction _direction = Direction.Up;
+    private bool _isMoving;
+    private Vector3 _startPosition;
+    private Vector3 _stopPosition;
 
-    public override bool IsMovingUp
-    {
-        get
-        {
-            return this.isMoving && this.direction == Direction.Up;
-        }
-    }
+    public override bool IsMovingUp => _isMoving && _direction == Direction.Up;
 
-    public override bool IsMovingDown
-    {
-        get
-        {
-            return this.isMoving && this.direction == Direction.Down;
-        }
-    }
+    public override bool IsMovingDown => _isMoving && _direction == Direction.Down;
 
-    public override bool IsMovingLeft
-    {
-        get
-        {
-            return this.isMoving && this.direction == Direction.Left;
-        }
-    }
+    public override bool IsMovingLeft => _isMoving && _direction == Direction.Left;
 
-    public override bool IsMovingRight
-    {
-        get
-        {
-            return this.isMoving && this.direction == Direction.Right;
-        }
-    }
+    public override bool IsMovingRight => _isMoving && _direction == Direction.Right;
 
-    public override bool IsMoving()
-    {
-        return isMoving;
-    }
-
-    // Use this for initialization
-    protected override void Start()
-    {
-        base.Start();
-    }
-
-    // Update is called once per frame
-    void Update() { }
-
-    void FixedUpdate()
-    {
-        if (isMoving)
-        {
-            switch (direction)
-            {
-                case Direction.Down:
-                    transform.position += new Vector3(0, -GetMovementScalar(), 0);
-                    if (transform.position.y <= stopPosition.y)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-                case Direction.Up:
-                    transform.position += new Vector3(0, GetMovementScalar(), 0);
-                    if (transform.position.y >= stopPosition.y)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-                case Direction.Left:
-                    transform.position += new Vector3(-GetMovementScalar(), 0, 0);
-                    if (transform.position.x <= stopPosition.x)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-                case Direction.Right:
-                    transform.position += new Vector3(GetMovementScalar(), 0, 0);
-                    if (transform.position.x >= stopPosition.x)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-                case Direction.TopRight:
-                    transform.position += new Vector3(GetMovementScalar(), GetMovementScalar(), 0);
-                    if (transform.position.x >= stopPosition.x || transform.position.y >= stopPosition.y)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-                case Direction.TopLeft:
-                    transform.position += new Vector3(-GetMovementScalar(), GetMovementScalar(), 0);
-                    if (transform.position.x <= stopPosition.x || transform.position.y >= stopPosition.y)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-                case Direction.BottomRight:
-                    transform.position += new Vector3(GetMovementScalar(), -GetMovementScalar(), 0);
-                    if (transform.position.x >= stopPosition.x || transform.position.y <= stopPosition.y)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-                case Direction.BottomLeft:
-                    transform.position += new Vector3(-GetMovementScalar(), -GetMovementScalar(), 0);
-                    if (transform.position.x <= stopPosition.x || transform.position.y <= stopPosition.y)
-                    {
-                        StopMoving();
-                    }
-
-                    break;
-            }
-        }
-    }
+    public override bool IsMoving => _isMoving;
 
     public override void StopMoving()
     {
-        // align to grid
         Align();
-        // stop
-        isMoving = false;
-
-        // then start moving again, if user has already issued a new command
-        // commented out for the time being. whereToNext is not working good with generic enemy script right now
-        // and we don't use grid movement for the player anymore, so looks like we don't need it
-        //if (direction != whereToNext)
-        //{
-        //    direction = whereToNext;
-        //    Go(direction);
-        //}
-
-        whereToNext = Direction.None;
-    }
-
-    private void SwapDirection()
-    {
-        Vector3 temp = startPosition;
-        startPosition = stopPosition;
-        stopPosition = temp;
-        switch (direction)
-        {
-            case Direction.Up:
-                direction = Direction.Down;
-                break;
-            case Direction.Down:
-                direction = Direction.Up;
-                break;
-            case Direction.Left:
-                direction = Direction.Right;
-                break;
-            case Direction.Right:
-                direction = Direction.Left;
-                break;
-            case Direction.TopRight:
-                direction = Direction.BottomLeft;
-                break;
-            case Direction.TopLeft:
-                direction = Direction.BottomRight;
-                break;
-            case Direction.BottomLeft:
-                direction = Direction.TopRight;
-                break;
-            case Direction.BottomRight:
-                direction = Direction.TopLeft;
-                break;
-        }
+        _isMoving = false;
     }
 
     public override void GoUp()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.Up;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(0, 1f, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.Up ? Direction.None : Direction.Up;
-        }
+        if (_isMoving) return;
+
+        _isMoving = true;
+        _direction = Direction.Up;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(0, 1f, 0);
     }
 
     public override void GoDown()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.Down;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(0, -1f, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.Down ? Direction.None : Direction.Down;
-        }
+        if (!_isMoving) return;
+
+        _isMoving = true;
+        _direction = Direction.Down;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(0, -1f, 0);
     }
 
     public override void GoLeft()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.Left;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(-1f, 0, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.Left ? Direction.None : Direction.Left;
-        }
+        if (_isMoving) return;
+
+        _isMoving = true;
+        _direction = Direction.Left;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(-1f, 0, 0);
     }
 
     public override void GoRight()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.Right;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(1f, 0, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.Right ? Direction.None : Direction.Right;
-        }
+        if (_isMoving) return;
+
+        _isMoving = true;
+        _direction = Direction.Right;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(1f, 0, 0);
     }
 
     public override void GoTopRight()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.TopRight;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(1f, 1f, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.TopRight ? Direction.None : Direction.TopRight;
-        }
+        if (_isMoving) return;
+
+        _isMoving = true;
+        _direction = Direction.TopRight;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(1f, 1f, 0);
     }
 
     public override void GoTopLeft()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.TopLeft;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(-1f, 1f, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.TopLeft ? Direction.None : Direction.TopLeft;
-        }
+        if (_isMoving) return;
+    
+        _isMoving = true;
+        _direction = Direction.TopLeft;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(-1f, 1f, 0);
     }
 
     public override void GoBottomLeft()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.BottomLeft;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(-1f, -1f, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.BottomLeft ? Direction.None : Direction.BottomLeft;
-        }
+        if (_isMoving) return;
+
+        _isMoving = true;
+        _direction = Direction.BottomLeft;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(-1f, -1f, 0);
     }
 
     public override void GoBottomRight()
     {
-        if (!isMoving)
-        {
-            isMoving = true;
-            direction = Direction.BottomRight;
-            startPosition = transform.position;
-            stopPosition = transform.position + new Vector3(1f, -1f, 0);
-        }
-        else
-        {
-            whereToNext = direction == Direction.BottomRight ? Direction.None : Direction.BottomRight;
-        }
+        if (_isMoving) return;
+
+        _isMoving = true;
+        _direction = Direction.BottomRight;
+        _startPosition = transform.position;
+        _stopPosition = transform.position + new Vector3(1f, -1f, 0);
     }
 
     // align to grid
     private void Align()
     {
         float oldX = gameObject.transform.position.x;
-        float newX = game.CurrentLevel.TranslateGridToX(game.CurrentLevel.TranslateXToGrid(oldX));
+        float newX = Game.CurrentLevel.TranslateGridToX(Game.CurrentLevel.TranslateXToGrid(oldX));
 
         float oldY = gameObject.transform.position.y;
-        float newY = game.CurrentLevel.TranslateGridToY(game.CurrentLevel.TranslateYToGrid(oldY));
+        float newY = Game.CurrentLevel.TranslateGridToY(Game.CurrentLevel.TranslateYToGrid(oldY));
 
         transform.position = new Vector3(newX, newY, transform.position.z);
     }
@@ -319,5 +121,116 @@ public class GridMovementController : MovementController
     {
         Debug.Log("Swapping");
         SwapDirection();
+    }
+    
+    // Update is called once per frame
+    void Update() { }
+
+    void FixedUpdate()
+    {
+        if (_isMoving)
+        {
+            switch (_direction)
+            {
+                case Direction.Down:
+                    transform.position += new Vector3(0, -GetMovementScalar(), 0);
+                    if (transform.position.y <= _stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.Up:
+                    transform.position += new Vector3(0, GetMovementScalar(), 0);
+                    if (transform.position.y >= _stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.Left:
+                    transform.position += new Vector3(-GetMovementScalar(), 0, 0);
+                    if (transform.position.x <= _stopPosition.x)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.Right:
+                    transform.position += new Vector3(GetMovementScalar(), 0, 0);
+                    if (transform.position.x >= _stopPosition.x)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.TopRight:
+                    transform.position += new Vector3(GetMovementScalar(), GetMovementScalar(), 0);
+                    if (transform.position.x >= _stopPosition.x || transform.position.y >= _stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.TopLeft:
+                    transform.position += new Vector3(-GetMovementScalar(), GetMovementScalar(), 0);
+                    if (transform.position.x <= _stopPosition.x || transform.position.y >= _stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.BottomRight:
+                    transform.position += new Vector3(GetMovementScalar(), -GetMovementScalar(), 0);
+                    if (transform.position.x >= _stopPosition.x || transform.position.y <= _stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+                case Direction.BottomLeft:
+                    transform.position += new Vector3(-GetMovementScalar(), -GetMovementScalar(), 0);
+                    if (transform.position.x <= _stopPosition.x || transform.position.y <= _stopPosition.y)
+                    {
+                        StopMoving();
+                    }
+
+                    break;
+            }
+        }
+    }
+
+    private void SwapDirection()
+    {
+        Vector3 temp = _startPosition;
+        _startPosition = _stopPosition;
+        _stopPosition = temp;
+        switch (_direction)
+        {
+            case Direction.Up:
+                _direction = Direction.Down;
+                break;
+            case Direction.Down:
+                _direction = Direction.Up;
+                break;
+            case Direction.Left:
+                _direction = Direction.Right;
+                break;
+            case Direction.Right:
+                _direction = Direction.Left;
+                break;
+            case Direction.TopRight:
+                _direction = Direction.BottomLeft;
+                break;
+            case Direction.TopLeft:
+                _direction = Direction.BottomRight;
+                break;
+            case Direction.BottomLeft:
+                _direction = Direction.TopRight;
+                break;
+            case Direction.BottomRight:
+                _direction = Direction.TopLeft;
+                break;
+        }
     }
 }

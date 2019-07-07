@@ -15,16 +15,16 @@ public abstract class MovementController : MonoBehaviour
         BottomLeft = 8
     }
 
-    protected Game game;
-    protected Actor actor;
-    public float movementSpeed = 333;
+    protected Game Game;
+    protected Actor Actor;
+    public float MovementSpeed = 333;
 
     public abstract bool IsMovingRight { get; }
     public abstract bool IsMovingLeft { get; }
     public abstract bool IsMovingUp { get; }
     public abstract bool IsMovingDown { get; }
 
-    public bool IsMoving(Direction dir)
+    public bool IsMovingInDirection(Direction dir)
     {
         switch (dir)
         {
@@ -51,8 +51,8 @@ public abstract class MovementController : MonoBehaviour
 
     protected virtual void Start()
     {
-        game = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
-        actor = gameObject.GetComponent<Actor>();
+        Game = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        Actor = gameObject.GetComponent<Actor>();
     }
 
     public abstract void GoUp();
@@ -108,10 +108,10 @@ public abstract class MovementController : MonoBehaviour
         }
     }
 
-    public abstract bool IsMoving();
+    public abstract bool IsMoving { get; }
 
     protected float GetMovementScalar()
     {
-        return this.movementSpeed * Time.deltaTime / 100;
+        return MovementSpeed * Time.deltaTime / 100;
     }
 }

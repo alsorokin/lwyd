@@ -2,136 +2,42 @@
 
 class FreeMovementController : MovementController
 {
-    private Vector2 movement = Vector2.zero;
+    private Vector2 _movement = Vector2.zero;
 
-    public override bool IsMovingRight
-    {
-        get
-        {
-            return movement.x > 0;
-        }
-    }
+    public override bool IsMovingRight => _movement.x > 0;
 
-    public override bool IsMovingLeft
-    {
-        get
-        {
-            return movement.x < 0;
-        }
-    }
+    public override bool IsMovingLeft => _movement.x < 0;
 
-    public override bool IsMovingUp
-    {
-        get
-        {
-            return movement.y > 0;
-        }
-    }
+    public override bool IsMovingUp => _movement.y > 0;
 
-    public override bool IsMovingDown
-    {
-        get
-        {
-            return movement.y < 0;
-        }
-    }
+    public override bool IsMovingDown => _movement.y < 0;
 
-    public override bool IsMoving()
-    {
-        return movement.x > 0 || movement.y > 0;
-    }
+    public override bool IsMoving => _movement.x > 0 || _movement.y > 0;
+
+    public override void GoUp() => _movement = new Vector2(_movement.x, 1);
+
+    public override void GoDown() => _movement = new Vector2(_movement.x, -1);
+
+    public override void GoLeft() => _movement = new Vector2(-1, _movement.y);
+
+    public override void GoRight() => _movement = new Vector2(1, _movement.y);
+
+    public override void StopMoving() => _movement = Vector2.zero;
+
+    public override void GoTopLeft() => _movement = new Vector2(-1, 1);
+
+    public override void GoTopRight() => _movement = new Vector2(1, 1);
+
+    public override void GoBottomLeft() => _movement = new Vector2(-1, -1);
+
+    public override void GoBottomRight() => _movement = new Vector2(1, -1);
 
     private void FixedUpdate()
     {
-        this.transform.position += new Vector3(GetMovementScalar() * movement.x,
-                                               GetMovementScalar() * movement.y, 
+        transform.position += new Vector3(GetMovementScalar() * _movement.x,
+                                               GetMovementScalar() * _movement.y, 
                                                0f);
 
         StopMoving();
-    }
-
-    public override void GoUp()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x, 
-                                       actor.transform.position.y + 0.001f, 
-                                       0);
-
-        movement = new Vector2(movement.x, 1);
-    }
-
-    public override void GoDown()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x,
-                                       actor.transform.position.y - 0.001f,
-                                       0);
-
-        movement = new Vector2(movement.x, -1);
-    }
-
-    public override void GoLeft()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x - 0.001f,
-                                       actor.transform.position.y,
-                                       0);
-
-        movement = new Vector2(-1, movement.y);
-    }
-
-    public override void GoRight()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x + 0.001f,
-                                       actor.transform.position.y,
-                                       0);
-
-        movement = new Vector2(1, movement.y);
-    }
-
-    public override void StopMoving()
-    {
-        movement = Vector2.zero;
-    }
-
-    public override void GoTopLeft()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x - 0.001f,
-                                       actor.transform.position.y + 0.001f,
-                                       0);
-
-        movement = new Vector2(-1, 1);
-    }
-
-    public override void GoTopRight()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x + 0.001f,
-                                       actor.transform.position.y + 0.001f,
-                                       0);
-
-        movement = new Vector2(1, 1);
-    }
-
-    public override void GoBottomLeft()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x - 0.001f,
-                                       actor.transform.position.y - 0.001f,
-                                       0);
-
-        movement = new Vector2(-1, -1);
-    }
-
-    public override void GoBottomRight()
-    {
-        var actor = gameObject.GetComponent<Actor>();
-        var fromPosition = new Vector3(actor.transform.position.x + 0.001f,
-                                       actor.transform.position.y - 0.001f,
-                                       0);
-
-        movement = new Vector2(1, -1);
     }
 }

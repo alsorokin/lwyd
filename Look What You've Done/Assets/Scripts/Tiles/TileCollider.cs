@@ -13,17 +13,17 @@ public class PolygonTileCollider : TileCollider
 
 public class CircleTileCollider : TileCollider
 {
-    public Rect bounds;
+    public Rect Bounds;
     public float Radius
     {
         get
         {
-            return bounds.width / 2;
+            return Bounds.width / 2;
         }
     }
 }
 
 public class BoxTileCollider : TileCollider
 {
-    public Rect bounds;
+    public Rect Bounds;
 }

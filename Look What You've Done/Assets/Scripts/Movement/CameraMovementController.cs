@@ -1,49 +1,24 @@
 ﻿using UnityEngine;
+using System;
 
 class CameraMovementController : MonoBehaviour
 {
-    public GameObject player;
-    public Level level;
+    public GameObject Player;
+    public Level Level;
 
-    public float XThreshold
-    {
-        get
-        {
-            return Screen.width / 500;
-        }
-    }
+    public float XThreshold => (float)Math.Round((double)Screen.width / 500, 2);
 
-    public float YThreshold
-    {
-        get
-        {
-            return Screen.height / 500;
-        }
-    }
+    public float YThreshold => (float)Math.Round((double)Screen.height / 500, 2);
 
     private Camera Camera => gameObject.GetComponent<Camera>();
 
-    private float PlayerX {
-        get
-        {
-            return player.transform.position.x;
-        }
-    }
+    private float PlayerX => Player.transform.position.x;
 
-    private float PlayerY
-    {
-        get
-        {
-            return player.transform.position.y;
-        }
-    }
+    private float PlayerY => Player.transform.position.y;
 
     private float CameraX
     {
-        get
-        {
-            return Camera.transform.position.x;
-        }
+        get => Camera.transform.position.x;
         set
         {
             Camera.transform.position = new Vector3(value, CameraY, CameraZ);
@@ -52,10 +27,7 @@ class CameraMovementController : MonoBehaviour
 
     private float CameraY
     {
-        get
-        {
-            return Camera.transform.position.y;
-        }
+        get => Camera.transform.position.y;
         set
         {
             Camera.transform.position = new Vector3(CameraX, value, CameraZ);
@@ -64,15 +36,12 @@ class CameraMovementController : MonoBehaviour
 
     private float CameraZ
     {
-        get
-        {
-            return Camera.transform.position.z;
-        }
+        get => Camera.transform.position.z;
     }
 
     private bool CanMoveCameraLeft()
     {
-        if (this.Camera.WorldToScreenPoint(level.GetLeftmostTile().gameObject.transform.position).x < 0)
+        if (Camera.WorldToScreenPoint(Level.LeftmostTile.GameObject.transform.position).x < 0)
         {
             return true;
         }
@@ -82,7 +51,7 @@ class CameraMovementController : MonoBehaviour
 
     private bool CanMoveCameraRight()
     {
-        if (this.Camera.WorldToScreenPoint(level.GetRightmostTile().gameObject.transform.position).x > this.Camera.pixelWidth)
+        if (Camera.WorldToScreenPoint(Level.RightmostTile.GameObject.transform.position).x > Camera.pixelWidth)
         {
             return true;
         }
@@ -92,7 +61,7 @@ class CameraMovementController : MonoBehaviour
 
     private bool CanMoveCameraUp()
     {
-        if (this.Camera.WorldToScreenPoint(level.GetTopmostTile().gameObject.transform.position).y > this.Camera.pixelHeight)
+        if (Camera.WorldToScreenPoint(Level.TopmostTile.GameObject.transform.position).y > Camera.pixelHeight)
         {
             return true;
         }
@@ -102,7 +71,7 @@ class CameraMovementController : MonoBehaviour
 
     private bool CanMoveCameraDown()
     {
-        if (this.Camera.WorldToScreenPoint(level.GetBottommostTile().gameObject.transform.position).y < 0)
+        if (Camera.WorldToScreenPoint(Level.BottommostTile.GameObject.transform.position).y < 0)
         {
             return true;
         }

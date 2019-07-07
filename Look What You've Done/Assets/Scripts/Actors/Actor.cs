@@ -1,25 +1,22 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class Actor : MonoBehaviour
 {
-    protected MovementController mc;
-    private float health = 75;
-    protected Level myLevel;
-    private bool hasShadow;
+    protected MovementController CurrentMovementController;
+    private float _health = 75;
+    protected Level CurrentLevel;
+    private bool _hasShadow;
     private readonly float originalZ = -100f;
 
     private static readonly string shadow_tag = "actor_shadow";
     private static readonly string body_tag = "actor_body";
-    public readonly string shadow_sprite_name = "Sprites/character-shadow";
+    private readonly string shadow_sprite_name = "Sprites/character-shadow";
 
-    protected SpriteRenderer SpriteRenderer
-    {
-        get
-        {
-            return this.gameObject.GetComponent<SpriteRenderer>();
-        }
-    }
+    protected SpriteRenderer MySpriteRenderer => gameObject.GetComponent<SpriteRenderer>();
+
+    protected SpriteRenderer ShadowSpriteRenderer => Shadow.GetComponent<SpriteRenderer>();
+
+    protected SpriteRenderer BodySpriteRenderer => Body.GetComponent<SpriteRenderer>();
 
     public GameObject Body
     {
@@ -45,33 +42,18 @@ public abstract class Actor : MonoBehaviour
 
     public bool HasShadow
     {
-        get
-        {
-            return hasShadow;
-        }
-        set
-        {
-            SetShadowEnabled(value);
-        }
+        get => _hasShadow;
+        set => SetShadowEnabled(value);
     }
 
-    public bool Alive
-    {
-        get
-        {
-            return Health > 0f;
-        }
-    }
+    public bool Alive => Health > 0f;
 
     public float Health
     {
-        get
-        {
-            return health;
-        }
+        get => _health;
         set
         {
-            health = value;
+            _health = value;
             ApplyHealthColor();
         }
     }
@@ -80,48 +62,7 @@ public abstract class Actor : MonoBehaviour
 
     public bool Cloneable { get; set; }
 
-    private int OrderInLayer
-    {
-        get
-        {
-            return (int)((-this.gameObject.transform.position.y - Offset - originalZ) * 100f);
-        }
-    }
-
-    private int ShadowOrderInLayer
-    {
-        get
-        {
-            return (int)((-this.gameObject.transform.position.y - Offset + 10f) * 100f);
-        }
-    }
-
-    private float Offset
-    {
-        get
-        {
-            // lower sprite boundary
-            return -(this.Body.GetComponent<SpriteRenderer>().bounds.size.y / 2);
-        }
-    }
-
     public abstract GameObject Clone();
-
-    public void LateUpdate()
-    {
-        this.Body.GetComponent<SpriteRenderer>().sortingOrder = OrderInLayer;
-        if (HasShadow)
-        {
-            this.Shadow.GetComponent<SpriteRenderer>().sortingOrder = ShadowOrderInLayer;
-            // TODO: y-positioning code goes here (if jumping/flying is implemented)
-        }
-    }
-
-    protected virtual void Start()
-    {
-        mc = GetComponent<MovementController>();
-        ApplyHealthColor();
-    }
 
     public void Suffer (float damage)
     {
@@ -132,58 +73,76 @@ public abstract class Actor : MonoBehaviour
         }
     }
 
-    protected void ApplyHealthColor()
-    {
-        var sr = this.Body.GetComponent<SpriteRenderer>();
-        sr.color = new Color(1, Health / MaxHealth, Health / MaxHealth);
-    }
-
     public void Die()
     {
         Health = 0;
-        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        MySpriteRenderer.enabled = false;
     }
 
     public void Resurrect()
     {
         Health = MaxHealth;
-        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        MySpriteRenderer.enabled = true;
     }
 
-    public void SetLevel(Level level)
+    public void SetLevel(Level level) => CurrentLevel = level;
+
+    public void SetMaxHealth(float maxHealth) => MaxHealth = maxHealth;
+
+    protected virtual void Start()
     {
-        myLevel = level;
+        CurrentMovementController = GetComponent<MovementController>();
+        ApplyHealthColor();
     }
 
-    public void SetMaxHealth(float maxHealth)
+    protected void ApplyHealthColor() => 
+        BodySpriteRenderer.color = new Color(1, Health / MaxHealth, Health / MaxHealth);
+
+    private int OrderInLayer =>
+        (int)((-gameObject.transform.position.y - Offset - originalZ) * 100f);
+
+    private int ShadowOrderInLayer =>
+        (int)((-gameObject.transform.position.y - Offset + 10f) * 100f);
+
+    
+    // lower sprite boundary
+    private float Offset =>
+        -(BodySpriteRenderer.bounds.size.y / 2);
+
+    private void LateUpdate()
     {
-        MaxHealth = maxHealth;
+        BodySpriteRenderer.sortingOrder = OrderInLayer;
+        if (HasShadow)
+        {
+            ShadowSpriteRenderer.sortingOrder = ShadowOrderInLayer;
+            // TODO: y-positioning code goes here (if jumping/flying is implemented)
+        }
     }
 
-    private void SetShadowEnabled(bool enabled)
+    private void SetShadowEnabled(bool value)
     {
-        hasShadow = enabled;
+        _hasShadow = value;
 
         // Some sort of lazy init here: only create the shadow if it's really needed
-        if (this.Shadow == null && hasShadow)
+        if (Shadow == null && _hasShadow)
         {
-            this.Shadow = new GameObject();
-            this.Shadow.name = "shadow";
-            this.Shadow.transform.tag = shadow_tag;
-            var spriteRenderer = this.Shadow.AddComponent<SpriteRenderer>();
-            spriteRenderer.sprite = Resources.Load<Sprite>(shadow_sprite_name);
-            spriteRenderer.color = new Color(1f, 1f, 1f, 0.27f);
-            Transform shadowTransform = this.Shadow.transform;
+            Shadow = new GameObject();
+            Shadow.name = "shadow";
+            Shadow.transform.tag = shadow_tag;
+            var shadowSpriteRenderer = Shadow.AddComponent<SpriteRenderer>();
+            shadowSpriteRenderer.sprite = Resources.Load<Sprite>(shadow_sprite_name);
+            shadowSpriteRenderer.color = new Color(1f, 1f, 1f, 0.27f);
+            Transform shadowTransform = Shadow.transform;
             shadowTransform.parent = gameObject.transform;
             shadowTransform.localPosition = new Vector3(0f, Offset, 0f);
         }
-        else if (this.Shadow != null && !hasShadow)
+        else if (Shadow != null && !_hasShadow)
         {
-            this.Shadow.SetActive(false);
+            Shadow.SetActive(false);
         }
-        else if (this.Shadow != null && hasShadow)
+        else if (Shadow != null && _hasShadow)
         {
-            this.Shadow.SetActive(true);
+            Shadow.SetActive(true);
         }
     }
 }
