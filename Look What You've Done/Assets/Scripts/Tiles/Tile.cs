@@ -134,7 +134,7 @@ public class Tile
         UpdateZPosition();
     }
 
-    public void SetFlipped(bool h, bool v, bool d)
+    public void SetFlipped(bool h, bool v, bool d, int rotation = 0)
     {
         // 000 - std - 5
         if (!h && !v && !d)
@@ -172,15 +172,12 @@ public class Tile
             GameObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
         }
         // 111 - fh90 - 3758096389
-        else if (h && v && d)
+        else // if (h && v && d)
         {
             GameObject.transform.localRotation = Quaternion.Euler(0, 180, 90);
         }
-        // wtf?
-        else
-        {
-            throw new System.Exception("Looks like I didn't handle every possible variant of tile flipping. Please contact me and tell me I'm dumb.");
-        }
+        Vector3 pivotPoint = GameObject.transform.position - SpriteRenderer.bounds.extents;
+        GameObject.transform.RotateAround(pivotPoint, Vector3.back, rotation);
     }
 
     public Tile CloneTo(float x, float y, float z)

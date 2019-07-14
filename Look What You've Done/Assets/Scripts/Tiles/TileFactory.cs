@@ -32,7 +32,7 @@ class TileFactory
         }
     }
 
-    public Tile CreateTile(uint globalId, float x, float y, float z)
+    public Tile CreateTile(uint globalId, float x, float y, float z, int rotation = 0)
     {
         var gid = globalId;
         var flippedHorizontally = GetBit(gid, 32);
@@ -57,7 +57,8 @@ class TileFactory
         var normalizedX = x + (sprite.pivot.x / sprite.pixelsPerUnit);
         var normalizedY = y + (sprite.pivot.y / sprite.pixelsPerUnit);
         var newTile = _tiles[gid].CloneTo(normalizedX, normalizedY, z);
-        newTile.SetFlipped(flippedHorizontally, flippedVertically, flippedDiagonally);
+        newTile.SetFlipped(flippedHorizontally, flippedVertically, flippedDiagonally, rotation);
+
         newTile.GameObject.SetActive(true);
 
         return newTile;

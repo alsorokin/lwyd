@@ -155,6 +155,8 @@ public class Level
                 string gidValue = obj.Attributes["gid"]?.Value;
                 if (string.IsNullOrEmpty(gidValue))
                 {
+                    // Gid is empty. This is either player spawn or spriteless collider. 
+                    // Or some other object that we don't support yet.
                     if (obj.FirstChild != null && obj.FirstChild.Name == "point" && obj.Attributes["type"].Value == "player_spawn")
                     {
                         if (float.TryParse(obj.Attributes["x"].Value, out float spawnX) 
@@ -165,7 +167,7 @@ public class Level
                             _playerSpawn = new Vector2(spawnX, spawnY);
                         }
                     }
-                    // TODO: Parse other objects
+                    // TODO: Parse other objects, like spriteless colliders
                     continue;
                 }
 
@@ -173,9 +175,11 @@ public class Level
                 float.TryParse(obj.Attributes["x"].Value, out float x);
                 float.TryParse(obj.Attributes["y"].Value, out float y);
                 y = TranslateYFromTmx(y);
+                int.TryParse(obj.Attributes["rotation"]?.Value, out int rotation);
+                
                 // TODO: use width and height attributes?
 
-                CreateObject(gid, x, y, DefaultObjectLayerIndex);
+                CreateObject(gid, x, y, DefaultObjectLayerIndex, rotation);
             }
         }
     }
@@ -273,12 +277,13 @@ public class Level
             0f - (z * 10));
     }
 
-    private void CreateObject(uint gid, float pixelX, float pixelY, float z)
+    private void CreateObject(uint gid, float pixelX, float pixelY, float z, int rotation = 0)
     {
         _objects.Add(TileFactory.Instance.CreateTile(
             gid,
             TranslatePixelsToUnits(pixelX),
             TranslatePixelsToUnits(pixelY),
-            0f - z));
+            0f - z,
+            rotation));
     }
 }
