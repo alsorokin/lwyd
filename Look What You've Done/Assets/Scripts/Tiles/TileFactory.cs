@@ -135,7 +135,7 @@ class TileFactory
                 // TODO: Parse multiple colliders
                 XmlNode objectGroupNode = tileNode.ChildNodes[0];
                 XmlNode objectNode = objectGroupNode.ChildNodes[0];
-                collider = ParseObjectNode(objectNode);
+                collider = ReadColliderFromObjectNode(objectNode);
             }
 
             var tile = new Tile(loadedSprites[i], -1, gid++, Vector3.zero, 1f, collider);
@@ -170,7 +170,7 @@ class TileFactory
                             // TODO: Add support for multiple colliders
                             if (bNode.Name == "object" && bNode.Attributes["id"].Value == "1")
                             {
-                                collider = ParseObjectNode(bNode);
+                                collider = ReadColliderFromObjectNode(bNode);
                             }
                         }
 
@@ -242,7 +242,7 @@ class TileFactory
         return _tiles.Last().Value.Gid + 1;
     }
 
-    private TileCollider ParseObjectNode(XmlNode objectNode)
+    private TileCollider ReadColliderFromObjectNode(XmlNode objectNode)
     {
         if (objectNode == null)
         {

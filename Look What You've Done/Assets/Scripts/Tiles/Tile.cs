@@ -8,7 +8,7 @@ public class Tile
     private TileCollider _tileCollider;
     private readonly float _originalZ;
 
-    public float Offset { get; private set; }
+    public float SortingOffset { get; private set; }
 
     public SpriteRenderer SpriteRenderer
     {
@@ -37,12 +37,12 @@ public class Tile
         GameObject.transform.position = normalizedPosition;
         var renderer = GameObject.AddComponent<SpriteRenderer>();
         renderer.sprite = sprite;
-        Offset = -(SpriteRenderer.sprite.pivot.y / SpriteRenderer.sprite.pixelsPerUnit);
+        SortingOffset = -(SpriteRenderer.sprite.pivot.y / SpriteRenderer.sprite.pixelsPerUnit);
         
         UpdateZPosition();
     }
 
-    private int OrderInLayer => (int)((-GameObject.transform.position.y - Offset - _originalZ) * 100f);
+    private int OrderInLayer => (int)((-GameObject.transform.position.y - SortingOffset - _originalZ) * 100f);
 
     public void SetCollider(TileCollider collider)
     {
@@ -103,32 +103,33 @@ public class Tile
         if (collider is BoxTileCollider)
         {
             var boxCollider = collider as BoxTileCollider;
-            var newBoxCollider = GameObject.AddComponent<BoxCollider2D>();
-            newBoxCollider.size = new Vector2(
+            var unityBoxCollider = GameObject.AddComponent<BoxCollider2D>();
+            unityBoxCollider.size = new Vector2(
                 boxCollider.Bounds.width / ppu,
                 boxCollider.Bounds.height / ppu);
-            newBoxCollider.offset = new Vector2(
-                ((boxCollider.Bounds.width / 2) - tileWidthPixelsHalf + boxCollider.Bounds.x) / ppu,
-                -((boxCollider.Bounds.height / 2) - tileHeightPixelsHalf + boxCollider.Bounds.y) / ppu);
-            Offset = newBoxCollider.offset.y - (SpriteRenderer.sprite.texture.height / 2 / ppu);
+            unityBoxCollider.offset = new Vector2(
+                (boxCollider.Bounds.x + (boxCollider.Bounds.width / 2) - tileWidthPixelsHalf) / ppu,
+                -(boxCollider.Bounds.y + (boxCollider.Bounds.height / 2) - tileHeightPixelsHalf) / ppu);
+            SortingOffset = unityBoxCollider.offset.y - (unityBoxCollider.bounds.size.x / 2);
         }
         else if (collider is CircleTileCollider)
         {
             var circleCollider = collider as CircleTileCollider;
-            var newCircleCollider = GameObject.AddComponent<CircleCollider2D>();
-            newCircleCollider.radius = circleCollider.Radius / ppu;
-            newCircleCollider.offset = new Vector2(
-                ((circleCollider.Bounds.width / 2) - tileWidthPixelsHalf + circleCollider.Bounds.x) / ppu,
-                -((circleCollider.Bounds.height / 2) - tileHeightPixelsHalf + circleCollider.Bounds.y) / ppu);
-            Offset = newCircleCollider.offset.y - (SpriteRenderer.sprite.texture.height / 2 / ppu);
+            var unityCircleCollider = GameObject.AddComponent<CircleCollider2D>();
+            unityCircleCollider.radius = circleCollider.Radius / ppu;
+            unityCircleCollider.offset = new Vector2(
+                (circleCollider.Bounds.x + circleCollider.Radius - tileWidthPixelsHalf) / ppu,
+                -(circleCollider.Bounds.y + circleCollider.Radius - tileHeightPixelsHalf) / ppu);
+            SortingOffset = unityCircleCollider.offset.y - unityCircleCollider.radius;
         }
         else //if (collider is PolygonTileCollider)
         {
             var polygonCollider = collider as PolygonTileCollider;
-            var newPolygonCollider = GameObject.AddComponent<PolygonCollider2D>();
-            newPolygonCollider.points = polygonCollider.Vertices.Select(v => new Vector2(v.x / ppu, -v.y / ppu)).ToArray();
-            newPolygonCollider.offset = new Vector2(-tileWidthPixelsHalf / ppu, tileHeightPixelsHalf / ppu);
-            Offset = newPolygonCollider.offset.y - (SpriteRenderer.sprite.texture.height / 2 / ppu);
+            var unityPolygonCollider = GameObject.AddComponent<PolygonCollider2D>();
+            unityPolygonCollider.points = polygonCollider.Vertices.Select(v => new Vector2(
+                (v.x - tileWidthPixelsHalf) / ppu, 
+                -(v.y - tileHeightPixelsHalf) / ppu)).ToArray();
+            SortingOffset = unityPolygonCollider.bounds.min.y - unityPolygonCollider.transform.position.y;
         }
 
         UpdateZPosition();
@@ -136,6 +137,17 @@ public class Tile
 
     public void SetFlipped(bool h, bool v, bool d, int rotation = 0)
     {
+        // I realized the comments are a bit cryptic so here goes the elaboration:
+        // First, three binary numbers: these are the flags that describe flipping of the tile.
+        // For more information, see https://doc.mapeditor.org/en/stable/reference/tmx-map-format/#tile-flipping
+        // TL;DR: First one is horizontal flipping, second one is vertical and the third one is diagonal
+        // Second, a bit more human-friendly description:
+        // std - no flipping
+        // fv - flipped vertically
+        // fh - flipped horizontally
+        // The number after these letters is the number of degrees to rotate the tile by.
+        // Third, an examplary decimal number describing a tile with gid=5 and all flipping flags applied.
+
         // 000 - std - 5
         if (!h && !v && !d)
         {
@@ -176,8 +188,14 @@ public class Tile
         {
             GameObject.transform.localRotation = Quaternion.Euler(0, 180, 90);
         }
-        Vector3 pivotPoint = GameObject.transform.position - SpriteRenderer.bounds.extents;
-        GameObject.transform.RotateAround(pivotPoint, Vector3.back, rotation);
+
+        if (rotation != 0)
+        {
+            Vector3 pivotPoint = GameObject.transform.position - SpriteRenderer.bounds.extents;
+            GameObject.transform.RotateAround(pivotPoint, Vector3.back, rotation);
+        }
+
+        UpdateZPosition();
     }
 
     public Tile CloneTo(float x, float y, float z)

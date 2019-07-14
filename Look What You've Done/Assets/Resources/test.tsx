@@ -111,11 +111,24 @@
  </tile>
  <tile id="39">
   <image width="18" height="41" source="Sprites/tall-purple-girl.png"/>
+  <objectgroup draworder="index">
+   <object id="1" x="4.0625" y="40.875">
+    <polygon points="0,0 3.9375,0 3.875,-1.75 5.0625,-3.125 5.6875,-1.9375 5.875,0.0625 10,0 9.75,-1.875 4.875,-5.0625 0,-1.8125"/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id="41">
   <image width="22" height="49" source="Sprites/telo4ka.png"/>
+  <objectgroup draworder="index">
+   <object id="1" x="4.8125" y="37.0625" width="12" height="12">
+    <ellipse/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id="42">
   <image width="10" height="31" source="Sprites/devaha.png"/>
+  <objectgroup draworder="index">
+   <object id="1" x="2" y="26" width="6" height="5"/>
+  </objectgroup>
  </tile>
 </tileset>
