@@ -70,6 +70,11 @@
  </tile>
  <tile id="20">
   <image width="16" height="16" source="Sprites/tr/tr6.png"/>
+  <objectgroup draworder="index">
+   <object id="1" x="0" y="0" width="16" height="16">
+    <ellipse/>
+   </object>
+  </objectgroup>
  </tile>
  <tile id="21">
   <image width="16" height="16" source="Sprites/tr/tr7.png"/>

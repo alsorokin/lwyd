@@ -107,10 +107,10 @@ public class GridMovementController : MovementController
     private void Align()
     {
         float oldX = gameObject.transform.position.x;
-        float newX = Game.CurrentLevel.TranslateGridToX(Game.CurrentLevel.TranslateXToGrid(oldX));
+        float newX = Game.CurrentLevel.TranslateGridToUnits(Game.CurrentLevel.TranslateXToGrid(oldX));
 
         float oldY = gameObject.transform.position.y;
-        float newY = Game.CurrentLevel.TranslateGridToY(Game.CurrentLevel.TranslateYToGrid(oldY));
+        float newY = Game.CurrentLevel.TranslateGridToUnits(Game.CurrentLevel.TranslateYToGrid(oldY));
 
         transform.position = new Vector3(newX, newY, transform.position.z);
     }

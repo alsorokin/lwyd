@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="8" nextobjectid="50">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="8" nextobjectid="104">
  <tileset firstgid="1" source="../Resources/test.tsx"/>
  <tileset firstgid="44" source="../Resources/tree-sample.tsx"/>
  <tileset firstgid="53" source="../Resources/sprite-pack-sample.tsx"/>
@@ -112,16 +112,12 @@
 </data>
  </layer>
  <objectgroup id="5" name="obj">
-  <object id="22" type="player_spawn" x="256.5" y="101.25">
+  <object id="22" type="player_spawn" x="255.5" y="106.75">
    <point/>
   </object>
-  <object id="42" gid="36" x="240" y="32" width="16" height="16"/>
-  <object id="43" gid="1073741860" x="304" y="16" width="16" height="16" rotation="180"/>
-  <object id="44" gid="36" x="240" y="48" width="16" height="16" rotation="-90"/>
-  <object id="45" gid="36" x="256" y="32" width="16" height="16" rotation="90"/>
-  <object id="46" gid="1073741860" x="272" y="32" width="16" height="16" rotation="90"/>
-  <object id="47" gid="1073741860" x="320" y="48" width="16" height="16" rotation="-90"/>
-  <object id="48" gid="1073741860" x="288" y="64" width="16" height="16"/>
-  <object id="49" gid="36" x="256" y="48" width="16" height="16" rotation="180"/>
+  <object id="100" gid="53" x="288" y="64" width="16" height="16"/>
+  <object id="101" gid="53" x="304" y="48" width="16" height="16" rotation="90"/>
+  <object id="102" gid="53" x="304" y="80" width="16" height="16" rotation="-90"/>
+  <object id="103" gid="53" x="320" y="64" width="16" height="16" rotation="-180"/>
  </objectgroup>
 </map>

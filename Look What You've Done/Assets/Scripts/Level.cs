@@ -58,8 +58,8 @@ public class Level
     {
         // Adding player
         _player = UnityObject.Instantiate(Resources.Load<GameObject>("Tiles/Player"));
-        float spawnX = _playerSpawn == Vector2.zero ? TranslateGridToX(_levelWidth / 2) : _playerSpawn.x;
-        float spawnY = _playerSpawn == Vector2.zero ? TranslateGridToY(_levelHeight / 2) : _playerSpawn.y;
+        float spawnX = _playerSpawn == Vector2.zero ? TranslateGridToUnits(_levelWidth / 2) : _playerSpawn.x;
+        float spawnY = _playerSpawn == Vector2.zero ? TranslateGridToUnits(_levelHeight / 2) : _playerSpawn.y;
         _player.transform.position = new Vector3(spawnX, spawnY, 0f);
         Vector3 playerLocalScale = _player.transform.localScale;
         _player.transform.localScale = new Vector3(playerLocalScale.x, playerLocalScale.y, playerLocalScale.z);
@@ -187,7 +187,7 @@ public class Level
     public GameObject SpawnGenericEnemyAt(int gridX, int gridY, bool isFree)
     {
         var genericEnemy = UnityObject.Instantiate(Resources.Load<GameObject>(isFree ? "Tiles/GenericFreeEnemyTile" : "Tiles/GenericGridEnemyTile"));
-        genericEnemy.transform.position = new Vector3(TranslateGridToX(gridX), TranslateGridToY(gridY), 1f);
+        genericEnemy.transform.position = new Vector3(TranslateGridToUnits(gridX), TranslateGridToUnits(gridY), 1f);
         var localScale = genericEnemy.transform.localScale;
         genericEnemy.transform.localScale = new Vector3(localScale.x, localScale.y, localScale.z);
         var ge = genericEnemy.GetComponent<GenericEnemy>();
@@ -209,14 +209,9 @@ public class Level
         return (int)Math.Round(y);
     }
 
-    public float TranslateGridToX(int gridX)
+    public float TranslateGridToUnits(int grid)
     {
-        return gridX;
-    }
-
-    public float TranslateGridToY(int gridY)
-    {
-        return gridY;
+        return grid;
     }
 
     public float TranslatePixelsToUnits(float pixels)
@@ -272,8 +267,8 @@ public class Level
     {
         _levelTiles[w, h, z] = TileFactory.Instance.CreateTile(
             gid,
-            TranslateGridToX(w),
-            TranslateGridToY(h),
+            TranslateGridToUnits(w),
+            TranslateGridToUnits(h),
             0f - (z * 10));
     }
 

@@ -94,9 +94,9 @@ public class Tile
 
         _tileCollider = collider;
         // note that the tile is not always 1 unit, so this is not necessarily equal to ppu
-        var tileWidthPixels = SpriteRenderer.sprite.texture.width;
+        var tileWidthPixels = SpriteRenderer.sprite.rect.width;
         var tileWidthPixelsHalf = tileWidthPixels / 2;
-        var tileHeightPixels = SpriteRenderer.sprite.texture.height;
+        var tileHeightPixels = SpriteRenderer.sprite.rect.height;
         var tileHeightPixelsHalf = tileHeightPixels / 2;
         float ppu = SpriteRenderer.sprite.pixelsPerUnit;
 
