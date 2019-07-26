@@ -76,7 +76,7 @@ public class GridMovementController : MovementController
     public override void GoTopLeft()
     {
         if (_isMoving) return;
-    
+
         _isMoving = true;
         _direction = Direction.TopLeft;
         _startPosition = transform.position;
@@ -115,14 +115,14 @@ public class GridMovementController : MovementController
         transform.position = new Vector3(newX, newY, transform.position.z);
     }
 
-    void OnGUI() {}
+    void OnGUI() { }
 
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("Swapping");
         SwapDirection();
     }
-    
+
     // Update is called once per frame
     void Update() { }
 

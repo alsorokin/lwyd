@@ -12,7 +12,7 @@ public class Spawner : Actor
     {
         _actor = proto.GetComponent<Actor>();
     }
-    
+
     public override GameObject Clone()
     {
         throw new Exception("Don't you dare to clone the clone masters!");

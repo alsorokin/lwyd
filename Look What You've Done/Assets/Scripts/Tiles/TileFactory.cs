@@ -12,7 +12,8 @@ class TileFactory
     private Dictionary<string, Sprite> _sprites = new Dictionary<string, Sprite>();
     private Dictionary<uint, Tile> _tiles = new Dictionary<uint, Tile>();
 
-    private TileFactory() {
+    private TileFactory()
+    {
         uint nextGid = 1;
         nextGid = ReadTiles("Assets\\Resources\\test.tsx", nextGid);
         nextGid = ReadTiles("Assets\\Resources\\tree-sample.tsx", nextGid);
@@ -228,7 +229,7 @@ class TileFactory
                 _sprites.Add(source, sprite);
             }
 
-            
+
             var tile = new Tile(sprite, id, (uint)(id + firstGid), Vector3.zero, 1f);
             if (collider != null)
             {
@@ -277,7 +278,8 @@ class TileFactory
         {
             var collider = new PolygonTileCollider();
             IEnumerable<Vector2> points = children.First().Attributes["points"].Value.Split(' ')
-                .Select(value => {
+                .Select(value =>
+                {
                     string[] pair = value.Split(',');
                     float.TryParse(pair[0], out float x);
                     float.TryParse(pair[1], out float y);

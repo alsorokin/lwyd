@@ -1,8 +1,9 @@
-﻿public class MoveCommand : Command {
+﻿public class MoveCommand : Command
+{
     private MovementController _movementController;
     private readonly MovementController.Direction _direction;
 
-    public MoveCommand (MovementController mc, MovementController.Direction dir)
+    public MoveCommand(MovementController mc, MovementController.Direction dir)
     {
         _movementController = mc;
         _direction = dir;

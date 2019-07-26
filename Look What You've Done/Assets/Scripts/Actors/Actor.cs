@@ -64,7 +64,7 @@ public abstract class Actor : MonoBehaviour
 
     public abstract GameObject Clone();
 
-    public void Suffer (float damage)
+    public void Suffer(float damage)
     {
         Health -= damage;
         if (Health <= 0f)
@@ -95,7 +95,7 @@ public abstract class Actor : MonoBehaviour
         ApplyHealthColor();
     }
 
-    protected void ApplyHealthColor() => 
+    protected void ApplyHealthColor() =>
         BodySpriteRenderer.color = new Color(1, Health / MaxHealth, Health / MaxHealth);
 
     private int OrderInLayer =>
@@ -104,7 +104,7 @@ public abstract class Actor : MonoBehaviour
     private int ShadowOrderInLayer =>
         (int)((-gameObject.transform.position.y - Offset + 10f) * 100f);
 
-    
+
     // lower sprite boundary
     private float Offset =>
         -(BodySpriteRenderer.bounds.size.y / 2);

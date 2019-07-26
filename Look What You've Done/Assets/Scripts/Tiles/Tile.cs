@@ -21,7 +21,7 @@ public class Tile
     public int Id { get; }
     public uint Gid { get; set; }
 
-    public Tile(Sprite sprite, int id, uint gid, Vector3 position, float scale, TileCollider tc) : this (sprite, id, gid, position, scale)
+    public Tile(Sprite sprite, int id, uint gid, Vector3 position, float scale, TileCollider tc) : this(sprite, id, gid, position, scale)
     {
         SetCollider(tc);
     }
@@ -38,7 +38,7 @@ public class Tile
         var renderer = GameObject.AddComponent<SpriteRenderer>();
         renderer.sprite = sprite;
         SortingOffset = -(SpriteRenderer.sprite.pivot.y / SpriteRenderer.sprite.pixelsPerUnit);
-        
+
         UpdateZPosition();
     }
 
@@ -127,7 +127,7 @@ public class Tile
             var polygonCollider = collider as PolygonTileCollider;
             var unityPolygonCollider = GameObject.AddComponent<PolygonCollider2D>();
             unityPolygonCollider.points = polygonCollider.Vertices.Select(v => new Vector2(
-                (v.x - tileWidthPixelsHalf) / ppu, 
+                (v.x - tileWidthPixelsHalf) / ppu,
                 -(v.y - tileHeightPixelsHalf) / ppu)).ToArray();
             SortingOffset = unityPolygonCollider.bounds.min.y - unityPolygonCollider.transform.position.y;
         }
@@ -203,7 +203,7 @@ public class Tile
         var newPosition = new Vector3(x, y, z);
         var newTile = new Tile(SpriteRenderer.sprite, Id, Gid, newPosition, GameObject.transform.localScale.x);
         newTile.SetCollider(_tileCollider);
-        
+
         return newTile;
     }
 

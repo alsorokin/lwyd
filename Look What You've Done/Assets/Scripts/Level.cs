@@ -21,11 +21,11 @@ public class Level
 
     private GameObject _player;
     private Camera _camera;
-    
+
     public float Scale
     {
         get => 10f / _cameraSize;
-        set 
+        set
         {
             _cameraSize = 10f / value;
             if (_camera != null)
@@ -159,7 +159,7 @@ public class Level
                     // Or some other object that we don't support yet.
                     if (obj.FirstChild != null && obj.FirstChild.Name == "point" && obj.Attributes["type"].Value == "player_spawn")
                     {
-                        if (float.TryParse(obj.Attributes["x"].Value, out float spawnX) 
+                        if (float.TryParse(obj.Attributes["x"].Value, out float spawnX)
                             && float.TryParse(obj.Attributes["y"].Value, out float spawnY))
                         {
                             spawnX = TranslatePixelsToUnits(spawnX);
@@ -176,7 +176,7 @@ public class Level
                 float.TryParse(obj.Attributes["y"].Value, out float y);
                 y = TranslateYFromTmx(y);
                 int.TryParse(obj.Attributes["rotation"]?.Value, out int rotation);
-                
+
                 // TODO: use width and height attributes?
 
                 CreateObject(gid, x, y, DefaultObjectLayerIndex, rotation);

@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class TileCollider
-{
-    
-}
+public abstract class TileCollider { }
 
 public class PolygonTileCollider : TileCollider
 {

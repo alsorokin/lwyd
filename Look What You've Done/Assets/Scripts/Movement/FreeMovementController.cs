@@ -35,7 +35,7 @@ class FreeMovementController : MovementController
     private void FixedUpdate()
     {
         transform.position += new Vector3(GetMovementScalar() * _movement.x,
-                                               GetMovementScalar() * _movement.y, 
+                                               GetMovementScalar() * _movement.y,
                                                0f);
 
         StopMoving();
