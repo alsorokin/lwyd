@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="8" nextobjectid="117">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="8" nextobjectid="125">
  <tileset firstgid="1" source="../Resources/test.tsx"/>
  <tileset firstgid="44" source="../Resources/tree-sample.tsx"/>
  <tileset firstgid="53" source="../Resources/sprite-pack-sample.tsx"/>
@@ -115,9 +115,6 @@
   <object id="22" type="player_spawn" x="255.5" y="106.75">
    <point/>
   </object>
-  <object id="106" gid="42" x="272" y="96" width="22" height="49"/>
-  <object id="107" gid="43" x="304" y="96" width="10" height="31"/>
-  <object id="108" gid="40" x="320" y="96" width="18" height="41"/>
   <object id="109" gid="53" x="368" y="64" width="16" height="16"/>
   <object id="110" gid="54" x="384" y="64" width="16" height="16"/>
   <object id="111" gid="55" x="400" y="64" width="16" height="16"/>
@@ -126,5 +123,13 @@
   <object id="114" gid="61" x="400" y="96" width="16" height="16"/>
   <object id="115" gid="60" x="384" y="96" width="16" height="16"/>
   <object id="116" gid="59" x="368" y="96" width="16" height="16"/>
+  <object id="117" gid="40" x="288" y="64" width="18" height="41"/>
+  <object id="118" gid="40" x="304" y="64" width="18" height="41" rotation="90"/>
+  <object id="119" gid="40" x="288" y="80" width="18" height="41" rotation="-90"/>
+  <object id="120" gid="40" x="304" y="80" width="18" height="41" rotation="180"/>
+  <object id="121" gid="1073741864" x="336" y="160" width="18" height="41" rotation="90"/>
+  <object id="122" gid="1073741864" x="384" y="128" width="18" height="41" rotation="180"/>
+  <object id="123" gid="1073741864" x="416" y="176" width="18" height="41" rotation="-90"/>
+  <object id="124" gid="1073741864" x="368" y="208" width="18" height="41"/>
  </objectgroup>
 </map>

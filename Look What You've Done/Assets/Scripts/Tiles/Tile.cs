@@ -195,6 +195,12 @@ public class Tile
             GameObject.transform.RotateAround(pivotPoint, Vector3.back, rotation);
         }
 
+        // TODO
+        // Set SortingOffset here. It represents the distance between the lower edge of the sprite
+        // and the lower edge of the collider.
+        // Use transform.TransformPoint() to detect the lowest edges of the collider and the sprite (game object?):
+        // https://docs.unity3d.com/ScriptReference/Transform.TransformPoint.html
+
         UpdateZPosition();
     }
 
