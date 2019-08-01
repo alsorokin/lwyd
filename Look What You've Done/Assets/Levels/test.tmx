@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="8" nextobjectid="129">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#327896" nextlayerid="8" nextobjectid="150">
  <tileset firstgid="1" source="../Resources/test.tsx"/>
  <tileset firstgid="44" source="../Resources/tree-sample.tsx"/>
  <tileset firstgid="53" source="../Resources/sprite-pack-sample.tsx"/>
@@ -135,5 +135,26 @@
   <object id="126" gid="43" x="464" y="74" width="10" height="31"/>
   <object id="127" gid="43" x="512" y="96" width="10" height="31" rotation="90"/>
   <object id="128" gid="42" x="451.75" y="86" width="22" height="49" rotation="90"/>
+  <object id="129" gid="33" x="234.75" y="139" width="16" height="16"/>
+  <object id="130" gid="33" x="251" y="131.5" width="16" height="16"/>
+  <object id="131" gid="33" x="250.5" y="143" width="16" height="16"/>
+  <object id="132" gid="33" x="264" y="138.5" width="16" height="16"/>
+  <object id="133" gid="33" x="262.5" y="147.25" width="16" height="16"/>
+  <object id="134" gid="33" x="241.25" y="148" width="16" height="16"/>
+  <object id="135" gid="33" x="252" y="151.75" width="16" height="16"/>
+  <object id="136" gid="33" x="222.5" y="158" width="16" height="16"/>
+  <object id="137" gid="33" x="235.75" y="155.5" width="16" height="16"/>
+  <object id="138" gid="33" x="241.5" y="224" width="16" height="16" rotation="-90"/>
+  <object id="139" gid="33" x="262.5" y="161.5" width="16" height="16"/>
+  <object id="140" gid="33" x="263.25" y="229.25" width="16" height="16" rotation="-90"/>
+  <object id="141" gid="33" x="252.75" y="165.75" width="16" height="16"/>
+  <object id="142" gid="33" x="231.5" y="231" width="16" height="16" rotation="-90"/>
+  <object id="143" gid="33" x="224" y="224.75" width="16" height="16" rotation="-90"/>
+  <object id="144" gid="33" x="241.5" y="235.25" width="16" height="16" rotation="-90"/>
+  <object id="145" gid="33" x="258" y="233.75" width="16" height="16" rotation="-90"/>
+  <object id="146" gid="33" x="267.25" y="241.5" width="16" height="16" rotation="-90"/>
+  <object id="147" gid="33" x="251.25" y="243" width="16" height="16" rotation="-90"/>
+  <object id="148" gid="33" x="234" y="244" width="16" height="16" rotation="-90"/>
+  <object id="149" gid="33" x="272" y="224" width="16" height="16" rotation="-90"/>
  </objectgroup>
 </map>
