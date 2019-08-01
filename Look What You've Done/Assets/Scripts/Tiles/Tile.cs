@@ -6,8 +6,14 @@ public class Tile
     public GameObject GameObject;
     // TODO: Add support for multiple colliders
     private TileCollider _tileCollider;
+    private Collider2D _collider;
     private readonly float _originalZ;
 
+    /// <summary>
+    /// This property represents the offset we're making when sorting sprites.
+    /// Usually this equals the distance between the center of the tile's sprite 
+    /// and the bottom edge of the tile's sprite/collider.
+    /// </summary>
     public float SortingOffset { get; private set; }
 
     public SpriteRenderer SpriteRenderer
@@ -59,23 +65,7 @@ public class Tile
 
         // removing any existing collider
         // TODO: support more than one collider
-        var oldBoxCollider = GameObject.GetComponent<BoxCollider2D>();
-        if (oldBoxCollider != null)
-        {
-            GameObject.Destroy(oldBoxCollider);
-        }
-
-        var oldCircleCollider = GameObject.GetComponent<CircleCollider2D>();
-        if (oldCircleCollider != null)
-        {
-            GameObject.Destroy(oldCircleCollider);
-        }
-
-        var oldPolygonCollider = GameObject.GetComponent<PolygonCollider2D>();
-        if (oldPolygonCollider != null)
-        {
-            GameObject.Destroy(oldPolygonCollider);
-        }
+        GameObject.Destroy(_collider);
 
         if (collider == null)
         {
@@ -103,33 +93,33 @@ public class Tile
         if (collider is BoxTileCollider)
         {
             var boxCollider = collider as BoxTileCollider;
-            var unityBoxCollider = GameObject.AddComponent<BoxCollider2D>();
+            var unityBoxCollider = (_collider = GameObject.AddComponent<BoxCollider2D>()) as BoxCollider2D;
             unityBoxCollider.size = new Vector2(
                 boxCollider.Bounds.width / ppu,
                 boxCollider.Bounds.height / ppu);
             unityBoxCollider.offset = new Vector2(
                 (boxCollider.Bounds.x + (boxCollider.Bounds.width / 2) - tileWidthPixelsHalf) / ppu,
                 -(boxCollider.Bounds.y + (boxCollider.Bounds.height / 2) - tileHeightPixelsHalf) / ppu);
-            SortingOffset = unityBoxCollider.offset.y - (unityBoxCollider.bounds.size.x / 2);
+            UpdateSortingOffset ();
         }
         else if (collider is CircleTileCollider)
         {
             var circleCollider = collider as CircleTileCollider;
-            var unityCircleCollider = GameObject.AddComponent<CircleCollider2D>();
+            var unityCircleCollider = (_collider = GameObject.AddComponent<CircleCollider2D>()) as CircleCollider2D;
             unityCircleCollider.radius = circleCollider.Radius / ppu;
             unityCircleCollider.offset = new Vector2(
                 (circleCollider.Bounds.x + circleCollider.Radius - tileWidthPixelsHalf) / ppu,
                 -(circleCollider.Bounds.y + circleCollider.Radius - tileHeightPixelsHalf) / ppu);
-            SortingOffset = unityCircleCollider.offset.y - unityCircleCollider.radius;
+            UpdateSortingOffset ();
         }
         else //if (collider is PolygonTileCollider)
         {
             var polygonCollider = collider as PolygonTileCollider;
-            var unityPolygonCollider = GameObject.AddComponent<PolygonCollider2D>();
+            var unityPolygonCollider = (_collider = GameObject.AddComponent<PolygonCollider2D>()) as PolygonCollider2D;
             unityPolygonCollider.points = polygonCollider.Vertices.Select(v => new Vector2(
                 (v.x - tileWidthPixelsHalf) / ppu,
                 -(v.y - tileHeightPixelsHalf) / ppu)).ToArray();
-            SortingOffset = unityPolygonCollider.bounds.min.y - unityPolygonCollider.transform.position.y;
+            UpdateSortingOffset ();
         }
 
         UpdateZPosition();
@@ -195,11 +185,7 @@ public class Tile
             GameObject.transform.RotateAround(pivotPoint, Vector3.back, rotation);
         }
 
-        // TODO
-        // Set SortingOffset here. It represents the distance between the lower edge of the sprite
-        // and the lower edge of the collider.
-        // Use transform.TransformPoint() to detect the lowest edges of the collider and the sprite (game object?):
-        // https://docs.unity3d.com/ScriptReference/Transform.TransformPoint.html
+        UpdateSortingOffset ();
 
         UpdateZPosition();
     }
@@ -211,6 +197,12 @@ public class Tile
         newTile.SetCollider(_tileCollider);
 
         return newTile;
+    }
+
+    private void UpdateSortingOffset ()
+    {
+        var colliderBottom = _collider?.bounds.min.y ?? SpriteRenderer.bounds.min.y;
+        SortingOffset = colliderBottom - GameObject.transform.position.y;
     }
 
     private void UpdateZPosition()
