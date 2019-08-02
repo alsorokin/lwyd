@@ -8,6 +8,9 @@ using UnityObject = UnityEngine.Object;
 
 public class Level
 {
+    private const float DefaultScale = 0.3f;
+    private const string DefaultLevelName = "test";
+
     private int _levelWidth;
     private int _levelHeight;
     private List<Actor> _actors = new List<Actor>();
@@ -48,11 +51,14 @@ public class Level
         Scale = scale;
     }
 
-    public Level()
+    public Level(float scale, string filePath)
     {
-        LoadFromFile("Assets\\Levels\\test.tmx");
+        LoadFromFile(filePath);
+        Scale = scale;
         AddPlayer();
     }
+
+    public Level() : this(DefaultScale, DefaultLevelName) { }
 
     private void AddPlayer()
     {
@@ -82,7 +88,8 @@ public class Level
     private void LoadFromFile(string fileName)
     {
         // parsing xml
-        string content = File.ReadAllText(fileName);
+        var filePath = $"Assets\\Levels\\{fileName}.tmx";
+        string content = File.ReadAllText(filePath);
         var doc = new XmlDocument();
         doc.LoadXml(content);
 
